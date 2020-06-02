@@ -1,0 +1,398 @@
+{
+  "permission_missing_bot": "Вам нужно иметь разрешение \"%s\", чтобы запускать эту команду с такими аргументами. Свяжитесь с админом сервера, чтобы получить разрешение.",
+  "permission_missing_discord": "Вам нужно иметь следующее право в Дискорде, чтобы запускать эту команду: %s. Свяжитесь с админом сервера, чтобы получить нужные права.",
+  "permission_command_error": "Ошибка авторизации. %s",
+  "permission_any_value": "любое",
+
+  "permission_type_remind": "напоминание",
+  "permission_type_role": "роль",
+
+  "permission_filter_channelId": "канал",
+  "permission_filter_roleId": "роль",
+
+  "permission_subject_user": "участник",
+  "permission_subject_role": "роль",
+
+  "setting_command_prefix": "префикс команды",
+  "setting_locale_name": "язык (локаль)",
+  "setting_timezone": "часовой пояс",
+  "setting_badwords": "плохие слова",
+  "setting_censoring": "цензура",
+
+  "moderator_censored_message": "Пользователь %s написал сообщение, но во имя благопристойности нам пришлость заменить его на следующее:\n%s",
+
+  "validate_command_error": "Извините, не смог понять команду. Причина: %s. Попробуйте: %s",
+  "execute_command_error": "Извините, не смог выполнить команду. Причина: %s.",
+  "internal_server_error": "Внутрення ошибка бота. Свяжитесь с разработчиком бота",
+
+  "arg_validation_no_arg": "Вы не предоставили никакого значения для аргумента: %s",
+  "arg_validation_wrong_on_off": "Не смог распознать как вкл/выкл следующий аргумент: %s. Допустимые значения: %s",
+  "arg_validation_wrong_array": "Не смог распознать как список следующий аргумент: %s",
+  "arg_validation_wrong_ids_array": "Не смог распознать как список идентификаторов следующий аргумент: %s. Здесь допустимы только положительные целые числа",
+  "arg_validation_wrong_subjects": "Не смог найти всех участников и/или роли из списка в этом аргументе: %s",
+  "arg_validation_no_subjects": "Вы не предоставили список участников и/или ролей в этом аргументе: %s",
+  "arg_validation_only_roles_allowed": "Вы указали участников в этом аргументе: %s. Но этот аргумент подразумевает только роли",
+  "arg_validation_only_ids_allowed": "Вы указали роли в этом аргументе: %s. Но этот аргумент подразумевает только участников",
+  "arg_validation_wrong_channels": "Неверные каналы указаны в следующем аргументе: %s",
+  "arg_validation_no_channels": "Вы не указали каналы для этого аргумента: %s",
+  "arg_validation_wrong_text_channels": "Не смог найти указанные текстовые каналы для следующего аргумента: %s",
+  "arg_validation_wrong_voice_channels": "Не смог найти указанные голосовые каналы для следующего аргумента: %s",
+  "arg_validation_wrong_time": "Не смог распознать время в этом аргументе: %s",
+  "arg_validation_time_only_distance_allowed": "Только временное смещение допустимо для этого аргумента: %s. Вы предоставили расписание",
+  "arg_validation_time_only_schedule_allowed": "Только расписание допустимо для этого аргумента: %s. Вы предоставили временное смещение",
+  "arg_validation_time_zero_shift": "Нулевое смещение недопустимо для этого аргумента: %s",
+
+  "arg_boolean_off": "выкл",
+  "arg_boolean_on": "вкл",
+  "arg_boolean_false": "ложь",
+  "arg_boolean_true": "правда",
+  "arg_boolean_default_help": "'вкл'/'выкл' или 'правда'/'ложь'",
+
+  "arg_time_point_type": "через",
+  "arg_time_schedule_type": "в",
+  "arg_time_schedule_repeat_type": "каждые",
+
+  "arg_time_value_today": "сегодня",
+  "arg_time_value_all": "все",
+  "arg_time_value_year": "г",
+  "arg_time_value_month": "М",
+  "arg_time_value_week": "н",
+  "arg_time_value_dayofweek": "Д",
+  "arg_time_value_day": "д",
+  "arg_time_value_hour": "ч",
+  "arg_time_value_minute": "м",
+  "arg_time_value_second": "с",
+
+  "arg_time_month_full_january": "Январь",
+  "arg_time_month_full_february": "Февраль",
+  "arg_time_month_full_march": "Март",
+  "arg_time_month_full_april": "Апрель",
+  "arg_time_month_full_may": "Май",
+  "arg_time_month_full_june": "Июнь",
+  "arg_time_month_full_july": "Июль",
+  "arg_time_month_full_august": "Август",
+  "arg_time_month_full_september": "Сентябрь",
+  "arg_time_month_full_october": "Октябрь",
+  "arg_time_month_full_november": "Ноябрь",
+  "arg_time_month_full_december": "Декабрь",
+
+  "arg_time_month_short_january": "Янв",
+  "arg_time_month_short_february": "Фев",
+  "arg_time_month_short_march": "Мар",
+  "arg_time_month_short_april": "Апр",
+  "arg_time_month_short_may": "Май",
+  "arg_time_month_short_june": "Июн",
+  "arg_time_month_short_july": "Июл",
+  "arg_time_month_short_august": "Авг",
+  "arg_time_month_short_september": "Сен",
+  "arg_time_month_short_october": "Окт",
+  "arg_time_month_short_november": "Нов",
+  "arg_time_month_short_december": "Дек",
+
+  "arg_time_dayofweek_full_monday": "Понедельник",
+  "arg_time_dayofweek_full_tuesday": "Вторник",
+  "arg_time_dayofweek_full_wednesday": "Среда",
+  "arg_time_dayofweek_full_thursday": "Четверг",
+  "arg_time_dayofweek_full_friday": "Пятница",
+  "arg_time_dayofweek_full_saturday": "Суббота",
+  "arg_time_dayofweek_full_sunday": "Воскресенье",
+
+  "arg_time_dayofweek_short_monday": "Пн",
+  "arg_time_dayofweek_short_tuesday": "Вт",
+  "arg_time_dayofweek_short_wednesday": "Ср",
+  "arg_time_dayofweek_short_thursday": "Чт",
+  "arg_time_dayofweek_short_friday": "Пт",
+  "arg_time_dayofweek_short_saturday": "Сб",
+  "arg_time_dayofweek_short_sunday": "Вс",
+
+
+  "command_addrole_name": "добавитьроль",
+  "command_addrole_help": "Добавляет роль(роли) для указанных участников.",
+
+  "command_addrole_arg_subjectIds_alias_subjectIds": "идУчастнков",
+  "command_addrole_arg_subjectIds_alias_s": "у",
+  "command_addrole_arg_subjectIds_help": "Учтасник(и), которые получат роль(роли). Используйте упоминания, типа @Spiderman.",
+  "command_addrole_arg_roleIds_alias_roleIds": "роли",
+  "command_addrole_arg_roleIds_alias_r": "р",
+  "command_addrole_arg_roleIds_help": "Роль(роли), которые получат участник(и). Используйте упоминания, типа @модератор.",
+
+  "command_addrole_success": "Добавлено %d ролей всего на всех участников из %d запрошенных (повторы проигнорированы). Число ошибок: %d.",
+  "command_addrole_missing_permissions": "%d ролей не было добавлено, потому что у бота нет прав на изменение ролей, либо он находится слишком низко в иерархии ролей. Проверьте настройки роли бота.",
+
+
+  "command_addrolemanager_name": "добавитьменеджераролей",
+  "command_addrolemanager_help": "Даёт разрешение участникам или ролям добавлять или убирать указанную роль с участников.",
+
+  "command_addrolemanager_arg_subjectIds_alias_subjectIds": "идСубъектов",
+  "command_addrolemanager_arg_subjectIds_alias_s": "с",
+  "command_addrolemanager_arg_subjectIds_help": "Роли и/или участники, которые получат разрешение. Используйте упоминания, типа @Spiderman, @модер.",
+  "command_addrolemanager_arg_roleIds_alias_rolesIds": "роли",
+  "command_addrolemanager_arg_roleIds_alias_r": "р",
+  "command_addrolemanager_arg_roleIds_help": "Названия ролей, которыми они смогут манипулировать. Используйте упоминания, типа @почитаемый.",
+
+  "command_addrolemanager_success": "Разрешение добавлено успешно.",
+  "command_addrolemanager_duplicate": "Такое разрешение уже существует. Пропускаем.",
+
+
+  "command_clean_name": "очистить",
+  "command_clean_help": "Очищает сообщения в указанном текстовом канале за указанное время.",
+
+  "command_clean_arg_time_alias_time": "время",
+  "command_clean_arg_time_alias_t": "в",
+  "command_clean_arg_time_help": "Временной интервал, за которое нужно удалить сообщения. Может быть 'все', 'сегодня' или число разных единиц времени, например, '4ч' значит 'за последние 4 часа'",
+  "command_clean_arg_channelIds_alias_channelIds": "идКаналов",
+  "command_clean_arg_channelIds_alias_c": "к",
+  "command_clean_arg_channelIds_help": "Имена каналов, где нужно почистить сообщения. По умолчанию - текущий канал.",
+  "command_clean_arg_silent_alias_silent": "тихо",
+  "command_clean_arg_silent_alias_s": "т",
+  "command_clean_arg_silent_help": "Если указано, бот не отрапортует о результатах чистки.",
+  "command_clean_arg_silent_value_silent": "тихо",
+  "command_clean_arg_silent_value_s": "т",
+
+  "command_clean_success": "очищено %d сообщений из %d в канале.",
+  "command_clean_success_multi_channels": "очищено %d сообщений %d в %d каналах.",
+
+
+  "command_denyremind_name": "запретитьнапоминания",
+  "command_denyremind_help": "Убирает разрешение участника или роли на настройку напоминаний в указанном канале (или в любом канале, если таковой не указан).",
+
+  "command_denyremind_arg_subjectIds_alias_subjectIds": "идСубъектов",
+  "command_denyremind_arg_subjectIds_alias_s": "с",
+  "command_denyremind_arg_subjectIds_help": "Роли и/или участники, которые потеряют разрешение. Используйте упоминания, типа @Акакий, @нубы.",
+  "command_denyremind_arg_channelIds_alias_channelIds": "идКаналов",
+  "command_denyremind_arg_channelIds_alias_c": "к",
+  "command_denyremind_arg_channelIds_help": "Имя канала(ов), для которых будет отозвано разрешение. По умолчанию - все каналы. Используйте упоминания, типа @закрытаяКомната.",
+
+  "command_denyremind_success": "Успешно убрано %d разрешений.",
+  "command_denyremind_no_matches": "Не найдено подходящих разрешений.",
+
+
+  "command_help_name": "помощь",
+  "command_help_help": "Показывает помощь по боту. Если вы - не админ, то по умолчанию печатает только не админские команды. Напишите '%s' как аргумент, чтобы получить помощь по всем командам.",
+
+  "command_help_arg_command_alias_command": "команда",
+  "command_help_arg_command_alias_c": "к",
+  "command_help_arg_command_help": "Имя команды, для которой нужно получить помощь.",
+
+  "command_help_summary": "Список доступных команд - ниже. Используйте %s <имя команды>, чтобы узнать подробности о конкретной команде\n",
+  "command_help_wrong_command": "У бота нет такой команды. Ближайшие варианты: %s.",
+  "command_help_all_arg_value": "все",
+
+
+  "command_permissions_name": "разрешения",
+  "command_permissions_help": "Показывает список разрешений, связанных с ботом, данные участникам и ролям.",
+
+  "command_permissions_arg_permType_alias_type": "тип",
+  "command_permissions_arg_permType_alias_t": "т",
+  "command_permissions_arg_permType_help": "Тип разрешения, для которого нужен список.",
+
+  "command_permissions_error_wrong_type": "Такой тип разрешений не определён: %s",
+  "command_permissions_no_permissions": "Разрешения, специфичные для бота, не найдены.",
+  "command_permissions_permission": "Разрешение номер: %s с типом \"%s\" дано субъекту типа %s по имени %s, со следующими условиями: %s",
+
+
+  "command_permitremind_name": "разрешитьнапоминания",
+  "command_permitremind_help": "Добавляет разрешение указанным ролям и/или участникам на управление напоминаниями в указанном канале (или в любом канале, если таковой не указан).",
+
+  "command_permitremind_arg_subjectIds_alias_subjectIds": "идСубъектов",
+  "command_permitremind_arg_subjectIds_alias_s": "с",
+  "command_permitremind_arg_subjectIds_help": "Роли или субъекты, которые получат разрешение. Используйте упоминания, типа @MegaDestroyer, @админ.",
+  "command_permitremind_arg_channelIds_alias_channelIds": "идКаналов",
+  "command_permitremind_arg_channelIds_alias_c": "к",
+  "command_permitremind_arg_channelIds_help": "Имя каналов, на которых будет действовать разрешение. По умолчанию - все каналы. Используйте упоминания, типа @news.",
+
+  "command_permitremind_success": "Разрешение добавлено успешно.",
+  "command_permitremind_duplicate": "Такое разрешение уже существует. Пропускаем.",
+
+
+  "command_ping_name": "пинг",
+  "command_ping_help": "Отвечает \"понг!\". Можно использовать, чтобы проверить, отвечает ли бот в принципе.",
+
+  "command_ping_success": "понг!",
+
+
+  "command_poll_name": "опрос",
+  "command_poll_help": "Запускает опрос. Первая фраза в кавычках будет вопросом. Остальные фразы в кавычках - ответами. Если варианты не предоставлены - считает опрос типом да/нет.",
+
+  "command_poll_too_many_answers": "Слмшком много ответов предоставлено: %d. Максимум: %d.",
+
+
+  "command_remind_name": "напомнить",
+  "command_remind_help": "Добавляет напоминание в указанный текстовый канал с указанным расписанием. Когда придёт время, бот отправит указанный текст в канал. Если канал не указан, будет использоваться текущий канал. Одноразовые упоминания автоматически удаляются после первого выполнения.",
+
+  "command_remind_arg_time_alias_time": "время",
+  "command_remind_arg_time_alias_t": "в",
+  "command_remind_arg_time_help": "Расписание, указывающее момент(ы), в которые бот опубликует напоминание. Может быть либо кол-вом времени (например, '4ч 30м' значит 'через 4 часа и 30 минут') или расписанием ('в 15:00' значит 'сегодня в 15:00:00, один раз', а, например, 'каждые Вс 13:00' значит 'каждое воскресенье в 13:00:00')",
+  "command_remind_arg_channelIds_alias_channelIds": "идКаналов",
+  "command_remind_arg_channelIds_alias_c": "к",
+  "command_remind_arg_channelIds_help": "Имена каналов, в которых будет запущено напоминание. По умолчанию - текущий канал. Используйте упоминания, типа @broadcast.",
+  "command_remind_arg_message_alias_message": "текст",
+  "command_remind_arg_message_alias_m": "т",
+  "command_remind_arg_message_help": "Текст сообщения. Вы можете использовать упоминания здесь.",
+
+  "command_remind_too_many_reminders": "Для вашего сервера задано слишком много напоминаний: %s. Пожалуйста, удалите старые напоминания прежде чем добавлять новое.",
+  "command_remind_success": "Напоминание добавлено успешно.",
+  "command_remind_duplicate": "Такое напоминание уже существует. Пропускаем.",
+
+
+  "command_reminders_name": "напоминания",
+  "command_reminders_help": "Показывает список напоминаний. Для всех каналов или только для указанных.",
+
+  "command_reminders_arg_channelIds_alias_channelIds": "идКаналов",
+  "command_reminders_arg_channelIds_alias_c": "к",
+  "command_reminders_arg_channelIds_help": "Имя каналов, для которых нужно узнать напоминания. По умолчанию - все каналы. Используйте упоминания, типа @управление-радио.",
+
+  "command_reminders_no_reminders": "Напоминания не найдены.",
+  "command_reminders_reminder": "Напоминание с номером = %d; расписание: %s; канал: %s; текст сообщения: %s\n",
+
+
+  "command_removerole_name": "убратьроль",
+  "command_removerole_help": "Убирает роль(роли) с участника(ов).",
+
+  "command_removerole_arg_subjectIds_alias_subjectIds": "идУчастников",
+  "command_removerole_arg_subjectIds_alias_s": "у",
+  "command_removerole_arg_subjectIds_help": "Участник(и), которые потеряют роль(роли). Используйте упоминания, типа @Предатель.",
+  "command_removerole_arg_roleIds_alias_roleIds": "роли",
+  "command_removerole_arg_roleIds_alias_r": "р",
+  "command_removerole_arg_roleIds_help": "Роль(роли), которых лишатся участник(и). Используйте упоминания, типа @надёжный.",
+
+  "command_removerole_success": "Убрано %d ролей в сумме со всех участников из %d запросов (участники, которые не имели роли, пропущены). Кол-во ошибок: %d.",
+  "command_removerole_missing_permissions": "%d ролей не было убрано, потому что у бота нет на это разрешения, или его роль находится слишком низко в иерерхии. Проверьте настройки роли бота.",
+
+
+  "command_removerolemanager_name": "убратьменеджераролей",
+  "command_removerolemanager_help": "Убирает разрешение с участников/ролей на добавление/снятие указанных ролей.",
+
+  "command_removerolemanager_arg_subjectIds_alias_subjectIds": "идСуъектов",
+  "command_removerolemanager_arg_subjectIds_alias_s": "с",
+  "command_removerolemanager_arg_subjectIds_help": "Роли/участники, которые потеряют разрешение. Используйте упоминания, типа @Killer777, @плохиемодеры.",
+  "command_removerolemanager_arg_rolesIds_alias_rolesIds": "роли",
+  "command_removerolemanager_arg_rolesIds_alias_r": "р",
+  "command_removerolemanager_arg_rolesIds_help": "Названия ролей, для которых будет потеряно разрешение. по умолчанию - все роли. Используйте упоминания, типа @привилегированный.",
+
+  "command_removerolemanager_success": "Успешно убрано %d разрешений.",
+  "command_removerolemanager_no_matches": "Не найдено подходящих разрешений.",
+
+
+  "command_setlocale_name": "задатьязык",
+  "command_setlocale_help": "Устанавливает язык (точнее говоря, локаль) для вашего сервера.",
+
+  "command_setlocale_arg_locale_alias_locale": "язык",
+  "command_setlocale_arg_locale_alias_l": "я",
+  "command_setlocale_arg_locale_help": "Название языка (локали). Должно быть не пустым.",
+  "command_setlocale_success": "Язык (локаль) установлен: %s.",
+  "command_setlocale_error_wrong_locale": "Неправильный язык. Доступные языки (локали): %s",
+
+
+  "command_setmylocale_name": "задатьмойязык",
+  "command_setmylocale_help": "Устанавливает язык (точнее говоря, локаль) для вас на сервере. Не влияет на настройку самого сервера.",
+
+  "command_setmylocale_arg_locale_alias_locale": "язык",
+  "command_setmylocale_arg_locale_alias_l": "я",
+  "command_setmylocale_arg_locale_help": "Название языка (локали). Должно быть не пустым.",
+  "command_setmylocale_success": "Для пользователя %s установлен язык (локаль) %s.",
+  "command_setmylocale_success_no_locale": "Убрана настройка индивидуального языка (локали) для пользователя: %s.",
+  "command_setmylocale_error_wrong_locale": "Неправильный язык. Доступные языки (локали): %s",
+
+
+  "command_setprefix_name": "задатьпрефикс",
+  "command_setprefix_help": "Устанавливает префикс для команд бота. Бот будет ожидать команды именно с этим префиксом.",
+
+  "command_setprefix_arg_prefix_alias_prefix": "префикс",
+  "command_setprefix_arg_prefix_alias_p": "п",
+  "command_setprefix_arg_prefix_help": "Префикс команд. Должен быть не пустым.",
+  "command_setprefix_success": "Префикс задан %s.",
+  "command_setprefix_error_no_prefix": "Не могу принять пустой префикс.",
+
+
+  "command_settimezone_name": "задатьчасовойпояс",
+  "command_settimezone_help": "Задаёт часовой пояс (точнее, временную зону) вашего сервера с точки зрения бота. Бот будет подстраивать значения всех аргументов времени, расписаний и т.д. согласно смещению часового пояса.",
+
+  "command_settimezone_arg_timezone_alias_timezone": "пояс",
+  "command_settimezone_arg_timezone_alias_t": "п",
+  "command_settimezone_arg_timezone_alias_z": "ч",
+  "command_settimezone_arg_timezone_help": "Временная зона в формате <регион/город или зона> на английском языке. Типа Europe/Moscow или US/Eastern. Если не знаете точное имя, попробуйте наиболее подходящий вариант из известных вам, и бот подскажет точные варианты.",
+  "command_settimezone_success": "Часовой пояс установлен на %s.",
+  "command_settimezone_error_wrong_timezone": "Неправильное имя часового пояса. Наиболее подходящие варианты: %s",
+
+
+  "command_setmytimezone_name": "задатьмойчасовойпояс",
+  "command_setmytimezone_help": "Задаёт часовой пояс (точнее, временную зону) для вас с точки зрения бота на сервере. Бот будет подстраивать значения всех аргументов времени, расписаний и т.д. согласно смещению часового пояса. Бот также будет вычислять ваши рабочие и ночные часы на основе этой настройки.",
+
+  "command_setmytimezone_arg_timezone_alias_timezone": "пояс",
+  "command_setmytimezone_arg_timezone_alias_t": "п",
+  "command_setmytimezone_arg_timezone_alias_z": "ч",
+  "command_setmytimezone_arg_timezone_help": "Временная зона в формате <регион/город или зона> на английском языке. Типа Europe/Moscow или US/Eastern. Если не знаете точное имя, попробуйте наиболее подходящий вариант из известных вам, и бот подскажет точные варианты.",
+  "command_setmytimezone_success": "Часовой пояс установлен на %s для вас.",
+  "command_setmytimezone_success_no_timezone": "Настройка часового пояса убрана для пользователя %s.",
+  "command_setmytimezone_error_wrong_timezone": "Неправильное имя часового пояса. Наиболее подходящие варианты: %s",
+
+
+  "command_settings_name": "настройки",
+  "command_settings_help": "Показывает настройки сервера с точки зрения бота. Если указано имя конкретной настройки, то показывает только её значение.",
+
+  "command_settings_arg_setting_alias_setting": "настройка",
+  "command_settings_arg_setting_alias_s": "н",
+  "command_settings_arg_setting_help": "Настройка, для которой нужно получить значение.",
+  "command_settings_empty_setting": "Такой настройки для сервера не задано.",
+  "command_settings_error_wrong_setting": "Неправильное имя настройки: %s. Доступные имена: %s",
+
+
+  "command_mysettings_name": "моинастройки",
+  "command_mysettings_help": "Показывает ваши настройки. Если указано имя конкретной настройки, то показывает только её значение.",
+
+  "command_mysettings_empty_setting": "Такой настройки для вас не задано на сервере.",
+  "command_mysettings_error_wrong_setting": "Неправильное имя настройки: %s. Доступные имена: %s",
+
+
+  "command_mypermissions_name": "моиразрешения",
+  "command_mypermissions_help": "Показывает список ваших разрешений, связанных с ботом.",
+
+  "command_mypermissions_no_permissions": "У вас нет особых разрешений, связанных с ботом.",
+  "command_mypermissions_permission": "Разрешение номер: %s с типом \"%s\" дано субъекту типа %s по имени %s, со следующими условиями: %s",
+
+
+  "command_deletereminder_name": "удалитьнапоминание",
+  "command_deletereminder_help": "Удаляет напоминание по номеру. Используйте команду '%s', чтобы получить список напоминаний",
+
+  "command_deletereminder_arg_ids_alias_ids": "ид",
+  "command_deletereminder_arg_ids_alias_i": "и",
+  "command_deletereminder_arg_ids_help": "Список номеров (идентификаторов), через запятую.",
+  "command_deletereminder_no_ids_found": "Не найдено напоминаний с такими номерами.",
+  "command_deletereminder_success": "Напомиания убраны успешно.",
+
+
+  "command_addbadwords_name": "добавитьплохиеслова",
+  "command_addbadwords_help": "Добавляет слова в список 'плохих', которые будут заменены цензурой.",
+
+  "command_addbadwords_arg_words_alias_words": "слова",
+  "command_addbadwords_arg_words_alias_w": "с",
+  "command_addbadwords_arg_words_help": "Слова, через запятую.",
+  "command_addbadwords_success": "Добавлено %d слов (повторы игнорируются).",
+
+
+  "command_removebadwords_name": "удалитьплохиеслова",
+  "command_removebadwords_help": "Убирает слова из списка 'плохих', чтобы их не заменяла цензура.",
+
+  "command_removebadwords_arg_words_alias_words": "слова",
+  "command_removebadwords_arg_words_alias_w": "с",
+  "command_removebadwords_arg_words_help": "Слова, через запятую.",
+  "command_removebadwords_success": "Удалено %d слов.",
+
+
+  "command_badwords_name": "плохиеслова",
+  "command_badwords_help": "показывает список 'плохих слов', которые будут заменяться цензурой.",
+
+  "command_badwords_success": "Я вымою рот с мылом после этого: %s.",
+  "command_badwords_empty": "Нет слов, которые помечены как 'плохие'.",
+
+
+  "command_setcensoring_name": "задатьцензуру",
+  "command_setcensoring_help": "Включает или выключает (пре-модерацию) поступающих сообщений. Заменяет 'плохие слова' спец. символами. Список плохих слов для сервера может быть настроен.",
+
+  "command_setcensoring_arg_enable_alias_enable": "включить",
+  "command_setcensoring_arg_enable_alias_e": "в",
+
+  "command_setcensoring_enabled": "Цензура включена.",
+  "command_setcensoring_disabled": "Цензура выключена."
+}
