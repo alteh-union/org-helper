@@ -19,25 +19,25 @@ const CleanCommandArgDefs = Object.freeze({
     aliasIds: ['command_clean_arg_time_alias_time', 'command_clean_arg_time_alias_t'],
     helpId: 'command_clean_arg_time_help',
     scanner: TimeArgScanner,
-    validationOptions: { timeDistanceOnly: true, nonZeroShift: true },
+    validationOptions: { timeDistanceOnly: true, nonZeroShift: true }
   }),
   channelIds: new CommandArgDef('channelIds', {
     aliasIds: ['command_clean_arg_channelIds_alias_channelIds', 'command_clean_arg_channelIds_alias_c'],
     helpId: 'command_clean_arg_channelIds_help',
     skipInSequentialRead: true,
     scanner: DiscordChannelsArgScanner,
-    validationOptions: { validTextChannels: true },
+    validationOptions: { validTextChannels: true }
   }),
   silent: new CommandArgDef('silent', {
     aliasIds: ['command_clean_arg_silent_alias_silent', 'command_clean_arg_silent_alias_s'],
     helpId: 'command_clean_arg_silent_help',
-    scanner: SimpleArgScanner,
-  }),
+    scanner: SimpleArgScanner
+  })
 });
 
 const SilentArgPredefinedValues = Object.freeze({
   silent: 'command_clean_arg_silent_value_silent',
-  s: 'command_clean_arg_silent_value_s',
+  s: 'command_clean_arg_silent_value_s'
 });
 
 const MESSAGES_FETCH_LIMIT = 50;

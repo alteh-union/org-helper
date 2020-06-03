@@ -20,14 +20,14 @@ const DenyRemindCommandArgDefs = Object.freeze({
     aliasIds: ['command_denyremind_arg_subjectIds_alias_subjectIds', 'command_denyremind_arg_subjectIds_alias_s'],
     helpId: 'command_denyremind_arg_subjectIds_help',
     scanner: DiscordSubjectsArgScanner,
-    validationOptions: { validSubjects: true },
+    validationOptions: { validSubjects: true }
   }),
   channelIds: new CommandArgDef('channelIds', {
     aliasIds: ['command_denyremind_arg_channelIds_alias_channelName', 'command_denyremind_arg_channelIds_alias_c'],
     helpId: 'command_denyremind_arg_channelIds_help',
     scanner: DiscordChannelsArgScanner,
-    validationOptions: { validTextChannels: true, anyValueAllowed: true },
-  }),
+    validationOptions: { validTextChannels: true, anyValueAllowed: true }
+  })
 });
 
 /**

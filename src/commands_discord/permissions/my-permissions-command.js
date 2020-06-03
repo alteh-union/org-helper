@@ -87,12 +87,12 @@ class MyPermissionsCommand extends PermissionsCommand {
     const orArray = [];
     for (const role of rolesArray) {
       orArray.push({
-        $and: [{ subjectType: PermissionsManager.SUBJECT_TYPES.role.name }, { subjectId: role.id }],
+        $and: [{ subjectType: PermissionsManager.SUBJECT_TYPES.role.name }, { subjectId: role.id }]
       });
     }
 
     orArray.push({
-      $and: [{ subjectType: PermissionsManager.SUBJECT_TYPES.user.name }, { subjectId: discordMessage.member.id }],
+      $and: [{ subjectType: PermissionsManager.SUBJECT_TYPES.user.name }, { subjectId: discordMessage.member.id }]
     });
 
     const andArray = [{ $or: orArray }];

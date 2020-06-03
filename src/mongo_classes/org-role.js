@@ -13,7 +13,7 @@ const RoleColumns = Object.freeze({
   id: 'id',
   source: 'source',
   orgId: 'orgId',
-  name: 'name',
+  name: 'name'
 });
 
 /**
@@ -50,7 +50,7 @@ class OrgRole extends BotRow {
       id: discordEntity.id,
       source: BotTable.DISCORD_SOURCE,
       orgId: discordGuild.id,
-      name: discordEntity.name,
+      name: discordEntity.name
     };
     return new OrgRole(dbObject);
   }

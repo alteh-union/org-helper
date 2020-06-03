@@ -17,8 +17,8 @@ const UserSettingsTable = require('../../mongo_classes/user-settings-table');
 const SetMyLocaleCommandArgDefs = Object.freeze({
   locale: new CommandArgDef('locale', {
     aliasIds: ['command_setmylocale_arg_locale_alias_locale', 'command_setmylocale_arg_locale_alias_l'],
-    helpId: 'command_setmylocale_arg_locale_help',
-  }),
+    helpId: 'command_setmylocale_arg_locale_help'
+  })
 });
 
 /**

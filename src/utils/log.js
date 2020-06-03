@@ -20,7 +20,7 @@ const LogLevels = Object.freeze({
   warning: 3,
   info: 4,
   debug: 5,
-  verbose: 6,
+  verbose: 6
 });
 
 /**

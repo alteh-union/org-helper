@@ -18,8 +18,8 @@ const ServerSettingsTable = require('../../mongo_classes/server-settings-table')
 const SettingsCommandArgDefs = Object.freeze({
   setting: new CommandArgDef('setting', {
     aliasIds: ['command_settings_arg_setting_alias_setting', 'command_settings_arg_setting_alias_s'],
-    helpId: 'command_settings_arg_setting_help',
-  }),
+    helpId: 'command_settings_arg_setting_help'
+  })
 });
 
 const SkipSettings = Object.freeze([ServerSettingsTable.SERVER_SETTINGS.badwords.name]);

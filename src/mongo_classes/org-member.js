@@ -16,7 +16,7 @@ const MemberColumns = Object.freeze({
   source: 'source',
   orgId: 'orgId',
   displayName: 'displayName',
-  userName: 'userName',
+  userName: 'userName'
 });
 
 /**
@@ -57,7 +57,7 @@ class OrgMember extends BotRow {
       userName: DiscordUtils.getDiscordUserName(
         discordEntity.user.username,
         discordEntity.user.discriminator.toString()
-      ),
+      )
     };
     return new OrgMember(dbObject);
   }

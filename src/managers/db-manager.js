@@ -30,7 +30,7 @@ const Tables = Object.freeze({
   rolesTable: RolesTable,
   tasksTable: TasksTable,
   serverSettingsTable: ServerSettingsTable,
-  userSettingsTable: UserSettingsTable,
+  userSettingsTable: UserSettingsTable
 });
 
 /**

@@ -21,8 +21,8 @@ const SetCensoringCommandArgDefs = Object.freeze({
     aliasIds: ['command_setcensoring_arg_enable_alias_enable', 'command_setcensoring_arg_enable_alias_e'],
     helpId: 'arg_boolean_default_help',
     scanner: BooleanArgScanner,
-    validationOptions: { isOnOff: true },
-  }),
+    validationOptions: { isOnOff: true }
+  })
 });
 
 /**

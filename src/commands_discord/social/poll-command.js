@@ -18,13 +18,13 @@ const PollCommandArgDefs = Object.freeze({
   question: new CommandArgDef('question', {
     aliasIds: ['command_poll_arg_question_alias_question', 'command_poll_arg_question_alias_q'],
     helpId: 'command_poll_arg_question_help',
-    validationOptions: { nonNull: true },
+    validationOptions: { nonNull: true }
   }),
   answers: new CommandArgDef('answers', {
     aliasIds: ['command_poll_arg_answers_alias_answers', 'command_poll_arg_answers_alias_a'],
     helpId: 'command_poll_arg_answers_help',
-    scanner: SpaceBasedArrayArgScanner,
-  }),
+    scanner: SpaceBasedArrayArgScanner
+  })
 });
 
 const NumericReactions = Object.freeze([
@@ -37,7 +37,7 @@ const NumericReactions = Object.freeze([
   '\u0037\u20E3',
   '\u0038\u20E3',
   '\u0039\u20E3',
-  '\u0030\u20E3',
+  '\u0030\u20E3'
 ]);
 
 const MaxAnswers = 10;

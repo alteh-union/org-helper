@@ -21,14 +21,14 @@ const AddRoleCommandArgDefs = Object.freeze({
     aliasIds: ['command_addrole_arg_subjectIds_alias_subjectIds', 'command_addrole_arg_subjectIds_alias_s'],
     helpId: 'command_addrole_arg_subjectIds_help',
     scanner: DiscordSubjectsArgScanner,
-    validationOptions: { validSubjects: true, subjectsNonEmpty: true, subjectIdsOnly: true },
+    validationOptions: { validSubjects: true, subjectsNonEmpty: true, subjectIdsOnly: true }
   }),
   roleIds: new CommandArgDef('roleIds', {
     aliasIds: ['command_addrole_arg_roleIds_alias_roleIds', 'command_addrole_arg_roleIds_alias_r'],
     helpId: 'command_addrole_arg_roleIds_help',
     scanner: DiscordSubjectsArgScanner,
-    validationOptions: { validSubjects: true, subjectsNonEmpty: true, subjectRolesOnly: true },
-  }),
+    validationOptions: { validSubjects: true, subjectsNonEmpty: true, subjectRolesOnly: true }
+  })
 });
 
 /**
@@ -88,8 +88,8 @@ class AddRoleCommand extends DiscordCommand {
         new CommandPermissionFilterField(
           PermissionsManager.DEFINED_FILTERS.roleId.name,
           AddRoleCommandArgDefs.roleIds.name
-        ),
-      ]),
+        )
+      ])
     ];
   }
 

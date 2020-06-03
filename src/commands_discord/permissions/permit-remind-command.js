@@ -19,14 +19,14 @@ const PermitRemindCommandArgDefs = Object.freeze({
     aliasIds: ['command_permitremind_arg_subjectIds_alias_subjectIds', 'command_permitremind_arg_subjectIds_alias_s'],
     helpId: 'command_permitremind_arg_subjectIds_help',
     scanner: DiscordSubjectsArgScanner,
-    validationOptions: { validSubjects: true },
+    validationOptions: { validSubjects: true }
   }),
   channelIds: new CommandArgDef('channelIds', {
     aliasIds: ['command_permitremind_arg_channelIds_alias_channelName', 'command_permitremind_arg_channelIds_alias_c'],
     helpId: 'command_permitremind_arg_channelIds_help',
     scanner: DiscordChannelsArgScanner,
-    validationOptions: { validTextChannels: true, anyValueAllowed: true },
-  }),
+    validationOptions: { validTextChannels: true, anyValueAllowed: true }
+  })
 });
 
 /**
@@ -134,7 +134,7 @@ class PermitRemindCommand extends DiscordCommand {
           subjectType: subjectTypes[j],
           subjectId: element,
           permissionType: PermissionsManager.DEFINED_PERMISSIONS.remind.name,
-          filter,
+          filter
         };
 
         dbResults.push(

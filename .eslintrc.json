@@ -5,7 +5,8 @@
     "es6": true
   },
   "extends": [
-    "standard"
+    "standard",
+    "prettier"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -15,6 +16,7 @@
     "ecmaVersion": 11
   },
   "rules": {
+    "indent": ["error", 2],
     "semi": ["error", "always"],
     "space-before-function-paren": ["error", {
       "anonymous": "always",

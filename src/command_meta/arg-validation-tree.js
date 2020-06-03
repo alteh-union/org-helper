@@ -40,8 +40,8 @@ class ArgValidationTree {
                   subjectsNonEmpty: { validationFunc: this.areSubjectsNonEmpty },
                   validSubjects: { validationFunc: this.areValidSubjects },
                   subjectRolesOnly: { validationFunc: this.areSubjectRolesOnly },
-                  subjectIdsOnly: { validationFunc: this.areSubjectIdsOnly },
-                },
+                  subjectIdsOnly: { validationFunc: this.areSubjectIdsOnly }
+                }
               },
               isChannels: {
                 validationFunc: this.isChannels,
@@ -49,27 +49,27 @@ class ArgValidationTree {
                   channelsNonEmpty: { validationFunc: this.areChannelsNonEmpty },
                   validChannels: { validationFunc: this.areValidChannels },
                   validTextChannels: { validationFunc: this.areValidTextChannels },
-                  validVoiceChannels: { validationFunc: this.areValidVoiceChannels },
-                },
+                  validVoiceChannels: { validationFunc: this.areValidVoiceChannels }
+                }
               },
               isTime: {
                 validationFunc: this.isTime,
                 impliers: {
                   timeDistanceOnly: { validationFunc: this.isTimeDistanceOnly },
                   timeScheduleOnly: { validationFunc: this.isTimeScheduleOnly },
-                  nonZeroShift: { validationFunc: this.isNonZeroShift },
-                },
+                  nonZeroShift: { validationFunc: this.isNonZeroShift }
+                }
               },
               isArray: {
                 validationFunc: this.isArray,
                 impliers: {
-                  isIdsArray: { validationFunc: this.isIdsArray },
-                },
+                  isIdsArray: { validationFunc: this.isIdsArray }
+                }
               },
-              isOnOff: { validationFunc: this.isOnOff },
-            },
-          },
-        },
+              isOnOff: { validationFunc: this.isOnOff }
+            }
+          }
+        }
       });
     }
 
@@ -186,7 +186,7 @@ class ArgValidationTree {
           children: currentElement.children[childrenKeys[currentIndex]].impliers,
           name: childrenKeys[currentIndex],
           childIndex: 0,
-          func: currentElement.children[childrenKeys[currentIndex]].validationFunc,
+          func: currentElement.children[childrenKeys[currentIndex]].validationFunc
         });
       }
       /* eslint-enable no-await-in-loop */
@@ -496,10 +496,10 @@ class ArgValidationTree {
         command.langManager.getString('arg_boolean_off'),
         command.langManager.getString('arg_boolean_on'),
         command.langManager.getString('arg_boolean_false'),
-        command.langManager.getString('arg_boolean_true'),
+        command.langManager.getString('arg_boolean_true')
       ];
       ArgValidationTree.generateValidationError(argDef, command, 'wrong on/off arg:', 'arg_validation_wrong_on_off', [
-        acceptableStrings.join(', '),
+        acceptableStrings.join(', ')
       ]);
     }
   }

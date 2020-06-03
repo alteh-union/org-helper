@@ -13,7 +13,7 @@ const UserSettingColumns = Object.freeze({
   orgId: 'orgId',
   userId: 'userId',
   settingName: 'settingName',
-  settingValue: 'settingValue',
+  settingValue: 'settingValue'
 });
 
 /**
@@ -40,7 +40,7 @@ class UserSettingRow extends BotRow {
       UserSettingColumns.source,
       UserSettingColumns.orgId,
       UserSettingColumns.userId,
-      UserSettingColumns.settingName,
+      UserSettingColumns.settingName
     ];
   }
 }

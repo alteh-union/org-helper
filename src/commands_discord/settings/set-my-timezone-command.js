@@ -24,10 +24,10 @@ const SetMyTimezoneCommandArgDefs = Object.freeze({
     aliasIds: [
       'command_setmytimezone_arg_timezone_alias_timezone',
       'command_setmytimezone_arg_timezone_alias_t',
-      'command_setmytimezone_arg_timezone_alias_z',
+      'command_setmytimezone_arg_timezone_alias_z'
     ],
-    helpId: 'command_setmytimezone_arg_timezone_help',
-  }),
+    helpId: 'command_setmytimezone_arg_timezone_help'
+  })
 });
 
 /**

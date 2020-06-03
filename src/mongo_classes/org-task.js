@@ -14,11 +14,11 @@ const TasksColumns = Object.freeze({
   orgId: 'orgId',
   type: 'type',
   time: 'time',
-  content: 'content',
+  content: 'content'
 });
 
 const TasksTypes = Object.freeze({
-  reminder: 'reminder',
+  reminder: 'reminder'
 });
 
 /**

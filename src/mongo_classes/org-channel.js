@@ -17,7 +17,7 @@ const ChannelColumns = Object.freeze({
   source: 'source',
   orgId: 'orgId',
   name: 'name',
-  type: 'type',
+  type: 'type'
 });
 
 /**
@@ -55,7 +55,7 @@ class OrgChannel extends BotRow {
       source: BotTable.DISCORD_SOURCE,
       orgId: discordGuild.id,
       name: discordEntity.name,
-      type: discordEntity.type,
+      type: discordEntity.type
     };
     return new OrgChannel(dbObject);
   }

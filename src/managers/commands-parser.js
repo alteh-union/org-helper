@@ -74,7 +74,7 @@ const DiscordCommands = Object.freeze([
   SetMyTimezoneCommand,
   SetPrefixCommand,
   SetTimezoneCommand,
-  SettingsCommand,
+  SettingsCommand
 ]);
 
 /**

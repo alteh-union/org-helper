@@ -12,7 +12,7 @@ const ServerSettingColumns = Object.freeze({
   source: 'source',
   orgId: 'orgId',
   settingName: 'settingName',
-  settingValue: 'settingValue',
+  settingValue: 'settingValue'
 });
 
 /**

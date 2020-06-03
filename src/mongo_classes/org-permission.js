@@ -15,7 +15,7 @@ const PermissionsColumns = Object.freeze({
   subjectType: 'subjectType',
   subjectId: 'subjectId',
   permissionType: 'permissionType',
-  filter: 'filter',
+  filter: 'filter'
 });
 
 /**

@@ -15,7 +15,7 @@ const USER_SETTINGS_TABLE_NAME = 'user_settings';
 
 const DefinedSettings = Object.freeze({
   localeName: new MultiLangValue('localeName', 'setting_locale_name'),
-  timezone: new MultiLangValue('timezone', 'setting_timezone'),
+  timezone: new MultiLangValue('timezone', 'setting_timezone')
 });
 
 /**
@@ -89,7 +89,7 @@ class UserSettingsTable extends BotTable {
       source,
       orgId,
       userId,
-      settingName,
+      settingName
     };
 
     // False positive, the unicorn thinks that "query" is a function here.
@@ -119,7 +119,7 @@ class UserSettingsTable extends BotTable {
       orgId,
       userId,
       settingName,
-      settingValue: value,
+      settingValue: value
     };
 
     await this.insertOrUpdate(setting);
@@ -138,7 +138,7 @@ class UserSettingsTable extends BotTable {
       source,
       orgId,
       userId,
-      settingName,
+      settingName
     };
 
     await this.dbManager.dbo.collection(this.getTableName()).deleteOne(deleteQuery);

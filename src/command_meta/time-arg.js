@@ -13,12 +13,12 @@ const momentTz = require('moment-timezone');
 const TimeTypes = Object.freeze({
   distance: 'distance',
   schedule: 'schedule',
-  scheduleRepeat: 'scheduleRepeat',
+  scheduleRepeat: 'scheduleRepeat'
 });
 
 const TimeArgPredefinedValues = Object.freeze({
   today: 'arg_time_value_today',
-  all: 'arg_time_value_all',
+  all: 'arg_time_value_all'
 });
 
 const TimeArgUnits = Object.freeze({
@@ -29,7 +29,7 @@ const TimeArgUnits = Object.freeze({
   day: 'arg_time_value_day',
   hour: 'arg_time_value_hour',
   minute: 'arg_time_value_minute',
-  second: 'arg_time_value_second',
+  second: 'arg_time_value_second'
 });
 
 const ShiftTypes = Object.freeze({
@@ -43,7 +43,7 @@ const ShiftTypes = Object.freeze({
   days: 'days',
   weeks: 'weeks',
   months: 'months',
-  years: 'years',
+  years: 'years'
 });
 
 const MonthNames = Object.freeze({
@@ -58,7 +58,7 @@ const MonthNames = Object.freeze({
   september: { short: 'arg_time_month_short_september', full: 'arg_time_month_full_september' },
   october: { short: 'arg_time_month_short_october', full: 'arg_time_month_full_october' },
   november: { short: 'arg_time_month_short_november', full: 'arg_time_month_full_november' },
-  december: { short: 'arg_time_month_short_december', full: 'arg_time_month_full_december' },
+  december: { short: 'arg_time_month_short_december', full: 'arg_time_month_full_december' }
 });
 
 const DayOfWeekNames = Object.freeze({
@@ -68,7 +68,7 @@ const DayOfWeekNames = Object.freeze({
   wednesday: { short: 'arg_time_dayofweek_short_wednesday', full: 'arg_time_dayofweek_full_wednesday' },
   thursday: { short: 'arg_time_dayofweek_short_thursday', full: 'arg_time_dayofweek_full_thursday' },
   friday: { short: 'arg_time_dayofweek_short_friday', full: 'arg_time_dayofweek_full_friday' },
-  saturday: { short: 'arg_time_dayofweek_short_saturday', full: 'arg_time_dayofweek_full_saturday' },
+  saturday: { short: 'arg_time_dayofweek_short_saturday', full: 'arg_time_dayofweek_full_saturday' }
 });
 
 // Keep the keys intact with ShiftTypes
@@ -79,7 +79,7 @@ const RecurrenceShifts = Object.freeze({
   hours: { minValue: 0, maxValue: 23, step: 1 },
   minutes: { minValue: 0, maxValue: 59, step: 1 },
   seconds: { minValue: 0, maxValue: 59, step: 1 },
-  milliseconds: { minValue: 0, maxValue: 999, step: 249 },
+  milliseconds: { minValue: 0, maxValue: 999, step: 249 }
 });
 
 const AnyValueInt = Number.parseInt(OhUtils.ANY_VALUE, 10);
@@ -99,7 +99,7 @@ class TimeArg {
   constructor(langManager) {
     Object.defineProperty(this, 'langManager', {
       enumerable: false, // Hide the property to avoid too verbose logs while printing the arg
-      value: langManager,
+      value: langManager
     });
     this.timeType = TimeTypes.distance;
     this.definitions = [];
@@ -175,7 +175,7 @@ class TimeArg {
         hours: { setFunc: this.setHours, getFunc: this.getHours },
         minutes: { setFunc: this.setMinutes, getFunc: this.getMinutes },
         seconds: { setFunc: this.setSeconds, getFunc: this.getSeconds },
-        milliseconds: { setFunc: this.setMilliseconds, getFunc: this.getMilliseconds },
+        milliseconds: { setFunc: this.setMilliseconds, getFunc: this.getMilliseconds }
       });
     }
 
@@ -469,13 +469,13 @@ class TimeArg {
           } else {
             this.definitions.push({
               amount: this.constructor.DEFINITION_FUNCTIONS[element].getFunc(currentTime),
-              shiftType: ShiftTypes[element],
+              shiftType: ShiftTypes[element]
             });
           }
         } else {
           this.definitions.push({
             amount: RecurrenceShifts[element] === undefined ? 0 : RecurrenceShifts[element].minValue,
-            shiftType: ShiftTypes[element],
+            shiftType: ShiftTypes[element]
           });
         }
       }
@@ -587,10 +587,10 @@ class TimeArg {
     for (const [i, element] of monthKeys.entries()) {
       if (
         text.localeCompare(this.langManager.getString(MonthNames[element].short), undefined, {
-          sensitivity: 'accent',
+          sensitivity: 'accent'
         }) === 0 ||
         text.localeCompare(this.langManager.getString(MonthNames[element].full), undefined, {
-          sensitivity: 'accent',
+          sensitivity: 'accent'
         }) === 0
       ) {
         return [{ amount: i, shiftType: ShiftTypes.months }];
@@ -741,10 +741,10 @@ class TimeArg {
     for (const [i, element] of dayOfWeekKeys.entries()) {
       if (
         text.localeCompare(this.langManager.getString(DayOfWeekNames[element].short), undefined, {
-          sensitivity: 'accent',
+          sensitivity: 'accent'
         }) === 0 ||
         text.localeCompare(this.langManager.getString(DayOfWeekNames[element].full), undefined, {
-          sensitivity: 'accent',
+          sensitivity: 'accent'
         }) === 0
       ) {
         return [{ amount: i, shiftType: ShiftTypes.dayofweek }];

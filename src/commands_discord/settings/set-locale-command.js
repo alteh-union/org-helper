@@ -19,8 +19,8 @@ const SetLocaleCommandArgDefs = Object.freeze({
   locale: new CommandArgDef('locale', {
     aliasIds: ['command_setlocale_arg_locale_alias_locale', 'command_setlocale_arg_locale_alias_l'],
     helpId: 'command_setlocale_arg_locale_help',
-    validationOptions: { nonNull: true },
-  }),
+    validationOptions: { nonNull: true }
+  })
 });
 
 /**

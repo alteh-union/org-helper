@@ -23,21 +23,21 @@ const RemindCommandArgDefs = Object.freeze({
     aliasIds: ['command_remind_arg_time_alias_time', 'command_remind_arg_time_alias_t'],
     helpId: 'command_remind_arg_time_help',
     scanner: DiscordTimeArgScanner,
-    validationOptions: { isTime: true },
+    validationOptions: { isTime: true }
   }),
   channelIds: new CommandArgDef('channelIds', {
     aliasIds: ['command_remind_arg_channelIds_alias_channelIds', 'command_remind_arg_channelIds_alias_c'],
     helpId: 'command_remind_arg_channelIds_help',
     skipInSequentialRead: true,
     scanner: DiscordChannelsArgScanner,
-    validationOptions: { validTextChannels: true },
+    validationOptions: { validTextChannels: true }
   }),
   message: new CommandArgDef('message', {
     aliasIds: ['command_remind_arg_message_alias_message', 'command_remind_arg_message_alias_m'],
     helpId: 'command_remind_arg_message_help',
     scanner: FullStringArgScanner,
-    validationOptions: { nonNull: true },
-  }),
+    validationOptions: { nonNull: true }
+  })
 });
 
 /**
@@ -97,8 +97,8 @@ class RemindCommand extends DiscordCommand {
         new CommandPermissionFilterField(
           PermissionsManager.DEFINED_FILTERS.channelId.name,
           RemindCommandArgDefs.channelIds.name
-        ),
-      ]),
+        )
+      ])
     ];
   }
 
@@ -132,7 +132,7 @@ class RemindCommand extends DiscordCommand {
     let taskAdded = false;
 
     const tasks = await this.context.dbManager.getDiscordRows(this.context.dbManager.tasksTable, this.orgId, {
-      type: OrgTask.TASK_TYPES.reminder,
+      type: OrgTask.TASK_TYPES.reminder
     });
 
     if (tasks.length + this.channelIds.channels.length > this.context.prefsManager.max_reminders_per_discord_org) {
@@ -151,7 +151,7 @@ class RemindCommand extends DiscordCommand {
         orgId: this.orgId,
         type: OrgTask.TASK_TYPES.reminder,
         time: OrgTask.parseTimeArg(this.time),
-        content,
+        content
       };
 
       insertTaskResults.push(

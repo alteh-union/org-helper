@@ -18,7 +18,7 @@ const DefinedSettings = Object.freeze({
   localeName: new MultiLangValue('localeName', 'setting_locale_name'),
   timezone: new MultiLangValue('timezone', 'setting_timezone'),
   badwords: new MultiLangValue('badwords', 'setting_badwords'),
-  censoring: new MultiLangValue('censoring', 'setting_censoring'),
+  censoring: new MultiLangValue('censoring', 'setting_censoring')
 });
 
 /**
@@ -90,7 +90,7 @@ class ServerSettingsTable extends BotTable {
     const query = {
       source,
       orgId,
-      settingName,
+      settingName
     };
 
     // False positive, the unicorn thinks that "query" is a function here.
@@ -118,7 +118,7 @@ class ServerSettingsTable extends BotTable {
       source,
       orgId,
       settingName,
-      settingValue: value,
+      settingValue: value
     };
 
     await this.insertOrUpdate(setting);
@@ -135,7 +135,7 @@ class ServerSettingsTable extends BotTable {
     const deleteQuery = {
       source,
       orgId,
-      settingName,
+      settingName
     };
 
     await this.dbManager.dbo.collection(this.getTableName()).deleteOne(deleteQuery);

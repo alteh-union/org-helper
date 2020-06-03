@@ -18,8 +18,8 @@ const PermissionsManager = require('../../managers/permissions-manager');
 const PermissionsCommandArgDefs = Object.freeze({
   permType: new CommandArgDef('permType', {
     aliasIds: ['command_permissions_arg_permType_alias_type', 'command_permissions_arg_permType_alias_t'],
-    helpId: 'command_permissions_arg_permType_help',
-  }),
+    helpId: 'command_permissions_arg_permType_help'
+  })
 });
 
 /**

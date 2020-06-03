@@ -18,17 +18,17 @@ const BotTable = require('../mongo_classes/bot-table');
 
 const DefinedPermissions = Object.freeze({
   remind: new MultiLangValue('remind', 'permission_type_remind'),
-  role: new MultiLangValue('role', 'permission_type_role'),
+  role: new MultiLangValue('role', 'permission_type_role')
 });
 
 const DefinedFilters = Object.freeze({
   channelId: new MultiLangValue('channelId', 'permission_filter_channelId'),
-  roleId: new MultiLangValue('roleId', 'permission_filter_roleId'),
+  roleId: new MultiLangValue('roleId', 'permission_filter_roleId')
 });
 
 const SubjectTypes = Object.freeze({
   user: new MultiLangValue('user', 'permission_subject_user'),
-  role: new MultiLangValue('role', 'permission_subject_role'),
+  role: new MultiLangValue('role', 'permission_subject_role')
 });
 
 const DiscordPermissions = Object.freeze({
@@ -62,7 +62,7 @@ const DiscordPermissions = Object.freeze({
   MANAGE_NICKNAMES: 'MANAGE_NICKNAMES',
   MANAGE_ROLES: 'MANAGE_ROLES',
   MANAGE_WEBHOOKS: 'MANAGE_WEBHOOKS',
-  MANAGE_EMOJIS: 'MANAGE_EMOJIS',
+  MANAGE_EMOJIS: 'MANAGE_EMOJIS'
 });
 
 /**

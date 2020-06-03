@@ -18,21 +18,21 @@ const RemoveRoleManagerCommandArgDefs = Object.freeze({
   subjectIds: new CommandArgDef('subjectIds', {
     aliasIds: [
       'command_removerolemanager_arg_subjectIds_alias_subjectIds',
-      'command_removerolemanager_arg_subjectIds_alias_s',
+      'command_removerolemanager_arg_subjectIds_alias_s'
     ],
     helpId: 'command_removerolemanager_arg_subjectIds_help',
     scanner: DiscordSubjectsArgScanner,
-    validationOptions: { validSubjects: true, anyValueAllowed: true },
+    validationOptions: { validSubjects: true, anyValueAllowed: true }
   }),
   rolesIds: new CommandArgDef('rolesIds', {
     aliasIds: [
       'command_removerolemanager_arg_rolesIds_alias_rolesIds',
-      'command_removerolemanager_arg_rolesIds_alias_r',
+      'command_removerolemanager_arg_rolesIds_alias_r'
     ],
     helpId: 'command_removerolemanager_arg_rolesIds_alias_r',
     scanner: DiscordSubjectsArgScanner,
-    validationOptions: { validSubjects: true, anyValueAllowed: true, subjectRolesOnly: true },
-  }),
+    validationOptions: { validSubjects: true, anyValueAllowed: true, subjectRolesOnly: true }
+  })
 });
 
 /**

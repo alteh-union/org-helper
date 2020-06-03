@@ -19,8 +19,8 @@ const AddBadWordsCommandArgDefs = Object.freeze({
     aliasIds: ['command_addbadwords_arg_words_alias_words', 'command_addbadwords_arg_words_alias_w'],
     helpId: 'command_addbadwords_arg_words_help',
     scanner: ArrayArgScanner,
-    validationOptions: { isArray: true },
-  }),
+    validationOptions: { isArray: true }
+  })
 });
 
 /**

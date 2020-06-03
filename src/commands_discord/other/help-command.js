@@ -22,8 +22,8 @@ const MaxSuggestedCommands = 5;
 const HelpCommandArgDefs = Object.freeze({
   command: new CommandArgDef('command', {
     aliasIds: ['command_help_arg_command_alias_command', 'command_help_arg_command_alias_c'],
-    helpId: 'command_help_arg_command_help',
-  }),
+    helpId: 'command_help_arg_command_help'
+  })
 });
 
 /**

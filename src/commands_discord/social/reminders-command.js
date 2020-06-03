@@ -25,8 +25,8 @@ const RemindersCommandArgDefs = Object.freeze({
     aliasIds: ['command_reminders_arg_channelIds_alias_channelIds', 'command_reminders_arg_channelIds_alias_c'],
     helpId: 'command_reminders_arg_channelIds_help',
     scanner: DiscordChannelsArgScanner,
-    validationOptions: { validTextChannels: true, anyValueAllowed: true },
-  }),
+    validationOptions: { validTextChannels: true, anyValueAllowed: true }
+  })
 });
 
 /**
@@ -86,8 +86,8 @@ class RemindersCommand extends DiscordCommand {
         new CommandPermissionFilterField(
           PermissionsManager.DEFINED_FILTERS.channelId.name,
           RemindersCommandArgDefs.channelIds.name
-        ),
-      ]),
+        )
+      ])
     ];
   }
 

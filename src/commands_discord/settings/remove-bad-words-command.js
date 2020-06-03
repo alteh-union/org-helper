@@ -19,8 +19,8 @@ const RemoveBadWordsommandArgDefs = Object.freeze({
     aliasIds: ['command_removebadwords_arg_words_alias_words', 'command_removebadwords_arg_words_alias_w'],
     helpId: 'command_removebadwords_arg_words_help',
     scanner: ArrayArgScanner,
-    validationOptions: { isArray: true },
-  }),
+    validationOptions: { isArray: true }
+  })
 });
 
 /**

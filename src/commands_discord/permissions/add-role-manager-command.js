@@ -16,18 +16,18 @@ const AddRoleManagerCommandArgDefs = Object.freeze({
   subjectIds: new CommandArgDef('subjectIds', {
     aliasIds: [
       'command_addrolemanager_arg_subjectIds_alias_subjectIds',
-      'command_addrolemanager_arg_subjectIds_alias_s',
+      'command_addrolemanager_arg_subjectIds_alias_s'
     ],
     helpId: 'command_addrolemanager_arg_subjectIds_help',
     scanner: DiscordSubjectsArgScanner,
-    validationOptions: { validSubjects: true },
+    validationOptions: { validSubjects: true }
   }),
   rolesIds: new CommandArgDef('rolesIds', {
     aliasIds: ['command_addrolemanager_arg_rolesIds_alias_rolesIds', 'command_addrolemanager_arg_rolesIds_alias_r'],
     helpId: 'command_addrolemanager_arg_rolesIds_help',
     scanner: DiscordSubjectsArgScanner,
-    validationOptions: { validSubjects: true, subjectRolesOnly: true },
-  }),
+    validationOptions: { validSubjects: true, subjectRolesOnly: true }
+  })
 });
 
 /**
@@ -119,7 +119,7 @@ class AddRoleManagerCommand extends DiscordCommand {
           subjectType: subjectTypes[j],
           subjectId: element,
           permissionType: PermissionsManager.DEFINED_PERMISSIONS.role.name,
-          filter,
+          filter
         };
 
         dbResults.push(

@@ -17,8 +17,8 @@ const SetPrefixCommandArgDefs = Object.freeze({
   prefix: new CommandArgDef('prefix', {
     aliasIds: ['command_setprefix_arg_prefix_alias_prefix', 'command_setprefix_arg_prefix_alias_p'],
     helpId: 'command_setprefix_arg_prefix_help',
-    validationOptions: { nonNull: true },
-  }),
+    validationOptions: { nonNull: true }
+  })
 });
 
 /**

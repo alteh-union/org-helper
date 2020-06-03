@@ -24,8 +24,8 @@ const DeleteReminderCommandArgDefs = Object.freeze({
     aliasIds: ['command_deletereminder_arg_ids_alias_ids', 'command_deletereminder_arg_ids_alias_i'],
     helpId: 'command_deletereminder_arg_ids_help',
     scanner: ArrayArgScanner,
-    validationOptions: { isIdsArray: true },
-  }),
+    validationOptions: { isIdsArray: true }
+  })
 });
 
 /**
@@ -85,8 +85,8 @@ class DeleteReminderCommand extends DiscordCommand {
   static getRequiredBotPermissions() {
     return [
       new CommandPermissionFilter(PermissionsManager.DEFINED_PERMISSIONS.remind.name, [
-        new CommandPermissionFilterField(PermissionsManager.DEFINED_FILTERS.channelId.name, 'channelIds'),
-      ]),
+        new CommandPermissionFilterField(PermissionsManager.DEFINED_FILTERS.channelId.name, 'channelIds')
+      ])
     ];
   }
 
@@ -105,7 +105,7 @@ class DeleteReminderCommand extends DiscordCommand {
     const channels = [];
     const idsToDelete = this.ids.map(a => Number.parseInt(a, 10));
     this.tasks = await this.context.dbManager.getDiscordRows(this.context.dbManager.tasksTable, this.orgId, {
-      type: OrgTask.TASK_TYPES.reminder,
+      type: OrgTask.TASK_TYPES.reminder
     });
     const tasksIds = new Set(this.tasks.map(a => a.id));
 
