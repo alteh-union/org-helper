@@ -2,6 +2,10 @@
   "name": "orghelper_bot",
   "version": "1.0.0",
   "description": "OrgHelper Bot",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/alteh-union/org-helper.git"
+  },
   "main": "index.js",
   "dependencies": {
     "discord.js": "^12.1.1",
@@ -12,7 +16,7 @@
     "string-similarity": "^4.0.1"
   },
   "scripts": {
-    "test": "xo && !ping"
+    "test": "!help"
   },
   "keywords": [
     "bot",
@@ -24,9 +28,31 @@
   "author": "AltehUnion",
   "license": "MIT",
   "devDependencies": {
-    "xo": "^0.30.0"
+    "eslint": "^7.1.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-unicorn": "^20.1.0",
+    "husky": "^4.2.5",
+    "prettier": "2.0.5",
+    "pretty-quick": "^2.0.1"
   },
-  "xo": {
-		"space": true
-	}
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "printWidth": 120
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "prettier --write --end-of-line lf",
+      "eslint --fix"
+    ]
+  }
 }
