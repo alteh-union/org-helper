@@ -20,5 +20,5 @@ async executeForDiscord(discordMessage) {
 - Note: your changes will be ran thru ESLint --fix and Prettier --write scripts via husky webhooks before commiting them. In general this should automatically fix most code style and code formatting issue, but it's also good to run the tools manually to avoid unexpected changes.
 - Provide JSDoc comments to all functions and exported classes. Additional comments are welcome for unclear, non-obvious parts of code. Yes, we know: the Bot is not a library and does not have an API. But it still helps a lot for developers to quickly understand what your code does and why.
 - After documenting your code - run jsdoc to make sure it does not produce any errors/warnings on your code.
-- Prepare a commit message for your changes using the following rule: TBD
+- Prepare a commit message for your changes using the following rule: [Commit Message Convention](https://github.com/alteh-union/org-helper/blob/master/.github/COMMIT_CONVENTION.md)
 - Submit a pull request with your commit using the following template: [Pull Request Template](https://github.com/alteh-union/org-helper/blob/master/.github/PULL_REQUEST_TEMPLATE.md)
