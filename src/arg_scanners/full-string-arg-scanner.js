@@ -3,7 +3,7 @@
 /**
  * @module full-string-arg-scanner
  * @author Alteh Union (alteh.union@gmail.com)
- * @license MIT (see the root LICENSE.md file for details)
+ * @license MIT (see the root LICENSE file for details)
  */
 
 const SimpleArgScanner = require('./simple-arg-scanner');
