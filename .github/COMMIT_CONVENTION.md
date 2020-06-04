@@ -23,7 +23,7 @@ Message headers must be matched by the following regex:
 /^(revert: )?(feat|fix|docs|style|refactor|perf|test|workflow|build|ci|chore)(\(.+\))?: .{1,72}/;
 ```
 
-Note that he maximum length of the header is 72 symbols.
+Note that the maximum length of the header is 72 symbols.
 
 #### Examples of headers
 
