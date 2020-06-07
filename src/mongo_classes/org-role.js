@@ -41,11 +41,11 @@ class OrgRole extends BotRow {
 
   /**
    * Creates an instance based on a Discord entity
-   * @param  {Guild}  discordGuild  the Discord guild which the object belongs to
    * @param  {Object} discordEntity the Discord object to create instance from
+   * @param  {Guild}  discordGuild  the Discord guild which the object belongs to
    * @return {Object}               the instance created
    */
-  static createFromDiscordEntity(discordGuild, discordEntity) {
+  static createFromDiscordEntity(discordEntity, discordGuild) {
     const dbObject = {
       id: discordEntity.id,
       source: BotTable.DISCORD_SOURCE,

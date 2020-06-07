@@ -1,4 +1,11 @@
 {
+  "privacy_guild_member_records": "У нас есть следующие записи о вас как о члене гильдий:",
+  "privacy_no_guild_member_records": "У нас нет записей о вас как о члене гильдий.",
+  "privacy_user_settings_records": "У нас следующие записи о ваших настройках, созданных с помощью Бота:",
+  "privacy_no_user_settings_records": "У нас нет записей о ваших настройках, созданных с помощью Бота.",
+  "privacy_permissions_records": "У нас есть следующие записи о разрешениях, настроенных с помощью Бота для вас:",
+  "privacy_no_permissions_records": "У нас нет записей о разрешениях, настроенных с помощью Бота для вас.",
+
   "permission_missing_bot": "Вам нужно иметь разрешение \"%s\", чтобы запускать эту команду с такими аргументами. Свяжитесь с админом сервера, чтобы получить разрешение.",
   "permission_missing_discord": "Вам нужно иметь следующее право в Дискорде, чтобы запускать эту команду: %s. Свяжитесь с админом сервера, чтобы получить нужные права.",
   "permission_command_error": "Ошибка авторизации. %s",
@@ -394,5 +401,9 @@
   "command_setcensoring_arg_enable_alias_e": "в",
 
   "command_setcensoring_enabled": "Цензура включена.",
-  "command_setcensoring_disabled": "Цензура выключена."
+  "command_setcensoring_disabled": "Цензура выключена.",
+
+
+  "command_mydata_name": "mydata",
+  "command_mydata_help": "Выводит данные, которые мы храним о вас согласно нашей политике конфиденциальности."
 }

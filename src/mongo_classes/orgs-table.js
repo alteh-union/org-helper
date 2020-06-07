@@ -1,29 +1,38 @@
 'use strict';
 
 /**
- * @module permissions-table
+ * @module orgs-table
  * @author Alteh Union (alteh.union@gmail.com)
  * @license MIT (see the root LICENSE file for details)
  */
 
 const BotTable = require('./bot-table');
-const OrgPermission = require('./org-permission');
+const OrgRow = require('./org-row');
 
-const PERMISSIONS_TABLE_NAME = 'permissions';
+const ORGS_TABLE_NAME = 'orgs';
 
 /**
- * Represents permissions table.
- * @see OrgPermission
- * @alias PermissionsTable
+ * Represents organizations table.
+ * @see OrgChannel
+ * @alias ChannelsTable
  * @extends BotTable
  */
-class PermissionsTable extends BotTable {
+class OrgsTable extends BotTable {
   /**
    * This table's name.
    * @type {string}
    */
-  static get PERMISSIONS_TABLE_NAME() {
-    return PERMISSIONS_TABLE_NAME;
+  static get ORGS_TABLE_NAME() {
+    return ORGS_TABLE_NAME;
+  }
+
+  /**
+   * Inits the instance, creates the collection in the DB, necessary indices, assigns hooks etc.
+   * @return {Promise} nothing
+   */
+  async init() {
+    await super.init();
+    this.hooks.onDeleteDuringUpdate = this.dbManager.onOrgDeleted;
   }
 
   /**
@@ -31,7 +40,7 @@ class PermissionsTable extends BotTable {
    * @return {Object} the row class
    */
   getRowClass() {
-    return OrgPermission;
+    return OrgRow;
   }
 
   /**
@@ -40,7 +49,7 @@ class PermissionsTable extends BotTable {
    * @return {Object}       the row class' instance
    */
   getRowInstance(dbObject) {
-    return new OrgPermission(dbObject);
+    return new OrgRow(dbObject);
   }
 
   /**
@@ -48,12 +57,12 @@ class PermissionsTable extends BotTable {
    * @return {string} the table name
    */
   getTableName() {
-    return PERMISSIONS_TABLE_NAME;
+    return ORGS_TABLE_NAME;
   }
 }
 
 /**
- * Exports the PermissionsTable class
- * @type {PermissionsTable}
+ * Exports the OrgsTable class
+ * @type {OrgsTable}
  */
-module.exports = PermissionsTable;
+module.exports = OrgsTable;

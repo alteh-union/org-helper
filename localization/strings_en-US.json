@@ -1,4 +1,11 @@
 {
+  "privacy_guild_member_records": "We have the following records of you as a member of guilds:",
+  "privacy_no_guild_member_records": "We don't have records of you as a member of guilds.",
+  "privacy_user_settings_records": "We have the following records of settings set up via the Bot for you:",
+  "privacy_no_user_settings_records": "We don't have records of settings set up via the Bot for you.",
+  "privacy_permissions_records": "We have the following records of permissions set up via the Bot for you:",
+  "privacy_no_permissions_records": "We don't have records of permissions set up via the Bot for you.",
+
   "permission_missing_bot": "You need to have \"%s\" permission to launch the command with the specified arguments. Contact server's admin if you need to get the permission.",
   "permission_missing_discord": "You need to have the following Discord permission to launch the command: %s. Contact server's admin if you need to get the permission.",
   "permission_command_error": "Authorization error. %s",
@@ -394,5 +401,9 @@
   "command_setcensoring_arg_enable_alias_e": "e",
 
   "command_setcensoring_enabled": "Censoring is enabled.",
-  "command_setcensoring_disabled": "Censoring is disabled."
+  "command_setcensoring_disabled": "Censoring is disabled.",
+
+
+  "command_mydata_name": "mydata",
+  "command_mydata_help": "Prints the data we have on you according to our privacy policy."
 }

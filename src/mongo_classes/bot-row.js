@@ -6,6 +6,8 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
+var deepEqual = require('deep-equal');
+
 /**
  * Represents a DB row.
  * @see BotTable
@@ -62,11 +64,11 @@ class BotRow {
 
   /**
    * Creates an instance based on a Discord entity
-   * @param  {Guild}  discordGuild  the Discord guild which the object belongs to
    * @param  {Object} discordEntity the Discord object to create instance from
+   * @param  {Guild}  discordGuild  the Discord guild which the object belongs to
    * @return {Object}               the instance created
    */
-  static createFromDiscordEntity(discordGuild, discordEntity) {
+  static createFromDiscordEntity(discordEntity, discordGuild) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     throw new Error('createFromDiscordEntity: ' + this.name + ' is an abstract class');
@@ -97,7 +99,7 @@ class BotRow {
     const columns = this.constructor.getNonKeyColumns();
     const valuesToUpdate = {};
     for (const column of columns) {
-      if (this[column] !== anotherRow[column]) {
+      if (!deepEqual(this[column], anotherRow[column], { strict: true })) {
         valuesToUpdate[column] = anotherRow[column];
       }
     }

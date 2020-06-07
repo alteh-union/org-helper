@@ -52,12 +52,12 @@ class CleanCommand extends DiscordCommand {
    * Creates an instance for an organization from a source and assigns a given language manager to it.
    * @param  {Context}     context            the Bot's context
    * @param  {string}      source             the source name (like Discord etc.)
-   * @param  {string}      orgId              the organization identifier
    * @param  {LangManager} commandLangManager the language manager
+   * @param  {string}      orgId              the organization identifier
    * @return {Command}                        the created instance
    */
-  static createForOrg(context, source, orgId, commandLangManager) {
-    return new CleanCommand(context, source, orgId, commandLangManager);
+  static createForOrg(context, source, commandLangManager, orgId) {
+    return new CleanCommand(context, source, commandLangManager, orgId);
   }
 
   /**

@@ -74,7 +74,13 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
 
       await Promise.all(updateResults);
 
+      c.commandsParser.setDiscordClient(client);
+      c.messageModerator.setDiscordClient(client);
+
+      await c.dbManager.updateGuilds(client.guilds.cache);
+
       c.discordClientReady = true;
+
       await c.scheduler.syncTasks();
     } catch (error) {
       c.log.f('client on ready error: ' + error + '; stack: ' + error.stack);
@@ -88,16 +94,22 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
     }
 
     try {
-      await c.dbManager.updateGuild(message.guild);
+      await c.dbManager.updateGuilds(client.guilds.cache);
+      await c.scheduler.syncTasks();
 
-      c.commandsParser.setDiscordClient(client);
-      let processed = false;
-      if (message.author.id !== client.user.id) {
-        processed = await c.commandsParser.parseDiscordCommand(message);
-        if (!processed) {
-          c.messageModerator.setDiscordClient(client);
-          c.messageModerator.premoderateDiscordMessage(message);
+      if (message.guild !== undefined && message.guild !== null) {
+        await c.dbManager.updateGuild(message.guild);
+
+        let processed = false;
+        if (message.author.id !== client.user.id) {
+          processed = await c.commandsParser.parseDiscordCommand(message);
+          if (!processed) {
+            c.messageModerator.premoderateDiscordMessage(message);
+          }
         }
+      } else {
+        // The null guild means it's a private ("DM") message
+        await c.commandsParser.parsePrivateDiscordCommand(message);
       }
     } catch (error) {
       c.log.e('client on message error: ' + error + '; stack: ' + error.stack);

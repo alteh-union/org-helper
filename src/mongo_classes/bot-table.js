@@ -26,6 +26,7 @@ class BotTable {
    */
   constructor(dbManager) {
     this.dbManager = dbManager;
+    this.hooks = {};
   }
 
   /**
@@ -37,11 +38,12 @@ class BotTable {
   }
 
   /**
-   * Inits the instance, creates the collection in the DB and necessary indices.
+   * Inits the instance, creates the collection in the DB, necessary indices, assigns hooks etc.
    * @return {Promise} nothing
    */
   async init() {
-    throw new Error('init: ' + this.name + ' is an abstract class.');
+    await this.dbManager.dbo.createCollection(this.getTableName());
+    await this.createIndex();
   }
 
   /**
@@ -195,39 +197,53 @@ class BotTable {
   }
 
   /**
-   * Deletes rows related to Discord and to the given organization, with applied filter query.
+   * Deletes rows related to Discord and to a given organization, with applied filter query.
    * @param  {string}  orgId           id of the Discord server (organization)
    * @param  {Object}  additionalQuery the query filter object
    * @return {Promise}                 nothing
    */
   async deleteDiscordRows(orgId, additionalQuery) {
+    await this.deleteRows(BotTable.DISCORD_SOURCE, orgId, additionalQuery);
+  }
+
+  /**
+   * Deletes rows related to a given source and to a given organization, with applied filter query.
+   * @param  {string}  source          the source of the data (like Discord etc.)
+   * @param  {string}  orgId           id of the Discord server (organization)
+   * @param  {Object}  additionalQuery the query filter object
+   * @return {Promise}                 nothing
+   */
+  async deleteRows(source, orgId, additionalQuery) {
     let query = additionalQuery;
     if (query === undefined || query === null) {
       query = {};
     }
 
-    query.source = BotTable.DISCORD_SOURCE;
+    if (source !== undefined && source !== null) {
+      query.source = source;
+    }
+
     if (orgId !== undefined && orgId !== null) {
       query.orgId = orgId;
     }
 
-    this.dbManager.context.log.v('deleteDiscordRows, query: ' + util.inspect(query, { showHidden: true, depth: 3 }));
+    this.dbManager.context.log.v('deleteRows, query: ' + util.inspect(query, { showHidden: true, depth: 3 }));
     await this.dbManager.dbo.collection(this.getTableName()).remove(query);
   }
 
   /**
    * Inserts, updates and deletes rows in the DB based on the actual information about the Discord guild.
-   * @param  {Guild}       guild             the Discord guild object
    * @param  {Collection}  discordCollection the collection of Discord objects (roles, members etc.)
+   * @param  {Guild}       guild             the Discord guild object
    * @return {Promise}                       nothing
    */
-  async updateFromDiscord(guild, discordCollection) {
-    const currentRows = await this.getCurrentDiscordRows();
+  async updateFromDiscord(discordCollection, guild) {
+    const currentRows = await this.getCurrentDiscordRows(guild === undefined ? undefined : guild.id);
 
     const foundIndices = [];
 
     discordCollection.each(async entity => {
-      const rowFromDiscord = this.getRowClass().createFromDiscordEntity(guild, entity);
+      const rowFromDiscord = this.getRowClass().createFromDiscordEntity(entity, guild);
 
       let foundIndex = -1;
       for (const [i, row] of currentRows.entries()) {
@@ -254,9 +270,17 @@ class BotTable {
               '; values: ' +
               util.inspect(newValues, { showHidden: false, depth: 1 })
           );
+
+          if (this.hooks.onUpdateDuringUpdate !== undefined) {
+            await this.hooks.onUpdateDuringUpdate(this.dbManager, updateQuery);
+          }
         }
       } else {
         await this.dbManager.dbo.collection(this.getTableName()).insertOne(rowFromDiscord);
+
+        if (this.hooks.onInsertDuringUpdate !== undefined) {
+          this.hooks.onInsertDuringUpdate(this.dbManager, rowFromDiscord);
+        }
 
         this.dbManager.context.log.i(
           'Table: ' +
@@ -293,6 +317,12 @@ class BotTable {
       }
 
       await this.dbManager.dbo.collection(this.getTableName()).deleteMany({ $or: toDeleteArray });
+
+      for (const element of toDelete) {
+        if (this.hooks.onDeleteDuringUpdate !== undefined) {
+          await this.hooks.onDeleteDuringUpdate(this.dbManager, element);
+        }
+      }
     }
   }
 }

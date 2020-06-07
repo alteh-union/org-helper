@@ -24,11 +24,11 @@ class DiscordCommand extends Command {
    * Creates an instance for an organization from a source and assigns a given language manager to it.
    * @param  {Context}     context            the Bot's context
    * @param  {string}      source             the source name (like Discord etc.)
-   * @param  {string}      orgId              the organization identifier
    * @param  {LangManager} commandLangManager the language manager
+   * @param  {string}      orgId              the organization identifier
    * @return {Command}                        the created instance
    */
-  static createForOrg(context, source, orgId, commandLangManager) {
+  static createForOrg(context, source, commandLangManager, orgId) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     throw new Error('createForOrg: ' + this.name + ' is an abstract class');

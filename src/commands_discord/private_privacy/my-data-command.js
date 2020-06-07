@@ -1,29 +1,31 @@
 'use strict';
 
 /**
- * @module ping-command
+ * @module my-data-command
  * @author Alteh Union (alteh.union@gmail.com)
  * @license MIT (see the root LICENSE file for details)
  */
 
-const DiscordCommand = require('../discord-command');
+const BotTable = require('../../mongo_classes/bot-table');
+
+const DiscordPrivateCommand = require('../discord-private-command');
 
 /**
- * Command to ping the Bot.
- * @alias PingCommand
- * @extends DiscordCommand
+ * Command to list the data stored on the Bot's backend related to the user.
+ * Needed to comply with privacy regulations.
+ * @alias MyDataCommand
+ * @extends DiscordPrivateCommand
  */
-class PingCommand extends DiscordCommand {
+class MyDataCommand extends DiscordPrivateCommand {
   /**
-   * Creates an instance for an organization from a source and assigns a given language manager to it.
+   * Creates an instance for a user from a source and assigns a given language manager to it.
    * @param  {Context}     context            the Bot's context
    * @param  {string}      source             the source name (like Discord etc.)
    * @param  {LangManager} commandLangManager the language manager
-   * @param  {string}      orgId              the organization identifier
    * @return {Command}                        the created instance
    */
-  static createForOrg(context, source, commandLangManager, orgId) {
-    return new PingCommand(context, source, commandLangManager, orgId);
+  static createForUser(context, source, commandLangManager) {
+    return new MyDataCommand(context, source, commandLangManager);
   }
 
   /**
@@ -31,7 +33,7 @@ class PingCommand extends DiscordCommand {
    * @return {string} the id of the command's name to be localized
    */
   static getCommandInterfaceName() {
-    return 'command_ping_name';
+    return 'command_mydata_name';
   }
 
   /**
@@ -43,7 +45,7 @@ class PingCommand extends DiscordCommand {
    * @return {string}                  the localized help text
    */
   static getHelpText(context, langManager) {
-    return langManager.getString('command_ping_help');
+    return langManager.getString('command_mydata_help');
   }
 
   /**
@@ -56,13 +58,19 @@ class PingCommand extends DiscordCommand {
   async executeForDiscord(discordMessage) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
-    this.context.log.v('ping message timestamp: ', discordMessage.createdTimestamp);
-    return this.langManager.getString('command_ping_success');
+    // Keep "return await" to properly catch exceptions from the inside.
+    /* eslint-disable no-return-await */
+    return await this.context.dbManager.getUserData(
+      BotTable.DISCORD_SOURCE,
+      discordMessage.author.id,
+      this.commandLangManager
+    );
+    /* eslint-enable no-return-await */
   }
 }
 
 /**
- * Exports the PingCommand class
- * @type {PingCommand}
+ * Exports the MySettingsCommand class
+ * @type {MyDataCommand}
  */
-module.exports = PingCommand;
+module.exports = MyDataCommand;

@@ -45,15 +45,6 @@ class ServerSettingsTable extends BotTable {
   }
 
   /**
-   * Inits the instance, creates the collection in the DB and necessary indices.
-   * @return {Promise} nothing
-   */
-  async init() {
-    await this.dbManager.dbo.createCollection(SERVER_SETTINGS_TABLE_NAME);
-    await this.createIndex();
-  }
-
-  /**
    * Gets the class representing a row in this collection.
    * @return {Object} the row class
    */
