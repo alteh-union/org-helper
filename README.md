@@ -13,7 +13,7 @@ git clone https://github.com/alteh-union/org-helper.git --branch master
 cd org-helper
 ```
 - Copy-paste preferences_template.txt file into preferences.txt
-- Change the preferences as you need. E.g. set discord_token to the actual token of your bot (and of course, create a bot if not done yet).
+- Change the preferences as you need. E.g. set discord_token to the actual token of your bot (and of course, register a bot in the Discord website if not done yet - https://discord.com/developers/applications).
 - In the preferences.xml file, set db_name to the name of database you want to use (the Bot will create it automatically on start up, if it does not exist yet)
 - Install the required Node modules:
 ```
