@@ -15,6 +15,10 @@ cd org-helper
 - Copy-paste preferences_template.txt file into preferences.txt
 - Change the preferences as you need. E.g. set discord_token to the actual token of your bot (and of course, create a bot if not done yet).
 - In the preferences.xml file, set db_name to the name of database you want to use (the Bot will create it automatically on start up, if it does not exist yet)
+- Install the required Node modules:
+```
+npm install
+```
 - Run the bot using the node command:
 ```
 node src/index.js
