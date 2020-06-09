@@ -29,7 +29,7 @@ const RemoveRoleManagerCommandArgDefs = Object.freeze({
       'command_removerolemanager_arg_rolesIds_alias_rolesIds',
       'command_removerolemanager_arg_rolesIds_alias_r'
     ],
-    helpId: 'command_removerolemanager_arg_rolesIds_alias_r',
+    helpId: 'command_removerolemanager_arg_rolesIds_help',
     scanner: DiscordSubjectsArgScanner,
     validationOptions: { validSubjects: true, anyValueAllowed: true, subjectRolesOnly: true }
   })

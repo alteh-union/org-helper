@@ -133,9 +133,9 @@
   "command_addrolemanager_arg_subjectIds_alias_subjectIds": "subjectIds",
   "command_addrolemanager_arg_subjectIds_alias_s": "s",
   "command_addrolemanager_arg_subjectIds_help": "The roles and/or members which will get the permission. Use mentions, like @Spiderman, @moder.",
-  "command_addrolemanager_arg_roleIds_alias_rolesIds": "roles",
-  "command_addrolemanager_arg_roleIds_alias_r": "r",
-  "command_addrolemanager_arg_roleIds_help": "The name of the role which the subjects will be allowed to manipulate with. Use mentions, like @honored.",
+  "command_addrolemanager_arg_rolesIds_alias_rolesIds": "roles",
+  "command_addrolemanager_arg_rolesIds_alias_r": "r",
+  "command_addrolemanager_arg_rolesIds_help": "The name of the role which the subjects will be allowed to manipulate with. Use mentions, like @honored.",
 
   "command_addrolemanager_success": "Successfully added the permission.",
   "command_addrolemanager_duplicate": "Such permission already exists. Skipped.",
