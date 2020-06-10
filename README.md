@@ -3,9 +3,11 @@ A Discord bot on Discord.js library with MongoDB backend to help organizing guil
 
 ## Useful links
 
+Invite the main Production instance of the bot using top.gg: https://top.gg/bot/714175230809210952
+
 User guides for the main Production instance (the OrgHelper itself):
-In English: http://alteh.org/orghelper-english/
-In Russian: http://alteh.org/orghelper-%d1%80%d1%83%d1%81%d1%81%d0%ba%d0%b8%d0%b9/
+- In English: http://alteh.org/orghelper-english/
+- In Russian: http://alteh.org/orghelper-%d1%80%d1%83%d1%81%d1%81%d0%ba%d0%b8%d0%b9/
 
 ## What makes the difference (a.k.a. why one more bot)?
 
@@ -39,9 +41,9 @@ node src/index.js
 
 ## Development roadmap
 
-Short term: flexible moderation, private settings and commands, basic gamification
-Mid term: editing pictures by templates (a.k.a. making memes), advanced gamification, implementaion of liquid/hybrid democracy, tests (regular and end-to-end)
-Long term: adding new platform/sources (e.g. Slack, Telegram), ML-chat bot, speech-to-text for auto-logging meeting minutes etc.
+- Short term: flexible moderation, private settings and commands, basic gamification
+- Mid term: editing pictures by templates (a.k.a. making memes), advanced gamification, implementaion of liquid/hybrid democracy, tests (regular and end-to-end)
+- Long term: adding new platform/sources (e.g. Slack, Telegram), ML-chat bot, speech-to-text for auto-logging meeting minutes etc.
 
 Wanna speed up the development and take one of the features on your own? Contact us at: alteh.union@gmail.com. This is not to restict you, but just to make sure several developers do not interfere with each other.
 
