@@ -3,7 +3,8 @@ A Discord bot on Discord.js library with MongoDB backend to help organizing guil
 
 ## Useful links
 
-Invite the main Production instance of the bot using top.gg: https://top.gg/bot/714175230809210952
+Invite the main Production instance of the bot using the following link: https://discord.com/api/oauth2/authorize?client_id=714175230809210952&permissions=8&scope=bot
+(invitations through top.gg are under validation)
 
 User guides for the main Production instance (the OrgHelper itself):
 - In English: http://alteh.org/orghelper-english/
