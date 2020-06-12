@@ -17,7 +17,7 @@ User guides for the main Production instance (the OrgHelper itself):
 - Scallable architecture, can easily add the support of multiple platforms
 - Code quality is somewhat close to the enterprise grade
 
-## Dev installation for Windows:
+## Dev installation:
 
 - Install MongoDB, NodeJS, and NPM on your local machine
 - Use GitHub desktop app to clone the repository (alteh-union/org-helper) into a local directory or clone it using Git console tools (for example, Git BASH):
