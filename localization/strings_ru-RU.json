@@ -133,9 +133,9 @@
   "command_addrolemanager_arg_subjectIds_alias_subjectIds": "идСубъектов",
   "command_addrolemanager_arg_subjectIds_alias_s": "с",
   "command_addrolemanager_arg_subjectIds_help": "Роли и/или участники, которые получат разрешение. Используйте упоминания, типа @Spiderman, @модер.",
-  "command_addrolemanager_arg_roleIds_alias_rolesIds": "роли",
-  "command_addrolemanager_arg_roleIds_alias_r": "р",
-  "command_addrolemanager_arg_roleIds_help": "Названия ролей, которыми они смогут манипулировать. Используйте упоминания, типа @почитаемый.",
+  "command_addrolemanager_arg_rolesIds_alias_rolesIds": "роли",
+  "command_addrolemanager_arg_rolesIds_alias_r": "р",
+  "command_addrolemanager_arg_rolesIds_help": "Названия ролей, которыми они смогут манипулировать. Используйте упоминания, типа @почитаемый.",
 
   "command_addrolemanager_success": "Разрешение добавлено успешно.",
   "command_addrolemanager_duplicate": "Такое разрешение уже существует. Пропускаем.",
