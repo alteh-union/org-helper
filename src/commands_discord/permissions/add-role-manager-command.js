@@ -104,12 +104,12 @@ class AddRoleManagerCommand extends DiscordCommand {
       const subjectIds = [];
       for (let j = 0; j < this.subjectIds.subjectIds.length; j++) {
         subjectTypes.push(PermissionsManager.SUBJECT_TYPES.user.name);
-        subjectIds.push(this.subjectIds.subjectIds[i]);
+        subjectIds.push(this.subjectIds.subjectIds[j]);
       }
 
       for (let j = 0; j < this.subjectIds.subjectRoles.length; j++) {
         subjectTypes.push(PermissionsManager.SUBJECT_TYPES.role.name);
-        subjectIds.push(this.subjectIds.subjectRoles[i]);
+        subjectIds.push(this.subjectIds.subjectRoles[j]);
       }
 
       for (const [j, element] of subjectIds.entries()) {
