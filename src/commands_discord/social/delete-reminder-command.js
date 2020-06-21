@@ -29,7 +29,7 @@ const DeleteReminderCommandArgDefs = Object.freeze({
 });
 
 /**
- * Command to reminders according to their ids in the Discord server.
+ * Command to delete reminders according to their ids in the Discord server.
  * @alias DeleteReminderCommand
  * @extends DiscordCommand
  */

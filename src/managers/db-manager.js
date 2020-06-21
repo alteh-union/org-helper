@@ -7,7 +7,6 @@
  */
 
 const util = require('util');
-const OhUtils = require('../utils/bot-utils');
 
 const PermissionsManager = require('./permissions-manager');
 
@@ -142,19 +141,10 @@ class DbManager {
    * @return {Promise}          nothing
    */
   async insertOne(table, entity) {
-    this.context.log.v('insertOne: ' + util.inspect(entity, { showHidden: true, depth: 5 }));
-    await this.dbo.collection(table.getTableName()).insertOne(entity);
-  }
+    if (entity.orgId === undefined) {
+      return false;
+    }
 
-  /**
-   * Inserts an object as a Discord entity, with id equal to the current max id in the organization + 1.
-   * Does not insert if a duplicate was found with the same key (except the id column).
-   * @param  {BotTable}         table  the table
-   * @param  {string}           orgId  the organization identifier
-   * @param  {Object}           entity the entity to be inserted
-   * @return {Promise<Boolean>}        true if successful, false if a duplicate was found with the same key
-   */
-  async insertDiscordNext(table, orgId, entity) {
     const duplicateQuery = {};
     const keys = Object.keys(entity);
     for (const key of keys) {
@@ -163,19 +153,13 @@ class DbManager {
       }
     }
 
-    const duplicateRows = await this.getDiscordRows(table, orgId, duplicateQuery);
+    const duplicateRows = await this.getDiscordRows(table, entity.orgId, duplicateQuery);
     if (duplicateRows !== null && duplicateRows.length > 0) {
       return false;
     }
 
-    const currentRows = await this.getDiscordRows(table, orgId);
-    const maxIndex = OhUtils.findMaxId(currentRows);
-
-    entity.id = maxIndex + 1;
-
-    await this.insertOne(table, entity);
-
-    this.context.log.v('insertDiscordNext: ' + util.inspect(entity, { showHidden: true, depth: 5 }));
+    this.context.log.v('insertOne: ' + util.inspect(entity, { showHidden: true, depth: 5 }));
+    await this.dbo.collection(table.getTableName()).insertOne(entity);
 
     return true;
   }

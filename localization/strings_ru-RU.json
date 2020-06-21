@@ -366,7 +366,7 @@
   "command_deletereminder_arg_ids_alias_i": "и",
   "command_deletereminder_arg_ids_help": "Список номеров (идентификаторов), через запятую.",
   "command_deletereminder_no_ids_found": "Не найдено напоминаний с такими номерами.",
-  "command_deletereminder_success": "Напомиания убраны успешно.",
+  "command_deletereminder_success": "Напоминания убраны успешно.",
 
 
   "command_addbadwords_name": "добавитьплохиеслова",
@@ -405,5 +405,14 @@
 
 
   "command_mydata_name": "mydata",
-  "command_mydata_help": "Выводит данные, которые мы храним о вас согласно нашей политике конфиденциальности."
+  "command_mydata_help": "Выводит данные, которые мы храним о вас согласно нашей политике конфиденциальности.",
+
+
+  "command_deletepermission_name": "удалитьразрешение",
+  "command_deletepermission_help": "Удаляет разрешение по номеру. Используйте команду '%s', чтобы получить список разрешений",
+
+  "command_deletepermission_arg_ids_alias_ids": "ид",
+  "command_deletepermission_arg_ids_alias_i": "и",
+  "command_deletepermission_arg_ids_help": "Список номеров (идентификаторов), через запятую.",
+  "command_deletepermission_success": "Разрешения успешно удалены."
 }

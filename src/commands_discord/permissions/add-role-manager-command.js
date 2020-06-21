@@ -6,6 +6,8 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
+const OhUtils = require('../../utils/bot-utils');
+
 const DiscordCommand = require('../discord-command');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 const DiscordSubjectsArgScanner = require('../../arg_scanners/discord-subjects-arg-scanner');
@@ -95,6 +97,14 @@ class AddRoleManagerCommand extends DiscordCommand {
   async executeForDiscord(discordMessage) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
+    const currentRows = await this.context.dbManager.getDiscordRows(
+      this.context.dbManager.permissionsTable,
+      this.orgId
+    );
+    const maxIndex = OhUtils.findMaxId(currentRows);
+
+    let newId = maxIndex + 1;
+
     let result = '';
     const dbResults = [];
     for (let i = 0; i < this.rolesIds.subjectRoles.length; i++) {
@@ -114,6 +124,7 @@ class AddRoleManagerCommand extends DiscordCommand {
 
       for (const [j, element] of subjectIds.entries()) {
         const permissionRow = {
+          id: newId++,
           source: this.source,
           orgId: this.orgId,
           subjectType: subjectTypes[j],
@@ -122,9 +133,7 @@ class AddRoleManagerCommand extends DiscordCommand {
           filter
         };
 
-        dbResults.push(
-          this.context.dbManager.insertDiscordNext(this.context.dbManager.permissionsTable, this.orgId, permissionRow)
-        );
+        dbResults.push(this.context.dbManager.insertOne(this.context.dbManager.permissionsTable, permissionRow));
       }
     }
 

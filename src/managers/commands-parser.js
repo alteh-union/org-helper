@@ -22,6 +22,7 @@ const AddRoleCommand = require('../commands_discord/moderation/add-role-command'
 const AddRoleManagerCommand = require('../commands_discord/permissions/add-role-manager-command');
 const BadWordsCommand = require('../commands_discord/settings/bad-words-command');
 const CleanCommand = require('../commands_discord/moderation/clean-command');
+const DeletePermissionCommand = require('../commands_discord/permissions/delete-permission-command');
 const DeleteReminderCommand = require('../commands_discord/social/delete-reminder-command');
 const DenyRemindCommand = require('../commands_discord/permissions/deny-remind-command');
 const HelpCommand = require('../commands_discord/other/help-command');
@@ -56,6 +57,7 @@ const DiscordCommands = Object.freeze([
   AddRoleManagerCommand,
   BadWordsCommand,
   CleanCommand,
+  DeletePermissionCommand,
   DeleteReminderCommand,
   DenyRemindCommand,
   HelpCommand,

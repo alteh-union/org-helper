@@ -6,6 +6,8 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
+const OhUtils = require('../../utils/bot-utils');
+
 const DiscordCommand = require('../discord-command');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 const CommandPermissionFilter = require('../../command_meta/command-permission-filter');
@@ -142,11 +144,17 @@ class RemindCommand extends DiscordCommand {
       );
     }
 
+    const currentRows = await this.context.dbManager.getDiscordRows(this.context.dbManager.tasksTable, this.orgId);
+    const maxIndex = OhUtils.findMaxId(currentRows);
+
+    let newId = maxIndex + 1;
+
     const insertTaskResults = [];
     for (let i = 0; i < this.channelIds.channels.length; i++) {
       const content = { channel: this.channelIds.channels[i], message: this.message };
 
       const reminderRow = {
+        id: newId++,
         source: this.source,
         orgId: this.orgId,
         type: OrgTask.TASK_TYPES.reminder,
@@ -155,16 +163,14 @@ class RemindCommand extends DiscordCommand {
       };
 
       insertTaskResults.push(
-        this.context.dbManager
-          .insertDiscordNext(this.context.dbManager.tasksTable, this.orgId, reminderRow)
-          .then(rowResult => {
-            if (rowResult) {
-              result = result + this.langManager.getString('command_remind_success') + '\n';
-              taskAdded = true;
-            } else {
-              result = result + this.langManager.getString('command_remind_duplicate') + '\n';
-            }
-          })
+        this.context.dbManager.insertOne(this.context.dbManager.tasksTable, reminderRow).then(rowResult => {
+          if (rowResult) {
+            result = result + this.langManager.getString('command_remind_success') + '\n';
+            taskAdded = true;
+          } else {
+            result = result + this.langManager.getString('command_remind_duplicate') + '\n';
+          }
+        })
       );
     }
 

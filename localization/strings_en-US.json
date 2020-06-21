@@ -405,5 +405,14 @@
 
 
   "command_mydata_name": "mydata",
-  "command_mydata_help": "Prints the data we have on you according to our privacy policy."
+  "command_mydata_help": "Prints the data we have on you according to our privacy policy.",
+
+
+  "command_deletepermission_name": "deletepermission",
+  "command_deletepermission_help": "Deletes permissions by their ids. Use '%s' command to get ids of the permissions",
+
+  "command_deletepermission_arg_ids_alias_ids": "ids",
+  "command_deletepermission_arg_ids_alias_i": "i",
+  "command_deletepermission_arg_ids_help": "The list of ids, comma separated.",
+  "command_deletepermission_success": "Successfully removed the permissions."
 }
