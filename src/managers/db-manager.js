@@ -9,7 +9,8 @@
 const util = require('util');
 const OhUtils = require('../utils/bot-utils');
 
-const PermissionsManager = require('./permissions-manager');
+const DiscordPermissionsManager = require('./discord/discord-permissions-manager');
+const SlackPermissionsManager = require('./slack/slack-permissions-manager');
 
 const BotTable = require('../mongo_classes/bot-table');
 const OrgsTable = require('../mongo_classes/orgs-table');
@@ -359,7 +360,7 @@ class DbManager {
 
     const permissionRows = await this.permissionsTable.getRows({
       source: BotTable.DISCORD_SOURCE,
-      subjectType: PermissionsManager.SUBJECT_TYPES.user.name,
+      subjectType: DiscordPermissionsManager.SUBJECT_TYPES.user.name,
       subjectId: userId
     });
 
@@ -372,21 +373,21 @@ class DbManager {
         permissionRow.orgId = permissionRow.orgId + (dbRecord === undefined ? '' : ' (' + dbRecord.name + ')');
 
         if (permissionRow.filter !== undefined && permissionRow.filter !== null) {
-          const roleFilterValue = permissionRow.filter[PermissionsManager.DEFINED_FILTERS.roleId.name];
+          const roleFilterValue = permissionRow.filter[DiscordPermissionsManager.DEFINED_FILTERS.roleId.name];
           const dbRoleRecord = roles.find(role => {
             return role.id === roleFilterValue;
           });
           if (roleFilterValue !== undefined) {
-            permissionRow.filter[PermissionsManager.DEFINED_FILTERS.roleId.name] =
+            permissionRow.filter[DiscordPermissionsManager.DEFINED_FILTERS.roleId.name] =
               roleFilterValue + (dbRoleRecord === undefined ? '' : ' (' + dbRoleRecord.name + ')');
           }
 
-          const channelFilterValue = permissionRow.filter[PermissionsManager.DEFINED_FILTERS.channelId.name];
+          const channelFilterValue = permissionRow.filter[DiscordPermissionsManager.DEFINED_FILTERS.channelId.name];
           const dbChannelRecord = channels.find(channel => {
             return channel.id === channelFilterValue;
           });
           if (channelFilterValue !== undefined) {
-            permissionRow.filter[PermissionsManager.DEFINED_FILTERS.channelId.name] =
+            permissionRow.filter[DiscordPermissionsManager.DEFINED_FILTERS.channelId.name] =
               channelFilterValue + (dbChannelRecord === undefined ? '' : ' (' + dbChannelRecord.name + ')');
           }
         }

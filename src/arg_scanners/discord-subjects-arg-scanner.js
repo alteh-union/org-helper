@@ -7,7 +7,7 @@
  */
 const OhUtils = require('../utils/bot-utils');
 
-const DiscordCommand = require('../commands_discord/discord-command');
+const DiscordCommand = require('../commands/commands_discord/discord-command');
 const DiscordUtils = require('../utils/discord-utils');
 const DiscordMentionsArgScanner = require('./discord-mentions-arg-scanner');
 const DiscordSubjectsArg = require('../command_meta/discord-subjects-arg');

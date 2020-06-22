@@ -12,6 +12,7 @@ const util = require('util');
 const OhUtils = require('../utils/bot-utils');
 
 const DISCORD_SOURCE = 'Discord';
+const SLACK_SOURCE = 'Slack';
 
 /**
  * Represents a DB table.
@@ -35,6 +36,14 @@ class BotTable {
    */
   static get DISCORD_SOURCE() {
     return DISCORD_SOURCE;
+  }
+
+  /**
+   * Gets the string representing Slack as the source of data.
+   * @type {String}
+   */
+  static get SLACK_SOURCE() {
+    return SLACK_SOURCE;
   }
 
   /**

@@ -8,6 +8,8 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@slack/events-api": "^2.3.3",
+    "@slack/web-api": "^5.10.0",
     "deep-equal": "^2.0.3",
     "discord.js": "^12.1.1",
     "jsdoc": "^3.6.4",

@@ -16,6 +16,9 @@ const OhUtils = require('./utils/bot-utils');
 const PrefsManager = require('./managers/prefs-manager');
 const Context = require('./managers/context');
 
+const DiscordModule = require('./discord-module');
+const SlackModule = require('./slack-module');
+
 const prefsPath = path.join(__dirname, '..', 'preferences.txt');
 const localizationPath = path.join(__dirname, '..', 'localization');
 
@@ -26,7 +29,6 @@ const prefsManager = new PrefsManager(prefsPath);
 prefsManager.readPrefs();
 
 const c = new Context(prefsManager, localizationPath, client);
-
 c.log.i('Context created.');
 
 let exceptionOccured = false;
@@ -62,59 +64,11 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
     db.close();
   });
 
-  client.on('ready', async () => {
-    try {
-      c.log.i('Servers:');
-      const guildsArray = client.guilds.cache.array();
-      const updateResults = [];
-      for (const guild of guildsArray) {
-        c.log.i(' - ' + guild.name);
-        updateResults.push(c.dbManager.updateGuild(guild));
-      }
+  (new DiscordModule(c)).run();
+  (new SlackModule(c)).run();
+  /**
+   * Slack Integration
+   */
 
-      await Promise.all(updateResults);
 
-      c.commandsParser.setDiscordClient(client);
-      c.messageModerator.setDiscordClient(client);
-
-      await c.dbManager.updateGuilds(client.guilds.cache);
-
-      c.discordClientReady = true;
-
-      await c.scheduler.syncTasks();
-    } catch (error) {
-      c.log.f('client on ready error: ' + error + '; stack: ' + error.stack);
-    }
-  });
-
-  client.on('message', async message => {
-    if (!c.discordClientReady) {
-      c.log.w('on message: the client is not ready');
-      return;
-    }
-
-    try {
-      await c.dbManager.updateGuilds(client.guilds.cache);
-      await c.scheduler.syncTasks();
-
-      if (message.guild !== undefined && message.guild !== null) {
-        await c.dbManager.updateGuild(message.guild);
-
-        let processed = false;
-        if (message.author.id !== client.user.id) {
-          processed = await c.commandsParser.parseDiscordCommand(message);
-          if (!processed) {
-            c.messageModerator.premoderateDiscordMessage(message);
-          }
-        }
-      } else {
-        // The null guild means it's a private ("DM") message
-        await c.commandsParser.parsePrivateDiscordCommand(message);
-      }
-    } catch (error) {
-      c.log.e('client on message error: ' + error + '; stack: ' + error.stack);
-    }
-  });
-
-  client.login(c.prefsManager.discord_token);
 });

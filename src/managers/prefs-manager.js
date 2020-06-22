@@ -8,7 +8,7 @@
 
 const fs = require('fs');
 
-const SecuredPreferences = Object.freeze(['discord_token', 'db_username', 'db_password']);
+const SecuredPreferences = Object.freeze(['discord_token', 'db_username', 'db_password','slack_token', 'slack_signing_secret']);
 
 /**
  * Keeps Bot-wide preferences (settings related to the bot's server itself).

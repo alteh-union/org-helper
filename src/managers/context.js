@@ -8,11 +8,12 @@
 
 const DbManager = require('./db-manager');
 const LangManager = require('./lang-manager');
-const PermissionsManager = require('./permissions-manager');
-const CommandsParser = require('./commands-parser');
+const DiscordPermissionsManager = require('./discord/discord-permissions-manager');
+const SlackPermissionsManager = require('./slack/slack-permissions-manager');
 const MessageModerator = require('./message-moderator');
 const Scheduler = require('./scheduler');
 const Log = require('../utils/log');
+const DiscordCommandsParser = require('../managers/discord/discord-commands-parser');
 
 /**
  * Contains global managers of the bot.
@@ -36,8 +37,9 @@ class Context {
     this.localizationPath = localizationPath;
     this.langManager = new LangManager(localizationPath);
     this.dbManager = new DbManager(this);
-    this.permManager = new PermissionsManager(this);
-    this.commandsParser = new CommandsParser(this);
+    this.discordPermManager = new DiscordPermissionsManager(this);
+    this.slackPermManager = new SlackPermissionsManager(this);
+    this.discordCommandsParser = new DiscordCommandsParser(this);
     this.messageModerator = new MessageModerator(this);
     this.scheduler = new Scheduler(this);
 
