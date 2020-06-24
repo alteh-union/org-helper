@@ -15,7 +15,7 @@ const OhUtils = require('./utils/bot-utils');
 const BaseMessage = require('./components/base-message');
 const PrefsManager = require('./managers/prefs-manager');
 const Context = require('./managers/context');
-
+const DiscordSource = require('./components/discord-source');
 const prefsPath = path.join(__dirname, '..', 'preferences.txt');
 const localizationPath = path.join(__dirname, '..', 'localization');
 
@@ -23,9 +23,11 @@ const client = new Discord.Client();
 
 const prefsManager = new PrefsManager(prefsPath);
 
+
 prefsManager.readPrefs();
 
 const c = new Context(prefsManager, localizationPath, client);
+const discordSource = new DiscordSource(client);
 
 c.log.i('Context created.');
 
@@ -95,7 +97,7 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
 
 
     try {
-      const message = BaseMessage.createFromDiscord(discordMessage);
+      const message = BaseMessage.createFromDiscord(discordMessage, discordSource);
       await c.dbManager.updateGuilds(client.guilds.cache);
       await c.scheduler.syncTasks();
 

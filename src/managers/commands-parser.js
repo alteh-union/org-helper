@@ -9,7 +9,6 @@
 const LangManager = require('./lang-manager');
 
 const BotPublicError = require('../utils/bot-public-error');
-const DiscordUtils = require('../utils/discord-utils');
 
 const BotTable = require('../mongo_classes/bot-table');
 const ServerSettingsTable = require('../mongo_classes/server-settings-table');
@@ -284,13 +283,10 @@ class CommandsParser {
         '; stack: ' +
         error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        message.originalMessage.channel,
-        commandLangManager.getString(
-          'permission_command_error',
-          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
-        )
-      );
+      message.reply(commandLangManager.getString(
+        'permission_command_error',
+        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+      ));
       return;
     }
 
@@ -306,18 +302,15 @@ class CommandsParser {
         '; stack: ' +
         error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        message.originalMessage.channel,
-        commandLangManager.getString(
-          'execute_command_error',
-          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
-        )
-      );
+      message.reply(commandLangManager.getString(
+        'execute_command_error',
+        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+      ));
       return;
     }
 
     if (result !== undefined && result !== null && result !== '') {
-      DiscordUtils.sendToTextChannel(message.originalMessage.channel, result);
+      message.reply(result);
     }
   }
 
@@ -350,18 +343,15 @@ class CommandsParser {
         '; stack: ' +
         error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        message.originalMessage.channel,
-        commandLangManager.getString(
-          'execute_command_error',
-          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
-        )
-      );
+      message.reply(commandLangManager.getString(
+        'execute_command_error',
+        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+      ));
       return;
     }
 
     if (result !== undefined && result !== null && result !== '') {
-      DiscordUtils.sendToTextChannel(message.originalMessage.channel, result);
+      message.reply(result);
     }
   }
 
@@ -393,19 +383,16 @@ class CommandsParser {
         '; stack: ' +
         error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        message.originalMessage.channel,
-        commandLangManager.getString(
-          'validate_command_error',
-          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
-          await new HelpCommand(
-            this.context,
-            BotTable.DISCORD_SOURCE,
-            commandLangManager,
-            message.teamId
-          ).getHelpCommandString(commandClass.getCommandInterfaceName())
-        )
-      );
+      message.reply(commandLangManager.getString(
+        'validate_command_error',
+        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
+        await new HelpCommand(
+          this.context,
+          BotTable.DISCORD_SOURCE,
+          commandLangManager,
+          message.teamId
+        ).getHelpCommandString(commandClass.getCommandInterfaceName())
+      ));
       return null;
     }
 
@@ -435,14 +422,11 @@ class CommandsParser {
         '; stack: ' +
         error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        message.originalMessage.channel,
-        commandLangManager.getString(
-          'validate_command_error',
-          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
-          '' // @todo Create a private HelpCommand class and use it here to provide help on the private commands.
-        )
-      );
+      message.reply(commandLangManager.getString(
+        'validate_command_error',
+        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
+        '' // @todo Create a private HelpCommand class and use it here to provide help on the private commands.
+      ));
       return null;
     }
 

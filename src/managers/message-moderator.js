@@ -67,14 +67,11 @@ class MessageModerator {
         }
 
         if (content !== message.content) {
-          await DiscordUtils.sendToTextChannel(
-            message.originalMessage.channel,
-            this.context.langManager.getString(
-              'moderator_censored_message',
-              DiscordUtils.makeUserMention(message.originalMessage.member.id),
-              content
-            )
-          );
+          await message.reply(this.context.langManager.getString(
+            'moderator_censored_message',
+            DiscordUtils.makeUserMention(message.originalMessage.member.id),
+            content
+          ));
           await message.originalMessage.delete();
         }
       }
