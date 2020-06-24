@@ -306,20 +306,20 @@ class PermissionsManager {
    * Throws public error if the permissions are not found.
    * @throws {BotPublicError}
    * @param  {Client}          discordClient  the Discord client
-   * @param  {Message}         discordMessage the command's message
+   * @param  {BaseMessage}         message the command's message
    * @param  {DiscordCommand}  command        the command instance
    * @return {Promise}                        nothing
    */
-  async checkDiscordPermissions(discordClient, discordMessage, command) {
+  async checkDiscordPermissions(discordClient, message, command) {
     const requiredDiscordPermissions = command.constructor.getRequiredDiscordPermissions();
 
     for (const permission of requiredDiscordPermissions) {
-      if (!discordMessage.member.permissionsIn(discordMessage.channel).has(permission)) {
+      if (!message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(permission)) {
         this.context.log.w(
           'Attempt to use command ' +
             command.constructor.getCommandInterfaceName() +
             ' by user ' +
-            discordMessage.member.id
+          message.originalMessage.member.id
         );
         throw new BotPublicError(command.langManager.getString('permission_missing_discord', permission));
       }
@@ -334,12 +334,12 @@ class PermissionsManager {
    * Throws public error if the permissions are not found.
    * @throws {BotPublicError}
    * @param  {Client}          discordClient  the Discord client
-   * @param  {Message}         discordMessage the command's message
+   * @param  {BaseMessage}         message the command's message
    * @param  {DiscordCommand}  command        the command instance
    * @return {Promise}                        nothing
    */
-  async checkDiscordCommandPermissions(discordClient, discordMessage, command) {
-    const rolesArray = discordMessage.member.roles.cache.array();
+  async checkDiscordCommandPermissions(discordClient, message, command) {
+    const rolesArray = message.originalMessage.member.roles.cache.array();
     const roleIds = [];
     for (const role of rolesArray) {
       roleIds.push(role.id);
@@ -347,21 +347,21 @@ class PermissionsManager {
 
     if (
       this.context.prefsManager.bypass_bot_permissions_for_discord_admins !== 'true' ||
-      !discordMessage.member.permissionsIn(discordMessage.channel).has(DiscordPermissions.ADMINISTRATOR)
+      !message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(DiscordPermissions.ADMINISTRATOR)
     ) {
-      await this.checkBotPermissions(discordMessage.member.id, roleIds, command, BotTable.DISCORD_SOURCE);
+      await this.checkBotPermissions(message.originalMessage.member.id, roleIds, command, BotTable.DISCORD_SOURCE);
     }
 
-    await this.checkDiscordPermissions(discordClient, discordMessage, command);
+    await this.checkDiscordPermissions(discordClient, message, command);
   }
 
   /**
    * Checks if the author of the Discord message is admin on the server.
-   * @param  {Message}  discordMessage the message
+   * @param  {BaseMessage}  message the message
    * @return {Boolean}                 true if admin, false otherwise
    */
-  isAuthorAdmin(discordMessage) {
-    return discordMessage.member.permissionsIn(discordMessage.channel).has(DiscordPermissions.ADMINISTRATOR);
+  isAuthorAdmin(message) {
+    return message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(DiscordPermissions.ADMINISTRATOR);
   }
 }
 

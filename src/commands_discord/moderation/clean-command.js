@@ -100,7 +100,7 @@ class CleanCommand extends DiscordCommand {
   /**
    * Gets the default value for a given argument definition.
    * Used when unable to scan the argument from the command's text.
-   * @param  {Message}        message the command's message
+   * @param  {BaseMessage}        message the command's message
    * @param  {CommandArgDef}  arg     the argument definition
    * @return {Object}                 the default value
    */
@@ -117,13 +117,13 @@ class CleanCommand extends DiscordCommand {
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {Message}         discordMessage the Discord message as the source of the command
+   * @param  {BaseMessage}         message the Discord message as the source of the command
    * @return {Promise<string>}                the result text to be replied as the response of the execution
    */
-  async executeForDiscord(discordMessage) {
+  async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
-    const timestampLimit = discordMessage.createdTimestamp - this.time.totalMillisecondsShift;
+    const timestampLimit = message.originalMessage.createdTimestamp - this.time.totalMillisecondsShift;
 
     let deletedCount = 0;
     let checkedCount = 0;

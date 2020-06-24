@@ -95,11 +95,11 @@ class PollCommand extends DiscordCommand {
    * Throws BotPublicError if any of the validations was violated.
    * @see CommandArgDef
    * @throws {BotPublicError}
-   * @param  {Message}  discordMessage the command's message
+   * @param  {BaseMessage}  message the command's message
    * @return {Promise}                 nothing
    */
-  async validateFromDiscord(discordMessage) {
-    await super.validateFromDiscord(discordMessage);
+  async validateFromDiscord(message) {
+    await super.validateFromDiscord(message);
 
     if (this.answers !== null && this.answers.length > MaxAnswers) {
       throw new BotPublicError(
@@ -112,10 +112,10 @@ class PollCommand extends DiscordCommand {
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {Message}         discordMessage the Discord message as the source of the command
+   * @param  {BaseMessage}         message the Discord message as the source of the command
    * @return {Promise<string>}                the result text to be replied as the response of the execution
    */
-  async executeForDiscord(discordMessage) {
+  async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     const pollEmbed = new Discord.MessageEmbed().setTitle(this.question);
@@ -129,7 +129,7 @@ class PollCommand extends DiscordCommand {
       pollEmbed.setDescription(description);
     }
 
-    const pollMessage = await discordMessage.channel.send(pollEmbed);
+    const pollMessage = await message.originalMessage.channel.send(pollEmbed);
 
     if (this.answers !== null && this.answers.length > 0) {
       for (let i = 0; i < this.answers.length; i++) {
@@ -143,7 +143,7 @@ class PollCommand extends DiscordCommand {
       await pollMessage.react('👎');
     }
 
-    await discordMessage.delete();
+    await message.originalMessage.delete();
     return '';
   }
 }

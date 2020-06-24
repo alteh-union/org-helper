@@ -12,7 +12,7 @@ const MongoClient = require('mongodb').MongoClient;
 const Discord = require('discord.js');
 
 const OhUtils = require('./utils/bot-utils');
-
+const BaseMessage = require('./components/base-message');
 const PrefsManager = require('./managers/prefs-manager');
 const Context = require('./managers/context');
 
@@ -87,21 +87,24 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
     }
   });
 
-  client.on('message', async message => {
+  client.on('message', async discordMessage => {
     if (!c.discordClientReady) {
       c.log.w('on message: the client is not ready');
       return;
     }
 
+
     try {
+      const message = BaseMessage.createFromDiscord(discordMessage);
       await c.dbManager.updateGuilds(client.guilds.cache);
       await c.scheduler.syncTasks();
 
-      if (message.guild !== undefined && message.guild !== null) {
-        await c.dbManager.updateGuild(message.guild);
+      // TODO: Is it discord only feature?
+      if (message.originalMessage.guild !== undefined && message.originalMessage.guild !== null) {
+        await c.dbManager.updateGuild(message.originalMessage.guild);
 
         let processed = false;
-        if (message.author.id !== client.user.id) {
+        if (message.userId !== client.user.id) {
           processed = await c.commandsParser.parseDiscordCommand(message);
           if (!processed) {
             c.messageModerator.premoderateDiscordMessage(message);

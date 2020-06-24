@@ -61,16 +61,16 @@ class MyPermissionsCommand extends PermissionsCommand {
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {Message}         discordMessage the Discord message as the source of the command
+   * @param  {BaseMessage}         message the Discord message as the source of the command
    * @return {Promise<string>}                the result text to be replied as the response of the execution
    */
-  async executeForDiscord(discordMessage) {
+  async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     // Keep "return await" to properly catch exceptions from the inside.
     /* eslint-disable no-return-await */
     return await this.getPermissionsDescription(
-      discordMessage,
+      message,
       'command_mypermissions_no_permissions',
       'command_mypermissions_permission'
     );
@@ -79,11 +79,11 @@ class MyPermissionsCommand extends PermissionsCommand {
 
   /**
    * Gets the filter object for permissions query.
-   * @param  {Message} discordMessage  the Discord message
+   * @param  {BaseMessage} message  the Discord message
    * @return {Object}                  the filter
    */
-  getFilter(discordMessage) {
-    const rolesArray = discordMessage.member.roles.cache.array();
+  getFilter(message) {
+    const rolesArray = message.originalMessage.member.roles.cache.array();
     const orArray = [];
     for (const role of rolesArray) {
       orArray.push({
@@ -92,7 +92,7 @@ class MyPermissionsCommand extends PermissionsCommand {
     }
 
     orArray.push({
-      $and: [{ subjectType: PermissionsManager.SUBJECT_TYPES.user.name }, { subjectId: discordMessage.member.id }]
+      $and: [{ subjectType: PermissionsManager.SUBJECT_TYPES.user.name }, { subjectId: message.originalMessage.member.id }]
     });
 
     const andArray = [{ $or: orArray }];

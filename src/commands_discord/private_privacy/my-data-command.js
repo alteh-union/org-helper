@@ -52,17 +52,17 @@ class MyDataCommand extends DiscordPrivateCommand {
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {Message}         discordMessage the Discord message as the source of the command
+   * @param  {BaseMessage}         message the Discord message as the source of the command
    * @return {Promise<string>}                the result text to be replied as the response of the execution
    */
-  async executeForDiscord(discordMessage) {
+  async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     // Keep "return await" to properly catch exceptions from the inside.
     /* eslint-disable no-return-await */
     return await this.context.dbManager.getUserData(
       BotTable.DISCORD_SOURCE,
-      discordMessage.author.id,
+      message.userId,
       this.commandLangManager
     );
     /* eslint-enable no-return-await */

@@ -82,11 +82,11 @@ class PermissionsCommand extends DiscordCommand {
    * Throws BotPublicError if any of the validations was violated.
    * @see CommandArgDef
    * @throws {BotPublicError}
-   * @param  {Message}  discordMessage the command's message
+   * @param  {BaseMessage}  message the command's message
    * @return {Promise}                 nothing
    */
-  async validateFromDiscord(discordMessage) {
-    await super.validateFromDiscord(discordMessage);
+  async validateFromDiscord(message) {
+    await super.validateFromDiscord(message);
 
     if (this.permType !== null) {
       let foundIndex = -1;
@@ -111,16 +111,16 @@ class PermissionsCommand extends DiscordCommand {
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {Message}         discordMessage the Discord message as the source of the command
+   * @param  {BaseMessage}         message the Discord message as the source of the command
    * @return {Promise<string>}                the result text to be replied as the response of the execution
    */
-  async executeForDiscord(discordMessage) {
+  async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     // Keep "return await" to properly catch exceptions from the inside.
     /* eslint-disable no-return-await */
     return await this.getPermissionsDescription(
-      discordMessage,
+      message,
       'command_permissions_no_permissions',
       'command_permissions_permission'
     );
@@ -129,10 +129,10 @@ class PermissionsCommand extends DiscordCommand {
 
   /**
    * Gets the filter object for permissions query.
-   * @param  {Message} discordMessage  the Discord message
+   * @param  {BaseMessage} message  the Discord message
    * @return {Object}                  the filter
    */
-  getFilter(discordMessage) {
+  getFilter(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     let typeFilter = {};
@@ -145,13 +145,13 @@ class PermissionsCommand extends DiscordCommand {
 
   /**
    * Gets a summarized list of peermissions description according to the filter.
-   * @param  {Message}         discordMessage the Discord message with the command
+   * @param  {BaseMessage}         message the Discord message with the command
    * @param  {string}          emptyTextId    the text id to be used in case of no matching permissions found
    * @param  {string}          resultTextId   the text id to be used in case of matching permissions are found
    * @return {Promise<string>}                the result string to be replier the the caller
    */
-  async getPermissionsDescription(discordMessage, emptyTextId, resultTextId) {
-    const filter = this.getFilter(discordMessage);
+  async getPermissionsDescription(message, emptyTextId, resultTextId) {
+    const filter = this.getFilter(message);
 
     const permissions = await this.context.dbManager.getDiscordRows(
       this.context.dbManager.permissionsTable,
