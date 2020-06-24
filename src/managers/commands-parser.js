@@ -139,7 +139,8 @@ class CommandsParser {
    * @param  {BaseMessage}          message the incoming Discord message
    * @return {Promise<Boolean>}                true if a command was executed successfully, false otherwise
    */
-  async parseDiscordCommand(message) {
+  async processMessage(message) {
+
     const currentPrefix = await this.context.dbManager.getSetting(
       message.source.name,
       message.teamId,
@@ -147,6 +148,56 @@ class CommandsParser {
       message.source.DEFAULT_COMMAND_PREFIX
     );
 
+    const commandLangManager = await this.getCommandLangManager(message);
+    const command = this.parseMessage(message, currentPrefix, commandLangManager);
+    if (command) {
+      return await this.executeCommand(message, command, commandLangManager);
+    }
+  }
+
+
+  parseMessage(message, currentPrefix, commandLangManager) {
+    if (
+      !message.content.startsWith(currentPrefix) &&
+      message.content.startsWith(message.source.DEFAULT_COMMAND_PREFIX)
+    ) {
+      const fallbackCommandName = message.content.slice(
+        message.source.DEFAULT_COMMAND_PREFIX.length,
+        message.content.includes(' ') ? message.content.indexOf(' ') : message.content.length
+      );
+
+      if (
+        fallbackCommandName === this.context.langManager.getString(HelpCommand.getCommandInterfaceName()) ||
+        fallbackCommandName === commandLangManager.getString(HelpCommand.getCommandInterfaceName())
+      ) {
+        this.context.log.i('Found help command with default prefix: ' + message.content);
+        return HelpCommand;
+      }
+
+      return null;
+    }
+
+    if (!message.content.startsWith(currentPrefix)) {
+      return null;
+    }
+
+    const commandName = message.content.slice(
+      currentPrefix.length,
+      message.content.includes(' ') ? message.content.indexOf(' ') : message.content.length
+    );
+    this.context.log.i('parseDiscordCommand: command: ' + message.content + '; commandName: ' + commandName);
+
+    for (const command of DiscordCommands) {
+      if (commandName === commandLangManager.getString(command.getCommandInterfaceName())) {
+        this.context.log.i('Found command: ' + message.content);
+        return command;
+      }
+    }
+
+    return null;
+  }
+
+  async getCommandLangManager(message) {
     const currentLocale = await this.context.dbManager.getSetting(
       message.source.name,
       message.teamId,
@@ -164,52 +215,7 @@ class CommandsParser {
       this.context.localizationPath,
       currentUserLocale === undefined ? currentLocale : currentUserLocale
     );
-
-    if (
-      !message.content.startsWith(currentPrefix) &&
-      message.content.startsWith(message.source.DEFAULT_COMMAND_PREFIX)
-    ) {
-      const fallbackCommandName = message.content.slice(
-        message.source.DEFAULT_COMMAND_PREFIX.length,
-        message.content.includes(' ') ? message.content.indexOf(' ') : message.content.length
-      );
-
-      if (
-        fallbackCommandName === this.context.langManager.getString(HelpCommand.getCommandInterfaceName()) ||
-        fallbackCommandName === commandLangManager.getString(HelpCommand.getCommandInterfaceName())
-      ) {
-        this.context.log.i('Found help command with default prefix: ' + message.content);
-        await this.executeDiscordCommand(message, HelpCommand, commandLangManager);
-        return true;
-      }
-
-      return false;
-    }
-
-    if (!message.content.startsWith(currentPrefix)) {
-      return false;
-    }
-
-    const commandName = message.content.slice(
-      currentPrefix.length,
-      message.content.includes(' ') ? message.content.indexOf(' ') : message.content.length
-    );
-    this.context.log.i('parseDiscordCommand: command: ' + message.content + '; commandName: ' + commandName);
-
-    let commandFound = false;
-    for (const command of DiscordCommands) {
-      if (commandName === commandLangManager.getString(command.getCommandInterfaceName())) {
-        this.context.log.i('Found command: ' + message.content);
-        commandFound = true;
-        // False positive for ESLint, since we break the loop immediately.
-        /* eslint-disable no-await-in-loop */
-        await this.executeDiscordCommand(message, command, commandLangManager);
-        /* eslint-enable no-await-in-loop */
-        break;
-      }
-    }
-
-    return commandFound;
+    return commandLangManager;
   }
 
   /**
@@ -217,7 +223,7 @@ class CommandsParser {
    * Processing is somewhat similar to the gu8ld commands, but with respect to the fact that there is no
    * guild, so cannot use guild settings etc.
    * @todo To consider implementing user settings not related to any guild.
-   * @see CommandsParser#parseDiscordCommand
+   * @see CommandsParser#processMessage
    * @param  {BaseMessage}         message the incoming Discord message
    * @return {Promise<Boolean>}                true if a command was executed successfully, false otherwise
    */
@@ -263,7 +269,7 @@ class CommandsParser {
    * @param  {LangManager}                  commandLangManager the language manager to be used for the command
    * @return {Promise}                                         nothing
    */
-  async executeDiscordCommand(message, commandClass, commandLangManager) {
+  async executeCommand(message, commandClass, commandLangManager) {
     const command = await this.tryParseDiscordCommand(commandClass, message, commandLangManager);
     if (command === null) {
       return;
@@ -273,7 +279,7 @@ class CommandsParser {
       await this.context.permManager.checkDiscordCommandPermissions(this.discordClient, message, command);
     } catch (error) {
       this.context.log.w(
-        'executeDiscordCommand: Not permitted to execute: "' +
+        'executeCommand: Not permitted to execute: "' +
         message.content +
         '"; Error message: ' +
         error +
@@ -292,7 +298,7 @@ class CommandsParser {
       result = await command.executeForDiscord(message);
     } catch (error) {
       this.context.log.w(
-        'executeDiscordCommand: failed to execute command: "' +
+        'executeCommand: failed to execute command: "' +
         message.content +
         '"; Error message: ' +
         error +
@@ -388,7 +394,7 @@ class CommandsParser {
           message.source.name,
           commandLangManager,
           message.teamId
-        ).getHelpCommandString(commandClass.getCommandInterfaceName())
+        ).getHelpCommandString(commandClass.getCommandInterfaceName(), message.source)
       ));
       return null;
     }

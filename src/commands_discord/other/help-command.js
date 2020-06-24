@@ -88,7 +88,7 @@ class HelpCommand extends DiscordCommand {
       this.source,
       this.orgId,
       ServerSettingsTable.SERVER_SETTINGS.commandPrefix.name,
-      DiscordCommand.DEFAULT_COMMAND_PREFIX
+      message.source.DEFAULT_COMMAND_PREFIX
     );
 
     if (this.command === null || this.langManager.getString(AllArgId) === this.command) {
@@ -157,12 +157,12 @@ class HelpCommand extends DiscordCommand {
    * @param  {BaseMessage}         message the Discord message as the source of the command
    * @return {Promise<string>}                the result text to be replied as the response of the execution
    */
-  async getHelpCommandString(commandName) {
+  async getHelpCommandString(commandName, source) {
     const currentPrefix = await this.context.dbManager.getSetting(
       this.source,
       this.orgId,
       ServerSettingsTable.SERVER_SETTINGS.commandPrefix.name,
-      DiscordCommand.DEFAULT_COMMAND_PREFIX
+      source.DEFAULT_COMMAND_PREFIX
     );
 
     return (

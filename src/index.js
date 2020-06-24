@@ -107,7 +107,7 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
 
         let processed = false;
         if (message.userId !== client.user.id) {
-          processed = await c.commandsParser.parseDiscordCommand(message);
+          processed = await c.commandsParser.processMessage(message);
           if (!processed) {
             c.messageModerator.premoderateDiscordMessage(message);
           }
