@@ -10,11 +10,8 @@ const LangManager = require('./lang-manager');
 
 const BotPublicError = require('../utils/bot-public-error');
 
-const BotTable = require('../mongo_classes/bot-table');
 const ServerSettingsTable = require('../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../mongo_classes/user-settings-table');
-
-const DiscordCommand = require('../commands_discord/discord-command');
 
 const AddBadWordsCommand = require('../commands_discord/settings/add-bad-words-command');
 const AddRoleCommand = require('../commands_discord/moderation/add-role-command');
@@ -144,20 +141,20 @@ class CommandsParser {
    */
   async parseDiscordCommand(message) {
     const currentPrefix = await this.context.dbManager.getSetting(
-      BotTable.DISCORD_SOURCE,
+      message.source.name,
       message.teamId,
       ServerSettingsTable.SERVER_SETTINGS.commandPrefix.name,
-      DiscordCommand.DEFAULT_COMMAND_PREFIX
+      message.source.DEFAULT_COMMAND_PREFIX
     );
 
     const currentLocale = await this.context.dbManager.getSetting(
-      BotTable.DISCORD_SOURCE,
+      message.source.name,
       message.teamId,
       ServerSettingsTable.SERVER_SETTINGS.localeName.name
     );
 
     const currentUserLocale = await this.context.dbManager.getUserSetting(
-      BotTable.DISCORD_SOURCE,
+      message.source.name,
       message.teamId,
       message.userId,
       UserSettingsTable.USER_SETTINGS.localeName.name
@@ -170,10 +167,10 @@ class CommandsParser {
 
     if (
       !message.content.startsWith(currentPrefix) &&
-      message.content.startsWith(DiscordCommand.DEFAULT_COMMAND_PREFIX)
+      message.content.startsWith(message.source.DEFAULT_COMMAND_PREFIX)
     ) {
       const fallbackCommandName = message.content.slice(
-        DiscordCommand.DEFAULT_COMMAND_PREFIX.length,
+        message.source.DEFAULT_COMMAND_PREFIX.length,
         message.content.includes(' ') ? message.content.indexOf(' ') : message.content.length
       );
 
@@ -226,7 +223,7 @@ class CommandsParser {
    */
   async parsePrivateDiscordCommand(message) {
     const commandLangManager = this.context.langManager;
-    const currentPrefix = DiscordCommand.DEFAULT_COMMAND_PREFIX;
+    const currentPrefix = message.source.DEFAULT_COMMAND_PREFIX;
     if (!message.content.startsWith(currentPrefix)) {
       return false;
     }
@@ -367,7 +364,7 @@ class CommandsParser {
   async tryParseDiscordCommand(commandClass, message, commandLangManager) {
     const command = commandClass.createForOrg(
       this.context,
-      BotTable.DISCORD_SOURCE,
+      message.source.name,
       commandLangManager,
       message.teamId
     );
@@ -388,7 +385,7 @@ class CommandsParser {
         error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
         await new HelpCommand(
           this.context,
-          BotTable.DISCORD_SOURCE,
+          message.source.name,
           commandLangManager,
           message.teamId
         ).getHelpCommandString(commandClass.getCommandInterfaceName())
@@ -409,7 +406,7 @@ class CommandsParser {
    * @return {Promise<DiscordCommand>}                         the command object with all arguments set up
    */
   async tryParsePrivateDiscordCommand(commandClass, message, commandLangManager) {
-    const command = commandClass.createForUser(this.context, BotTable.DISCORD_SOURCE, commandLangManager);
+    const command = commandClass.createForUser(this.context, message.source.name, commandLangManager);
 
     try {
       await command.parseFromDiscord(this.discordClient, message);

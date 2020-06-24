@@ -9,7 +9,6 @@ class BaseMessage {
     this.content = content;
     this.originalMessage = originalMessage;
     this.source = source;
-
   }
 
   static createFromSlack(slackMessage, slackSource) {
