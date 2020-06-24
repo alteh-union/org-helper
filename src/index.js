@@ -75,10 +75,6 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
       }
 
       await Promise.all(updateResults);
-
-      c.commandsParser.setDiscordClient(client);
-      c.messageModerator.setDiscordClient(client);
-
       await c.dbManager.updateGuilds(client.guilds.cache);
 
       c.discordClientReady = true;

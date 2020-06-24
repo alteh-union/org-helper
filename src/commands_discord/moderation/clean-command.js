@@ -136,7 +136,7 @@ class CleanCommand extends DiscordCommand {
       let needRefetch = false;
       do {
         needRefetch = false;
-        const channel = this.context.discordClient.guilds.cache
+        const channel = message.source.client.guilds.cache
           .get(this.orgId)
           .channels.cache.get(this.channelIds.channels[i]);
         const messages = await channel.messages.fetch({ limit: MESSAGES_FETCH_LIMIT });

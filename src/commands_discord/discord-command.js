@@ -129,11 +129,10 @@ class DiscordCommand extends Command {
    * In any case, all defined arguments will have at least null value after executing this function.
    * @see DiscordCommand#findArgValue
    * @see Command.getDefinedArgs
-   * @param  {Client}   client         the Discord client
    * @param  {BaseMessage}  message the Discord message with the command
    * @return {Promise}                 nothing
    */
-  async parseFromDiscordByNames(client, message) {
+  async parseFromDiscordByNames(message) {
     const definedArgs = this.constructor.getDefinedArgs();
     const argsKeys = Object.keys(definedArgs);
     const thiz = this;
@@ -185,11 +184,10 @@ class DiscordCommand extends Command {
    * In any case, all defined arguments will have at least null value after executing this function.
    * @see CommandArgDef
    * @see Command.getDefinedArgs
-   * @param  {Client}   client         the Discord client
    * @param  {BaseMessage}  message the Discord message with the command
    * @return {Promise}                 nothing
    */
-  async parseFromDiscordSequentially(client, message) {
+  async parseFromDiscordSequentially(message) {
     const definedArgs = this.constructor.getDefinedArgs();
     const argsKeys = Object.keys(definedArgs);
 
@@ -279,17 +277,17 @@ class DiscordCommand extends Command {
    * @param  {BaseMessage}  message the Discord message with the command
    * @return {Promise}                 nothing
    */
-  async parseFromDiscord(client, message) {
+  async parseFromDiscord(message) {
     const index = OhUtils.findFirstNonQuotedIndex(message.content, this.constructor.ARG_PREFIX);
     if (index === -1) {
       this.context.log.d('Sequential arg scan');
-      await this.parseFromDiscordSequentially(client, message);
+      await this.parseFromDiscordSequentially(message);
     } else {
       this.context.log.d('Arg scan by name');
-      await this.parseFromDiscordByNames(client, message);
+      await this.parseFromDiscordByNames( message);
     }
 
-    await this.validateFromDiscord(client, message);
+    await this.validateFromDiscord(message);
   }
 }
 

@@ -97,14 +97,6 @@ class CommandsParser {
   }
 
   /**
-   * Sets the Discord client for the instance.
-   * @param {Client} client the Discord client
-   */
-  setDiscordClient(client) {
-    this.discordClient = client;
-  }
-
-  /**
    * Gets the array of defined Discord command classes.
    * @return {Array<constructor>} the defined commands
    */
@@ -276,7 +268,7 @@ class CommandsParser {
     }
 
     try {
-      await this.context.permManager.checkDiscordCommandPermissions(this.discordClient, message, command);
+      await this.context.permManager.checkDiscordCommandPermissions(message.source.client, message, command);
     } catch (error) {
       this.context.log.w(
         'executeCommand: Not permitted to execute: "' +
@@ -376,7 +368,7 @@ class CommandsParser {
     );
 
     try {
-      await command.parseFromDiscord(this.discordClient, message);
+      await command.parseFromDiscord(message);
     } catch (error) {
       this.context.log.w(
         'tryParseDiscordCommand: failed to parse command: "' +
@@ -415,7 +407,7 @@ class CommandsParser {
     const command = commandClass.createForUser(this.context, message.source.name, commandLangManager);
 
     try {
-      await command.parseFromDiscord(this.discordClient, message);
+      await command.parseFromDiscord(message);
     } catch (error) {
       this.context.log.w(
         'tryParsePrivateDiscordCommand: failed to parse command: "' +

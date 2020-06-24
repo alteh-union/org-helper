@@ -349,7 +349,7 @@ class PermissionsManager {
       this.context.prefsManager.bypass_bot_permissions_for_discord_admins !== 'true' ||
       !message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(DiscordPermissions.ADMINISTRATOR)
     ) {
-      await this.checkBotPermissions(message.originalMessage.member.id, roleIds, command, BotTable.DISCORD_SOURCE);
+      await this.checkBotPermissions(message.originalMessage.member.id, roleIds, command, message.source.name);
     }
 
     await this.checkDiscordPermissions(discordClient, message, command);

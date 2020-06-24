@@ -108,9 +108,9 @@ class RemoveRoleCommand extends DiscordCommand {
     let errorCount = 0;
     let errorPermissionsCount = 0;
 
-    const members = await this.context.discordClient.guilds.cache.get(this.orgId).members.fetch();
+    const members = await message.source.client.guilds.cache.get(this.orgId).members.fetch();
     const membersArray = Array.from(members.values());
-    const roles = await this.context.discordClient.guilds.cache.get(this.orgId).roles.fetch();
+    const roles = await message.source.client.guilds.cache.get(this.orgId).roles.fetch();
     const rolesArray = Array.from(roles.cache.values());
     const resultArray = [];
 

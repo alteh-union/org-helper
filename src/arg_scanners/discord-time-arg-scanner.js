@@ -37,13 +37,13 @@ class DiscordTimeArgScanner extends TimeArgScanner {
     }
 
     const serverTimezone = await context.dbManager.getSetting(
-      BotTable.DISCORD_SOURCE,
+      message.source.name,
       message.teamId,
       ServerSettingsTable.SERVER_SETTINGS.timezone.name
     );
 
     const userTimezone = await context.dbManager.getUserSetting(
-      BotTable.DISCORD_SOURCE,
+      message.source.name,
       message.teamId,
       message.originalMessage.member.id,
       UserSettingsTable.USER_SETTINGS.timezone.name

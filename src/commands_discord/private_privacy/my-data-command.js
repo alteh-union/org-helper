@@ -61,7 +61,7 @@ class MyDataCommand extends DiscordPrivateCommand {
     // Keep "return await" to properly catch exceptions from the inside.
     /* eslint-disable no-return-await */
     return await this.context.dbManager.getUserData(
-      BotTable.DISCORD_SOURCE,
+      message.source.name,
       message.userId,
       this.commandLangManager
     );
