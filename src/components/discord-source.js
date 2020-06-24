@@ -3,8 +3,14 @@
 const DiscordUtils = require('../utils/discord-utils');
 const BaseSource = require('./base-source');
 const BotTable = require('../mongo_classes/bot-table');
+const DiscordCommandManager = require('../components/discord-command-manager');
 
 class DiscordSource extends BaseSource {
+  constructor(client) {
+    super(client);
+    this.commandManager = new DiscordCommandManager();
+  }
+
   async replyToMessage(message, replyText) {
     DiscordUtils.sendToTextChannel(message.originalMessage.channel, replyText);
   }

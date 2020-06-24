@@ -10,7 +10,6 @@ const TimeArgScanner = require('./time-arg-scanner');
 
 const TimeArg = require('../command_meta/time-arg');
 
-const BotTable = require('../mongo_classes/bot-table');
 const ServerSettingsTable = require('../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../mongo_classes/user-settings-table');
 

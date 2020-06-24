@@ -14,8 +14,6 @@ const BotPublicError = require('../utils/bot-public-error');
 const DiscordChannelsArg = require('../command_meta/discord-channels-arg');
 const DiscordSubjectsArg = require('../command_meta/discord-subjects-arg');
 
-const BotTable = require('../mongo_classes/bot-table');
-
 const DefinedPermissions = Object.freeze({
   remind: new MultiLangValue('remind', 'permission_type_remind'),
   role: new MultiLangValue('role', 'permission_type_role')

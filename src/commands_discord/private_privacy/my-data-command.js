@@ -6,8 +6,6 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
-const BotTable = require('../../mongo_classes/bot-table');
-
 const DiscordPrivateCommand = require('../discord-private-command');
 
 /**

@@ -92,7 +92,7 @@ class HelpCommand extends DiscordCommand {
     );
 
     if (this.command === null || this.langManager.getString(AllArgId) === this.command) {
-      let commands = this.context.commandsParser.getDefinedDiscordCommands();
+      let commands = message.source.commandManager.definedCommands;
       if (
         this.langManager.getString(AllArgId) !== this.command &&
         !this.context.permManager.isAuthorAdmin(message)
@@ -116,7 +116,7 @@ class HelpCommand extends DiscordCommand {
           '\n';
       }
     } else {
-      const commands = this.context.commandsParser.getDefinedDiscordCommands();
+      const commands = message.source.commandManager.definedCommands;
       let selectedCommand = null;
       for (const command of commands) {
         if (this.langManager.getString(command.getCommandInterfaceName()) === this.command) {
@@ -150,13 +150,7 @@ class HelpCommand extends DiscordCommand {
     return result;
   }
 
-  /**
-   * Executes the command instance. The main function of a command, it's essence.
-   * All arguments scanning, validation and permissions check is considered done before entering this functions.
-   * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {BaseMessage}         message the Discord message as the source of the command
-   * @return {Promise<string>}                the result text to be replied as the response of the execution
-   */
+
   async getHelpCommandString(commandName, source) {
     const currentPrefix = await this.context.dbManager.getSetting(
       this.source,
