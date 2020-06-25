@@ -127,7 +127,7 @@ class CommandsParser {
       UserSettingsTable.USER_SETTINGS.localeName.name
     );
 
-    return  new LangManager(
+    return new LangManager(
       this.context.localizationPath,
       currentUserLocale === undefined ? currentLocale : currentUserLocale
     );
@@ -191,7 +191,7 @@ class CommandsParser {
     }
 
     try {
-      await this.context.permManager.checkDiscordCommandPermissions(message.source.client, message, command);
+      await this.context.permManager.checkDiscordCommandPermissions(message, command);
     } catch (error) {
       this.context.log.w(
         'executeCommand: Not permitted to execute: "' +

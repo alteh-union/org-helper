@@ -154,115 +154,118 @@ class PermissionsManager {
   async checkBotPermissions(commandUserId, roleIds, command, source) {
     const permissionFilters = command.constructor.getRequiredBotPermissions();
 
-    const permissionResults = [];
-    for (const permissionFilter of permissionFilters) {
-      const andArray = [];
+    const permissionResults = permissionFilters.map(permissionFilter => {
+      const query = this.buildPermissionQuery(source, command, commandUserId, roleIds, permissionFilter);
+      return this.context.dbManager.getRows(this.context.dbManager.permissionsTable, query).then(permissions => {
+        this.verifyPermissions(permissionFilters, permissions, command);
+      });
+    });
+    await Promise.all(permissionResults);
+  }
 
-      andArray.push({ source });
-      andArray.push({ orgId: command.orgId });
+  buildPermissionQuery(source, command, commandUserId, roleIds, permissionFilter) {
+    const andArray = [];
 
-      const userIdQuery = { $and: [{ subjectType: SubjectTypes.user.name }, { subjectId: commandUserId }] };
+    andArray.push({ source });
+    andArray.push({ orgId: command.orgId });
 
-      const userRolesArrayQuery = [];
-      for (const roleId of roleIds) {
-        userRolesArrayQuery.push({ subjectId: roleId });
-      }
+    const userIdQuery = { $and: [{ subjectType: SubjectTypes.user.name }, { subjectId: commandUserId }] };
 
-      const userRolesQuery = { $and: [{ subjectType: SubjectTypes.role.name }, { $or: userRolesArrayQuery }] };
+    const userRolesArrayQuery = [];
+    for (const roleId of roleIds) {
+      userRolesArrayQuery.push({ subjectId: roleId });
+    }
 
-      const idQuery = { $or: [userIdQuery, userRolesQuery] };
-      andArray.push(idQuery);
+    const userRolesQuery = { $and: [{ subjectType: SubjectTypes.role.name }, { $or: userRolesArrayQuery }] };
 
-      andArray.push({ permissionType: permissionFilter.permissionName });
+    const idQuery = { $or: [userIdQuery, userRolesQuery] };
+    andArray.push(idQuery);
 
-      const filtersArrayQuery = [];
-      const filtersFields = permissionFilter.filterFields;
-      for (const filtersField of filtersFields) {
-        const anyValueObject = {};
-        anyValueObject['filter.' + filtersField.filterFieldName] = OhUtils.ANY_VALUE;
-        const orFilterArray = [anyValueObject];
+    andArray.push({ permissionType: permissionFilter.permissionName });
 
-        if (command[filtersField.argName] instanceof DiscordChannelsArg) {
-          const channelsFilter = command[filtersField.argName].channels;
-          for (const channel of channelsFilter) {
-            const particularValueObject = {};
-            particularValueObject['filter.' + filtersField.filterFieldName] = channel;
-            orFilterArray.push(particularValueObject);
-          }
-        } else if (command[filtersField.argName] instanceof DiscordSubjectsArg) {
-          const subjectIdsFilter = command[filtersField.argName].subjectIds;
-          for (const subjectId of subjectIdsFilter) {
-            const particularValueObject = {};
-            particularValueObject['filter.' + filtersField.filterFieldName] = subjectId;
-            orFilterArray.push(particularValueObject);
-          }
+    const filtersArrayQuery = [];
+    const filtersFields = permissionFilter.filterFields;
+    for (const filtersField of filtersFields) {
+      const anyValueObject = {};
+      anyValueObject['filter.' + filtersField.filterFieldName] = OhUtils.ANY_VALUE;
+      const orFilterArray = [anyValueObject];
 
-          const subjectRolesFilter = command[filtersField.argName].subjectRoles;
-          for (const subjectRole of subjectRolesFilter) {
-            const particularValueObject = {};
-            particularValueObject['filter.' + filtersField.filterFieldName] = subjectRole;
-            orFilterArray.push(particularValueObject);
-          }
-        } else {
+      if (command[filtersField.argName] instanceof DiscordChannelsArg) {
+        const channelsFilter = command[filtersField.argName].channels;
+        for (const channel of channelsFilter) {
           const particularValueObject = {};
-          particularValueObject['filter.' + filtersField.filterFieldName] = command[filtersField.argName];
+          particularValueObject['filter.' + filtersField.filterFieldName] = channel;
+          orFilterArray.push(particularValueObject);
+        }
+      } else if (command[filtersField.argName] instanceof DiscordSubjectsArg) {
+        const subjectIdsFilter = command[filtersField.argName].subjectIds;
+        for (const subjectId of subjectIdsFilter) {
+          const particularValueObject = {};
+          particularValueObject['filter.' + filtersField.filterFieldName] = subjectId;
           orFilterArray.push(particularValueObject);
         }
 
-        filtersArrayQuery.push({ $or: orFilterArray });
+        const subjectRolesFilter = command[filtersField.argName].subjectRoles;
+        for (const subjectRole of subjectRolesFilter) {
+          const particularValueObject = {};
+          particularValueObject['filter.' + filtersField.filterFieldName] = subjectRole;
+          orFilterArray.push(particularValueObject);
+        }
+      } else {
+        const particularValueObject = {};
+        particularValueObject['filter.' + filtersField.filterFieldName] = command[filtersField.argName];
+        orFilterArray.push(particularValueObject);
       }
 
-      andArray.push({ $and: filtersArrayQuery });
-
-      const query = { $and: andArray };
-
-      permissionResults.push(
-        this.context.dbManager.getRows(this.context.dbManager.permissionsTable, query).then(permissions => {
-          for (const permissionFilter of permissionFilters) {
-            if (permissions === null || permissions.length === 0) {
-              this.context.log.f('Required permissions not found for: ' + permissionFilter.permissionName);
-              throw new BotPublicError(
-                command.langManager.getString(
-                  'permission_missing_bot',
-                  command.langManager.getString(DefinedPermissions[permissionFilter.permissionName].textId)
-                )
-              );
-            }
-
-            const filtersFields = permissionFilter.filterFields;
-
-            for (const filterField of filtersFields) {
-              if (command[filterField.argName] instanceof DiscordChannelsArg) {
-                this.checkDiscordEntityFilter(
-                  permissionFilter.permissionName,
-                  filterField.filterFieldName,
-                  permissions,
-                  command[filterField.argName].channels,
-                  command.langManager
-                );
-              } else if (command[filterField.argName] instanceof DiscordSubjectsArg) {
-                this.checkDiscordEntityFilter(
-                  permissionFilter.permissionName,
-                  filterField.filterFieldName,
-                  permissions,
-                  command[filterField.argName].subjectIds,
-                  command.langManager
-                );
-                this.checkDiscordEntityFilter(
-                  permissionFilter.permissionName,
-                  filterField.filterFieldName,
-                  permissions,
-                  command[filterField.argName].subjectRoles,
-                  command.langManager
-                );
-              }
-            }
-          }
-        })
-      );
+      filtersArrayQuery.push({ $or: orFilterArray });
     }
 
-    await Promise.all(permissionResults);
+    andArray.push({ $and: filtersArrayQuery });
+
+    return { $and: andArray };
+  }
+
+  verifyPermissions(permissionFilters, permissions, command) {
+    for (const permissionFilter of permissionFilters) {
+      if (permissions === null || permissions.length === 0) {
+        this.context.log.f('Required permissions not found for: ' + permissionFilter.permissionName);
+        throw new BotPublicError(
+          command.langManager.getString(
+            'permission_missing_bot',
+            command.langManager.getString(DefinedPermissions[permissionFilter.permissionName].textId)
+          )
+        );
+      }
+
+      const filtersFields = permissionFilter.filterFields;
+
+      for (const filterField of filtersFields) {
+        if (command[filterField.argName] instanceof DiscordChannelsArg) {
+          this.checkDiscordEntityFilter(
+            permissionFilter.permissionName,
+            filterField.filterFieldName,
+            permissions,
+            command[filterField.argName].channels,
+            command.langManager
+          );
+        } else if (command[filterField.argName] instanceof DiscordSubjectsArg) {
+          this.checkDiscordEntityFilter(
+            permissionFilter.permissionName,
+            filterField.filterFieldName,
+            permissions,
+            command[filterField.argName].subjectIds,
+            command.langManager
+          );
+          this.checkDiscordEntityFilter(
+            permissionFilter.permissionName,
+            filterField.filterFieldName,
+            permissions,
+            command[filterField.argName].subjectRoles,
+            command.langManager
+          );
+        }
+      }
+    }
   }
 
   /**
@@ -278,14 +281,11 @@ class PermissionsManager {
    */
   checkDiscordEntityFilter(permissionName, filterFieldName, permissionRows, entitiesFilter, langManager) {
     for (const entityFilter of entitiesFilter) {
-      let found = false;
-      for (const permissionRow of permissionRows) {
-        const filterValue = permissionRow.filter[filterFieldName];
-        if (filterValue === entityFilter || filterValue === OhUtils.ANY_VALUE) {
-          found = true;
-          break;
-        }
-      }
+
+      const found = permissionRows.some(row => {
+        const filterValue = row.filter[filterFieldName];
+        return filterValue === entityFilter || filterValue === OhUtils.ANY_VALUE;
+      });
 
       if (!found) {
         this.context.log.f('Required permissions not found for a particular entity: ' + entityFilter);
@@ -303,20 +303,19 @@ class PermissionsManager {
    * Checks if the author of the Discord message has necessary permissions in the channel.
    * Throws public error if the permissions are not found.
    * @throws {BotPublicError}
-   * @param  {Client}          discordClient  the Discord client
    * @param  {BaseMessage}         message the command's message
    * @param  {DiscordCommand}  command        the command instance
    * @return {Promise}                        nothing
    */
-  async checkDiscordPermissions(discordClient, message, command) {
+  async checkDiscordPermissions(message, command) {
     const requiredDiscordPermissions = command.constructor.getRequiredDiscordPermissions();
 
     for (const permission of requiredDiscordPermissions) {
       if (!message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(permission)) {
         this.context.log.w(
           'Attempt to use command ' +
-            command.constructor.getCommandInterfaceName() +
-            ' by user ' +
+          command.constructor.getCommandInterfaceName() +
+          ' by user ' +
           message.originalMessage.member.id
         );
         throw new BotPublicError(command.langManager.getString('permission_missing_discord', permission));
@@ -331,17 +330,12 @@ class PermissionsManager {
    * the bypass is enabled in Bot's preferences (typically should be "true" for all non-dev Bot's instances).
    * Throws public error if the permissions are not found.
    * @throws {BotPublicError}
-   * @param  {Client}          discordClient  the Discord client
    * @param  {BaseMessage}         message the command's message
    * @param  {DiscordCommand}  command        the command instance
    * @return {Promise}                        nothing
    */
-  async checkDiscordCommandPermissions(discordClient, message, command) {
-    const rolesArray = message.originalMessage.member.roles.cache.array();
-    const roleIds = [];
-    for (const role of rolesArray) {
-      roleIds.push(role.id);
-    }
+  async checkDiscordCommandPermissions(message, command) {
+    const roleIds = message.originalMessage.member.roles.cache.array().map(r => r.id);
 
     if (
       this.context.prefsManager.bypass_bot_permissions_for_discord_admins !== 'true' ||
@@ -350,7 +344,7 @@ class PermissionsManager {
       await this.checkBotPermissions(message.originalMessage.member.id, roleIds, command, message.source.name);
     }
 
-    await this.checkDiscordPermissions(discordClient, message, command);
+    await this.checkDiscordPermissions(message, command);
   }
 
   /**
