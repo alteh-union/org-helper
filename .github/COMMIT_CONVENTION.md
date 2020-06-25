@@ -28,15 +28,15 @@ Note that the maximum length of the header is 72 symbols.
 #### Examples of headers
 
 ```
-feat(moderation): Added 'tempban' Discord command
+feat(moderation): Add 'tempban' Discord command
 ```
 
 ```
-fix(#28): Fixed scheduling over Daylight Saving Time
+fix(#28): Fix scheduling over Daylight Saving Time
 ```
 
 ```
-workflow(lint-staged): Added support of lint-staged package
+workflow(lint-staged): Add support of lint-staged package
 ```
 
 #### Type
@@ -57,13 +57,13 @@ If multiple bugs are closed by the commit, then join the numbers by comma, like 
 
 The subject contains a succinct description of the change:
 
-- use the **past** tense: "changed", not "change" nor "changes"
+- use the imperative, present tense: "change", not "changed" nor "changes"
 - Capitalize the first letter
 - no dot (.) at the end
 
 #### Body
 
-Just as in the **subject**, use the **past** tense: "changed", not "change" nor "changes".
+Just as in the **subject**, use the the imperative, present tense: "change", not "changed" nor "changes".
 The body **must** include information about **what** was the change and **why** it was made.
 
 For fixes it's typically not enough to say `fixes #45` as the reason for the change. Please also explain
