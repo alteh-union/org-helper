@@ -92,7 +92,7 @@ class MyPermissionsCommand extends PermissionsCommand {
     }
 
     orArray.push({
-      $and: [{ subjectType: PermissionsManager.SUBJECT_TYPES.user.name }, { subjectId: message.originalMessage.member.id }]
+      $and: [{ subjectType: PermissionsManager.SUBJECT_TYPES.user.name }, { subjectId: message.userId }]
     });
 
     const andArray = [{ $or: orArray }];

@@ -23,7 +23,6 @@ const client = new Discord.Client();
 
 const prefsManager = new PrefsManager(prefsPath);
 
-
 prefsManager.readPrefs();
 
 const c = new Context(prefsManager, localizationPath, client);
@@ -91,13 +90,11 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
       return;
     }
 
-
     try {
       const message = BaseMessage.createFromDiscord(discordMessage, discordSource);
       await c.dbManager.updateGuilds(client.guilds.cache);
       await c.scheduler.syncTasks();
 
-      // TODO: Is it discord only feature?
       if (message.originalMessage.guild !== undefined && message.originalMessage.guild !== null) {
         await c.dbManager.updateGuild(message.originalMessage.guild);
 

@@ -100,14 +100,14 @@ class CleanCommand extends DiscordCommand {
   /**
    * Gets the default value for a given argument definition.
    * Used when unable to scan the argument from the command's text.
-   * @param  {BaseMessage}        message the command's message
+   * @param  {BaseMessage}    message the command's message
    * @param  {CommandArgDef}  arg     the argument definition
    * @return {Object}                 the default value
    */
   getDefaultDiscordArgValue(message, arg) {
     switch (arg) {
       case CleanCommandArgDefs.channelIds:
-        return message.channel.id;
+        return message.channelId;
       default:
         return null;
     }

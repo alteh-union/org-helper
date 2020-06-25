@@ -116,21 +116,21 @@ class SetMyLocaleCommand extends DiscordCommand {
       await this.context.dbManager.removeUserSetting(
         this.source,
         this.orgId,
-        message.originalMessage.member.id,
+        message.userId,
         UserSettingsTable.USER_SETTINGS.localeName.name
       );
 
       this.context.log.i("SetMyLocaleCommand done: removed the user's locale preference");
       return this.langManager.getString(
         'command_setmylocale_success_no_locale',
-        DiscordUtils.makeUserMention(message.originalMessage.member.id)
+        DiscordUtils.makeUserMention(message.userId)
       );
     }
 
     await this.context.dbManager.setUserSetting(
       this.source,
       this.orgId,
-      message.originalMessage.member.id,
+      message.userId,
       UserSettingsTable.USER_SETTINGS.localeName.name,
       this.locale
     );
@@ -138,7 +138,7 @@ class SetMyLocaleCommand extends DiscordCommand {
     this.context.log.i("SetMyLocaleCommand done: new user's locale is " + this.locale);
     return this.langManager.getString(
       'command_setmylocale_success',
-      DiscordUtils.makeUserMention(message.originalMessage.member.id),
+      DiscordUtils.makeUserMention(message.userId),
       this.locale
     );
   }

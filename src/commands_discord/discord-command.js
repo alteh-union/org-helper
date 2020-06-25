@@ -47,7 +47,7 @@ class DiscordCommand extends Command {
    * Gets the default value for a given argument definition.
    * Used when unable to scan the argument from the command's text.
    * @param  {Context}        context the Bot's context
-   * @param  {BaseMessage}        message the command's message
+   * @param  {BaseMessage}    message the command's message
    * @param  {CommandArgDef}  arg     the argument definition
    * @return {Object}                 the default value
    */
@@ -141,31 +141,29 @@ class DiscordCommand extends Command {
     for (const argKey of argsKeys) {
       const argText = this.findArgValue(message.content, definedArgs[argKey]);
       results.push(
-        definedArgs[argKey].scanner
-          .scan(this.context, this.langManager, message, argText)
-          .then(async scanResult => {
-            let argValue = scanResult.value;
-            thiz.context.log.d(
-              'argValue: ' + util.inspect(argValue, { showHidden: false, depth: 2 }) + '; for key: ' + argKey
+        definedArgs[argKey].scanner.scan(this.context, this.langManager, message, argText).then(async scanResult => {
+          let argValue = scanResult.value;
+          thiz.context.log.d(
+            'argValue: ' + util.inspect(argValue, { showHidden: false, depth: 2 }) + '; for key: ' + argKey
+          );
+          if (argValue === null || argValue === undefined) {
+            scanResult = await definedArgs[argKey].scanner.scan(
+              thiz.context,
+              thiz.langManager,
+              message,
+              thiz.getDefaultDiscordArgValue(message, definedArgs[argKey])
             );
-            if (argValue === null || argValue === undefined) {
-              scanResult = await definedArgs[argKey].scanner.scan(
-                thiz.context,
-                thiz.langManager,
-                message,
-                thiz.getDefaultDiscordArgValue(message, definedArgs[argKey])
-              );
-              argValue = scanResult.value;
-              thiz.context.log.d(
-                'argValue after checking default: ' +
-                  util.inspect(argValue, { showHidden: false, depth: 2 }) +
-                  '; for key: ' +
-                  argKey
-              );
-            }
+            argValue = scanResult.value;
+            thiz.context.log.d(
+              'argValue after checking default: ' +
+                util.inspect(argValue, { showHidden: false, depth: 2 }) +
+                '; for key: ' +
+                argKey
+            );
+          }
 
-            thiz[argKey] = argValue;
-          })
+          thiz[argKey] = argValue;
+        })
       );
     }
 
@@ -284,7 +282,7 @@ class DiscordCommand extends Command {
       await this.parseFromDiscordSequentially(message);
     } else {
       this.context.log.d('Arg scan by name');
-      await this.parseFromDiscordByNames( message);
+      await this.parseFromDiscordByNames(message);
     }
 
     await this.validateFromDiscord(message);

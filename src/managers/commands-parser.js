@@ -56,10 +56,9 @@ class CommandsParser {
    * @return {Promise<Boolean>}                true if a command was executed successfully, false otherwise
    */
   async processMessage(message) {
-
     const currentPrefix = await this.context.dbManager.getSetting(
       message.source.name,
-      message.teamId,
+      message.orgId,
       ServerSettingsTable.SERVER_SETTINGS.commandPrefix.name,
       message.source.DEFAULT_COMMAND_PREFIX
     );
@@ -67,11 +66,18 @@ class CommandsParser {
     const commandLangManager = await this.getCommandLangManager(message);
     const command = this.parseMessage(message, currentPrefix, commandLangManager);
     if (command) {
-      return await this.executeCommand(message, command, commandLangManager);
+      await this.executeCommand(message, command, commandLangManager);
     }
+    return command !== null;
   }
 
-
+  /**
+   * Parse message to get a bot command
+   * @param message
+   * @param currentPrefix
+   * @param commandLangManager
+   * @returns {constructor|HelpCommand|null}
+   */
   parseMessage(message, currentPrefix, commandLangManager) {
     if (
       !message.content.startsWith(currentPrefix) &&
@@ -113,16 +119,21 @@ class CommandsParser {
     return null;
   }
 
+  /**
+   * Get command lang manager based on message locale
+   * @param message
+   * @returns {Promise<void>}
+   */
   async getCommandLangManager(message) {
     const currentLocale = await this.context.dbManager.getSetting(
       message.source.name,
-      message.teamId,
+      message.orgId,
       ServerSettingsTable.SERVER_SETTINGS.localeName.name
     );
 
     const currentUserLocale = await this.context.dbManager.getUserSetting(
       message.source.name,
-      message.teamId,
+      message.orgId,
       message.userId,
       UserSettingsTable.USER_SETTINGS.localeName.name
     );
@@ -153,9 +164,7 @@ class CommandsParser {
       currentPrefix.length,
       message.content.includes(' ') ? message.content.indexOf(' ') : message.content.length
     );
-    this.context.log.i(
-      'parsePrivateDiscordCommand: command: ' + message.content + '; commandName: ' + commandName
-    );
+    this.context.log.i('parsePrivateDiscordCommand: command: ' + message.content + '; commandName: ' + commandName);
 
     let commandFound = false;
     for (const command of message.source.commandManager.definedPrivateCommands) {
@@ -195,16 +204,18 @@ class CommandsParser {
     } catch (error) {
       this.context.log.w(
         'executeCommand: Not permitted to execute: "' +
-        message.content +
-        '"; Error message: ' +
-        error +
-        '; stack: ' +
-        error.stack
+          message.content +
+          '"; Error message: ' +
+          error +
+          '; stack: ' +
+          error.stack
       );
-      message.reply(commandLangManager.getString(
-        'permission_command_error',
-        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
-      ));
+      message.reply(
+        commandLangManager.getString(
+          'permission_command_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+        )
+      );
       return;
     }
 
@@ -214,16 +225,18 @@ class CommandsParser {
     } catch (error) {
       this.context.log.w(
         'executeCommand: failed to execute command: "' +
-        message.content +
-        '"; Error message: ' +
-        error +
-        '; stack: ' +
-        error.stack
+          message.content +
+          '"; Error message: ' +
+          error +
+          '; stack: ' +
+          error.stack
       );
-      message.reply(commandLangManager.getString(
-        'execute_command_error',
-        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
-      ));
+      message.reply(
+        commandLangManager.getString(
+          'execute_command_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+        )
+      );
       return;
     }
 
@@ -255,16 +268,18 @@ class CommandsParser {
     } catch (error) {
       this.context.log.w(
         'executePrivateDiscordCommand: failed to execute command: "' +
-        message.content +
-        '"; Error message: ' +
-        error +
-        '; stack: ' +
-        error.stack
+          message.content +
+          '"; Error message: ' +
+          error +
+          '; stack: ' +
+          error.stack
       );
-      message.reply(commandLangManager.getString(
-        'execute_command_error',
-        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
-      ));
+      message.reply(
+        commandLangManager.getString(
+          'execute_command_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+        )
+      );
       return;
     }
 
@@ -283,34 +298,31 @@ class CommandsParser {
    * @return {Promise<DiscordCommand>}                         the command object with all arguments set up
    */
   async tryParseDiscordCommand(commandClass, message, commandLangManager) {
-    const command = commandClass.createForOrg(
-      this.context,
-      message.source.name,
-      commandLangManager,
-      message.teamId
-    );
+    const command = commandClass.createForOrg(this.context, message.source.name, commandLangManager, message.orgId);
 
     try {
       await command.parseFromDiscord(message);
     } catch (error) {
       this.context.log.w(
         'tryParseDiscordCommand: failed to parse command: "' +
-        message.content +
-        '"; Error message: ' +
-        error +
-        '; stack: ' +
-        error.stack
+          message.content +
+          '"; Error message: ' +
+          error +
+          '; stack: ' +
+          error.stack
       );
-      message.reply(commandLangManager.getString(
-        'validate_command_error',
-        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
-        await new HelpCommand(
-          this.context,
-          message.source.name,
-          commandLangManager,
-          message.teamId
-        ).getHelpCommandString(commandClass.getCommandInterfaceName(), message.source)
-      ));
+      message.reply(
+        commandLangManager.getString(
+          'validate_command_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
+          await new HelpCommand(
+            this.context,
+            message.source.name,
+            commandLangManager,
+            message.orgId
+          ).getHelpCommandString(commandClass.getCommandInterfaceName(), message.source)
+        )
+      );
       return null;
     }
 
@@ -334,17 +346,19 @@ class CommandsParser {
     } catch (error) {
       this.context.log.w(
         'tryParsePrivateDiscordCommand: failed to parse command: "' +
-        message.content +
-        '"; Error message: ' +
-        error +
-        '; stack: ' +
-        error.stack
+          message.content +
+          '"; Error message: ' +
+          error +
+          '; stack: ' +
+          error.stack
       );
-      message.reply(commandLangManager.getString(
-        'validate_command_error',
-        error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
-        '' // @todo Create a private HelpCommand class and use it here to provide help on the private commands.
-      ));
+      message.reply(
+        commandLangManager.getString(
+          'validate_command_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
+          '' // @todo Create a private HelpCommand class and use it here to provide help on the private commands.
+        )
+      );
       return null;
     }
 

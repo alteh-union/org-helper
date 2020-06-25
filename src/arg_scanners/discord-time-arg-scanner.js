@@ -26,7 +26,7 @@ class DiscordTimeArgScanner extends TimeArgScanner {
    * Appends a timezone definition to a TimeArg, based on organization's or individual preference for the timezone.
    * @see TimeArg
    * @param  {Context}      context     the Bot's context
-   * @param  {BaseMessage}      message     the Discord message with the argument
+   * @param  {BaseMessage}  message     the Discord message with the argument
    * @param  {TimeArg}      timeArg     the time argument to edit
    * @return {Promise}                  nothing
    */
@@ -37,14 +37,14 @@ class DiscordTimeArgScanner extends TimeArgScanner {
 
     const serverTimezone = await context.dbManager.getSetting(
       message.source.name,
-      message.teamId,
+      message.orgId,
       ServerSettingsTable.SERVER_SETTINGS.timezone.name
     );
 
     const userTimezone = await context.dbManager.getUserSetting(
       message.source.name,
-      message.teamId,
-      message.originalMessage.member.id,
+      message.orgId,
+      message.userId,
       UserSettingsTable.USER_SETTINGS.timezone.name
     );
 

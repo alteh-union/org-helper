@@ -123,21 +123,21 @@ class SetMyTimezoneCommand extends DiscordCommand {
       await this.context.dbManager.removeUserSetting(
         this.source,
         this.orgId,
-        message.originalMessage.member.id,
+        message.userId,
         UserSettingsTable.USER_SETTINGS.timezone.name
       );
 
       this.context.log.i("SetMyTimezoneCommand done: removed the user's timezone preference");
       return this.langManager.getString(
         'command_setmytimezone_success_no_timezone',
-        DiscordUtils.makeUserMention(message.originalMessage.member.id)
+        DiscordUtils.makeUserMention(message.userId)
       );
     }
 
     await this.context.dbManager.setUserSetting(
       this.source,
       this.orgId,
-      message.originalMessage.member.id,
+      message.userId,
       UserSettingsTable.USER_SETTINGS.timezone.name,
       this.timezone
     );

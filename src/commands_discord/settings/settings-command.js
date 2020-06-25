@@ -133,7 +133,7 @@ class SettingsCommand extends DiscordCommand {
 
   /**
    * Makes a related settings description (single setting if the setting arg is specified).
-   * @param  {BaseMessage}        message    the Discord message with the command
+   * @param  {BaseMessage}    message    the Discord message with the command
    * @param  {Array<Object>}  availableSettings the array of available settings
    * @param  {string}         emptyTextId       the text id of string to be used if no settings are found
    * @param  {Function}       dbFunc            the DB function to fetch the settings
@@ -144,7 +144,7 @@ class SettingsCommand extends DiscordCommand {
     dbFunc = dbFunc.bind(this.context.dbManager);
     if (this.setting !== null) {
       const value = includeUser
-        ? await dbFunc(this.source, this.orgId, message.originalMessage.member.id, availableSettings[this.setting].name)
+        ? await dbFunc(this.source, this.orgId, message.userId, availableSettings[this.setting].name)
         : await dbFunc(this.source, this.orgId, availableSettings[this.setting].name);
       if (value !== undefined) {
         return this.langManager.getString(availableSettings[this.setting].textId) + ' : ' + value;
@@ -163,7 +163,7 @@ class SettingsCommand extends DiscordCommand {
 
       getResults.push(
         (includeUser
-          ? dbFunc(this.source, this.orgId, message.originalMessage.member.id, availableSettings[settingKey].name)
+          ? dbFunc(this.source, this.orgId, message.userId, availableSettings[settingKey].name)
           : dbFunc(this.source, this.orgId, availableSettings[settingKey].name)
         ).then(value => {
           if (value !== undefined) {

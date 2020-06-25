@@ -7,6 +7,7 @@ const AddRoleManagerCommand = require('../commands_discord/permissions/add-role-
 const BadWordsCommand = require('../commands_discord/settings/bad-words-command');
 const CleanCommand = require('../commands_discord/moderation/clean-command');
 const DeleteReminderCommand = require('../commands_discord/social/delete-reminder-command');
+const DeletePermissionCommand = require('../commands_discord/permissions/delete-permission-command');
 const DenyRemindCommand = require('../commands_discord/permissions/deny-remind-command');
 const HelpCommand = require('../commands_discord/other/help-command');
 const MyPermissionsCommand = require('../commands_discord/permissions/my-permissions-command');
@@ -30,8 +31,10 @@ const SettingsCommand = require('../commands_discord/settings/settings-command')
 
 const MyDataCommand = require('../commands_discord/private_privacy/my-data-command');
 
+/**
+ * Class represents command available for the Discord
+ */
 class DiscordCommandManager extends CommandManager {
-
   /**
    * Gets the array of defined Discord command classes.
    * @return {Array<constructor>} the defined commands
@@ -44,6 +47,7 @@ class DiscordCommandManager extends CommandManager {
       BadWordsCommand,
       CleanCommand,
       DeleteReminderCommand,
+      DeletePermissionCommand,
       DenyRemindCommand,
       HelpCommand,
       MyPermissionsCommand,

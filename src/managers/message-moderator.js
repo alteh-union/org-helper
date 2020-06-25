@@ -34,7 +34,7 @@ class MessageModerator {
   async premoderateDiscordMessage(message) {
     const censoringEnabled = await this.context.dbManager.getSetting(
       message.source.name,
-      message.teamId,
+      message.orgId,
       ServerSettingsTable.SERVER_SETTINGS.censoring.name,
       OhUtils.OFF
     );
@@ -42,7 +42,7 @@ class MessageModerator {
     if (censoringEnabled === OhUtils.ON) {
       const badWordsString = await this.context.dbManager.getSetting(
         message.source.name,
-        message.teamId,
+        message.orgId,
         ServerSettingsTable.SERVER_SETTINGS.badwords.name,
         ''
       );
@@ -58,11 +58,13 @@ class MessageModerator {
         }
 
         if (content !== message.content) {
-          await message.reply(this.context.langManager.getString(
-            'moderator_censored_message',
-            DiscordUtils.makeUserMention(message.originalMessage.member.id),
-            content
-          ));
+          await message.reply(
+            this.context.langManager.getString(
+              'moderator_censored_message',
+              DiscordUtils.makeUserMention(message.userId),
+              content
+            )
+          );
           await message.originalMessage.delete();
         }
       }

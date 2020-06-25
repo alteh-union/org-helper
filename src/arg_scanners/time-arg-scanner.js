@@ -93,7 +93,7 @@ class TimeArgScanner extends SimpleArgScanner {
    * Appends a timezone definition to a TimeArg, based on organization's or individual preference for the timezone.
    * @see TimeArg
    * @param  {Context}      context     the Bot's context
-   * @param  {BaseMessage}      message     the Discord message with the argument
+   * @param  {BaseMessage}  message     the Discord message with the argument
    * @param  {TimeArg}      timeArg     the time argument to edit
    * @return {Promise}                  nothing
    */

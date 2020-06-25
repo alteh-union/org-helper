@@ -163,6 +163,15 @@ class PermissionsManager {
     await Promise.all(permissionResults);
   }
 
+  /**
+   * Build mongodDb query to get a permissions
+   * @param source
+   * @param command
+   * @param commandUserId
+   * @param roleIds
+   * @param permissionFilter
+   * @returns {{$and: []}}
+   */
   buildPermissionQuery(source, command, commandUserId, roleIds, permissionFilter) {
     const andArray = [];
 
@@ -225,6 +234,12 @@ class PermissionsManager {
     return { $and: andArray };
   }
 
+  /**
+   * Verify bot permissions
+   * @param permissionFilters
+   * @param permissions
+   * @param command
+   */
   verifyPermissions(permissionFilters, permissions, command) {
     for (const permissionFilter of permissionFilters) {
       if (permissions === null || permissions.length === 0) {
@@ -281,7 +296,6 @@ class PermissionsManager {
    */
   checkDiscordEntityFilter(permissionName, filterFieldName, permissionRows, entitiesFilter, langManager) {
     for (const entityFilter of entitiesFilter) {
-
       const found = permissionRows.some(row => {
         const filterValue = row.filter[filterFieldName];
         return filterValue === entityFilter || filterValue === OhUtils.ANY_VALUE;
@@ -313,10 +327,7 @@ class PermissionsManager {
     for (const permission of requiredDiscordPermissions) {
       if (!message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(permission)) {
         this.context.log.w(
-          'Attempt to use command ' +
-          command.constructor.getCommandInterfaceName() +
-          ' by user ' +
-          message.originalMessage.member.id
+          'Attempt to use command ' + command.constructor.getCommandInterfaceName() + ' by user ' + message.userId
         );
         throw new BotPublicError(command.langManager.getString('permission_missing_discord', permission));
       }
@@ -339,9 +350,11 @@ class PermissionsManager {
 
     if (
       this.context.prefsManager.bypass_bot_permissions_for_discord_admins !== 'true' ||
-      !message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(DiscordPermissions.ADMINISTRATOR)
+      !message.originalMessage.member
+        .permissionsIn(message.originalMessage.channel)
+        .has(DiscordPermissions.ADMINISTRATOR)
     ) {
-      await this.checkBotPermissions(message.originalMessage.member.id, roleIds, command, message.source.name);
+      await this.checkBotPermissions(message.userId, roleIds, command, message.source.name);
     }
 
     await this.checkDiscordPermissions(message, command);
@@ -353,7 +366,9 @@ class PermissionsManager {
    * @return {Boolean}                 true if admin, false otherwise
    */
   isAuthorAdmin(message) {
-    return message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(DiscordPermissions.ADMINISTRATOR);
+    return message.originalMessage.member
+      .permissionsIn(message.originalMessage.channel)
+      .has(DiscordPermissions.ADMINISTRATOR);
   }
 }
 

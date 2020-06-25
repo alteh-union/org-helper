@@ -6,7 +6,7 @@ class CommandManager {
    * @return {Array<constructor>} the defined commands
    */
   get definedCommands() {
-    throw new Error('CommandManager is an abstract class');
+    throw new Error(`${this.constructor.name} is an abstract class`);
   }
 
   /**
@@ -14,7 +14,7 @@ class CommandManager {
    * @type {Array<constructor>}
    */
   get definedPrivateCommands() {
-    throw new Error('CommandManager is an abstract class');
+    throw new Error(`${this.constructor.name} is an abstract class`);
   }
 }
 
