@@ -12,10 +12,10 @@ const MongoClient = require('mongodb').MongoClient;
 const Discord = require('discord.js');
 
 const OhUtils = require('./utils/bot-utils');
-
+const BaseMessage = require('./components/base-message');
 const PrefsManager = require('./managers/prefs-manager');
 const Context = require('./managers/context');
-
+const DiscordSource = require('./components/discord-source');
 const prefsPath = path.join(__dirname, '..', 'preferences.txt');
 const localizationPath = path.join(__dirname, '..', 'localization');
 
@@ -26,6 +26,7 @@ const prefsManager = new PrefsManager(prefsPath);
 prefsManager.readPrefs();
 
 const c = new Context(prefsManager, localizationPath, client);
+const discordSource = new DiscordSource(client);
 
 c.log.i('Context created.');
 
@@ -73,10 +74,6 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
       }
 
       await Promise.all(updateResults);
-
-      c.commandsParser.setDiscordClient(client);
-      c.messageModerator.setDiscordClient(client);
-
       await c.dbManager.updateGuilds(client.guilds.cache);
 
       c.discordClientReady = true;
@@ -87,22 +84,23 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
     }
   });
 
-  client.on('message', async message => {
+  client.on('message', async discordMessage => {
     if (!c.discordClientReady) {
       c.log.w('on message: the client is not ready');
       return;
     }
 
     try {
+      const message = BaseMessage.createFromDiscord(discordMessage, discordSource);
       await c.dbManager.updateGuilds(client.guilds.cache);
       await c.scheduler.syncTasks();
 
-      if (message.guild !== undefined && message.guild !== null) {
-        await c.dbManager.updateGuild(message.guild);
+      if (message.originalMessage.guild !== undefined && message.originalMessage.guild !== null) {
+        await c.dbManager.updateGuild(message.originalMessage.guild);
 
         let processed = false;
-        if (message.author.id !== client.user.id) {
-          processed = await c.commandsParser.parseDiscordCommand(message);
+        if (message.userId !== client.user.id) {
+          processed = await c.commandsParser.processMessage(message);
           if (!processed) {
             c.messageModerator.premoderateDiscordMessage(message);
           }

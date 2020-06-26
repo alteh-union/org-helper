@@ -11,7 +11,6 @@ const DiscordUtils = require('../utils/discord-utils');
 
 const ArrayArgScanner = require('../arg_scanners/array-arg-scanner');
 
-const BotTable = require('../mongo_classes/bot-table');
 const ServerSettingsTable = require('../mongo_classes/server-settings-table');
 
 /**
@@ -28,37 +27,29 @@ class MessageModerator {
   }
 
   /**
-   * Sets the Discord client for the instance.
-   * @param {Client} client the Dicord client
-   */
-  setDiscordClient(client) {
-    this.discordClient = client;
-  }
-
-  /**
    * Premoderates incoming message (e.g. replaces bad words etc.)
-   * @param  {Message}  discordMessage the Discordmessage
+   * @param  {BaseMessage}  message the Discordmessage
    * @return {Promise}                 nothing
    */
-  async premoderateDiscordMessage(discordMessage) {
+  async premoderateDiscordMessage(message) {
     const censoringEnabled = await this.context.dbManager.getSetting(
-      BotTable.DISCORD_SOURCE,
-      discordMessage.guild.id,
+      message.source.name,
+      message.orgId,
       ServerSettingsTable.SERVER_SETTINGS.censoring.name,
       OhUtils.OFF
     );
 
     if (censoringEnabled === OhUtils.ON) {
       const badWordsString = await this.context.dbManager.getSetting(
-        BotTable.DISCORD_SOURCE,
-        discordMessage.guild.id,
+        message.source.name,
+        message.orgId,
         ServerSettingsTable.SERVER_SETTINGS.badwords.name,
         ''
       );
 
       if (badWordsString.length > 0) {
         const badWords = badWordsString.split(ArrayArgScanner.ARRAY_SEPARATOR);
-        let content = discordMessage.content.slice(0);
+        let content = message.content.slice(0);
         for (const badWord of badWords) {
           const euphemism = OhUtils.makeEuphemism(badWord.length);
           const re = new RegExp(badWord, 'gi');
@@ -66,16 +57,15 @@ class MessageModerator {
           content = content.replace(re, euphemism);
         }
 
-        if (content !== discordMessage.content) {
-          await DiscordUtils.sendToTextChannel(
-            discordMessage.channel,
+        if (content !== message.content) {
+          await message.reply(
             this.context.langManager.getString(
               'moderator_censored_message',
-              DiscordUtils.makeUserMention(discordMessage.member.id),
+              DiscordUtils.makeUserMention(message.userId),
               content
             )
           );
-          await discordMessage.delete();
+          await message.originalMessage.delete();
         }
       }
     }

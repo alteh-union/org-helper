@@ -92,11 +92,11 @@ class SettingsCommand extends DiscordCommand {
    * Throws BotPublicError if any of the validations was violated.
    * @see CommandArgDef
    * @throws {BotPublicError}
-   * @param  {Message}  discordMessage the command's message
+   * @param  {BaseMessage}  message the command's message
    * @return {Promise}                 nothing
    */
-  async validateFromDiscord(discordMessage) {
-    await super.validateFromDiscord(discordMessage);
+  async validateFromDiscord(message) {
+    await super.validateFromDiscord(message);
 
     if (this.setting !== null) {
       const availableSettings = Object.values(ServerSettingsTable.SERVER_SETTINGS);
@@ -113,16 +113,16 @@ class SettingsCommand extends DiscordCommand {
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {Message}         discordMessage the Discord message as the source of the command
+   * @param  {BaseMessage}         message the Discord message as the source of the command
    * @return {Promise<string>}                the result text to be replied as the response of the execution
    */
-  async executeForDiscord(discordMessage) {
+  async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     // Keep "return await" to properly catch exceptions from the inside.
     /* eslint-disable no-return-await */
     return await this.getSettingsDescription(
-      discordMessage,
+      message,
       ServerSettingsTable.SERVER_SETTINGS,
       'command_settings_empty_setting',
       this.context.dbManager.getSetting,
@@ -133,18 +133,18 @@ class SettingsCommand extends DiscordCommand {
 
   /**
    * Makes a related settings description (single setting if the setting arg is specified).
-   * @param  {Message}        discordMessage    the Discord message with the command
+   * @param  {BaseMessage}    message    the Discord message with the command
    * @param  {Array<Object>}  availableSettings the array of available settings
    * @param  {string}         emptyTextId       the text id of string to be used if no settings are found
    * @param  {Function}       dbFunc            the DB function to fetch the settings
    * @param  {Boolean}        includeUser       true if need to include member id into the DB function call
    * @return {Promise<string>}                  [description]
    */
-  async getSettingsDescription(discordMessage, availableSettings, emptyTextId, dbFunc, includeUser) {
+  async getSettingsDescription(message, availableSettings, emptyTextId, dbFunc, includeUser) {
     dbFunc = dbFunc.bind(this.context.dbManager);
     if (this.setting !== null) {
       const value = includeUser
-        ? await dbFunc(this.source, this.orgId, discordMessage.member.id, availableSettings[this.setting].name)
+        ? await dbFunc(this.source, this.orgId, message.userId, availableSettings[this.setting].name)
         : await dbFunc(this.source, this.orgId, availableSettings[this.setting].name);
       if (value !== undefined) {
         return this.langManager.getString(availableSettings[this.setting].textId) + ' : ' + value;
@@ -163,7 +163,7 @@ class SettingsCommand extends DiscordCommand {
 
       getResults.push(
         (includeUser
-          ? dbFunc(this.source, this.orgId, discordMessage.member.id, availableSettings[settingKey].name)
+          ? dbFunc(this.source, this.orgId, message.userId, availableSettings[settingKey].name)
           : dbFunc(this.source, this.orgId, availableSettings[settingKey].name)
         ).then(value => {
           if (value !== undefined) {

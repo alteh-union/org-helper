@@ -84,11 +84,11 @@ class SetLocaleCommand extends DiscordCommand {
    * Throws BotPublicError if any of the validations was violated.
    * @see CommandArgDef
    * @throws {BotPublicError}
-   * @param  {Message}  discordMessage the command's message
+   * @param  {BaseMessage}  message the command's message
    * @return {Promise}                 nothing
    */
-  async validateFromDiscord(discordMessage) {
-    await super.validateFromDiscord(discordMessage);
+  async validateFromDiscord(message) {
+    await super.validateFromDiscord(message);
 
     const locales = this.langManager.getLocales();
     let found = false;
@@ -113,10 +113,10 @@ class SetLocaleCommand extends DiscordCommand {
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {Message}         discordMessage the Discord message as the source of the command
+   * @param  {BaseMessage}         message the Discord message as the source of the command
    * @return {Promise<string>}                the result text to be replied as the response of the execution
    */
-  async executeForDiscord(discordMessage) {
+  async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     await this.context.dbManager.setSetting(

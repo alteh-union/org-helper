@@ -9,83 +9,11 @@
 const LangManager = require('./lang-manager');
 
 const BotPublicError = require('../utils/bot-public-error');
-const DiscordUtils = require('../utils/discord-utils');
 
-const BotTable = require('../mongo_classes/bot-table');
 const ServerSettingsTable = require('../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../mongo_classes/user-settings-table');
 
-const DiscordCommand = require('../commands_discord/discord-command');
-
-const AddBadWordsCommand = require('../commands_discord/settings/add-bad-words-command');
-const AddRoleCommand = require('../commands_discord/moderation/add-role-command');
-const AddRoleManagerCommand = require('../commands_discord/permissions/add-role-manager-command');
-const BadWordsCommand = require('../commands_discord/settings/bad-words-command');
-const CleanCommand = require('../commands_discord/moderation/clean-command');
-const DeletePermissionCommand = require('../commands_discord/permissions/delete-permission-command');
-const DeleteReminderCommand = require('../commands_discord/social/delete-reminder-command');
-const DenyRemindCommand = require('../commands_discord/permissions/deny-remind-command');
 const HelpCommand = require('../commands_discord/other/help-command');
-const MyPermissionsCommand = require('../commands_discord/permissions/my-permissions-command');
-const MySettingsCommand = require('../commands_discord/settings/my-settings-command');
-const PermissionsCommand = require('../commands_discord/permissions/permissions-command');
-const PermitRemindCommand = require('../commands_discord/permissions/permit-remind-command');
-const PingCommand = require('../commands_discord/other/ping-command');
-const PollCommand = require('../commands_discord/social/poll-command');
-const RemindCommand = require('../commands_discord/social/remind-command');
-const RemindersCommand = require('../commands_discord/social/reminders-command');
-const RemoveBadWordsCommand = require('../commands_discord/settings/remove-bad-words-command');
-const RemoveRoleCommand = require('../commands_discord/moderation/remove-role-command');
-const RemoveRoleManagerCommand = require('../commands_discord/permissions/remove-role-manager-command');
-const SetCensoringCommand = require('../commands_discord/settings/set-censoring-command');
-const SetLocaleCommand = require('../commands_discord/settings/set-locale-command');
-const SetMyLocaleCommand = require('../commands_discord/settings/set-my-locale-command');
-const SetMyTimezoneCommand = require('../commands_discord/settings/set-my-timezone-command');
-const SetPrefixCommand = require('../commands_discord/settings/set-prefix-command');
-const SetTimezoneCommand = require('../commands_discord/settings/set-timezone-command');
-const SettingsCommand = require('../commands_discord/settings/settings-command');
-
-const MyDataCommand = require('../commands_discord/private_privacy/my-data-command');
-
-/**
- * The defined Discord command classes.
- * @type {Array<constructor>}
- */
-const DiscordCommands = Object.freeze([
-  AddBadWordsCommand,
-  AddRoleCommand,
-  AddRoleManagerCommand,
-  BadWordsCommand,
-  CleanCommand,
-  DeletePermissionCommand,
-  DeleteReminderCommand,
-  DenyRemindCommand,
-  HelpCommand,
-  MyPermissionsCommand,
-  MySettingsCommand,
-  PermissionsCommand,
-  PermitRemindCommand,
-  PingCommand,
-  PollCommand,
-  RemindersCommand,
-  RemindCommand,
-  RemoveBadWordsCommand,
-  RemoveRoleCommand,
-  RemoveRoleManagerCommand,
-  SetCensoringCommand,
-  SetLocaleCommand,
-  SetMyLocaleCommand,
-  SetMyTimezoneCommand,
-  SetPrefixCommand,
-  SetTimezoneCommand,
-  SettingsCommand
-]);
-
-/**
- * The defined private Discord command classes.
- * @type {Array<constructor>}
- */
-const DiscordPrivateCommands = Object.freeze([MyDataCommand]);
 
 /**
  * Parses and launches execution of the Bot's commands.
@@ -98,22 +26,6 @@ class CommandsParser {
    */
   constructor(context) {
     this.context = context;
-  }
-
-  /**
-   * Sets the Discord client for the instance.
-   * @param {Client} client the Discord client
-   */
-  setDiscordClient(client) {
-    this.discordClient = client;
-  }
-
-  /**
-   * Gets the array of defined Discord command classes.
-   * @return {Array<constructor>} the defined commands
-   */
-  getDefinedDiscordCommands() {
-    return DiscordCommands;
   }
 
   /**
@@ -140,80 +52,96 @@ class CommandsParser {
    * If a problem occured on some other step, then most probably it's an internal Bot's problem, so don't
    * pass details to the caller, instead suggest him to contact the Bot developers.
    * @see HelpCommand
-   * @param  {Message}          discordMessage the incoming Discord message
+   * @param  {BaseMessage}          message the incoming Discord message
    * @return {Promise<Boolean>}                true if a command was executed successfully, false otherwise
    */
-  async parseDiscordCommand(discordMessage) {
+  async processMessage(message) {
     const currentPrefix = await this.context.dbManager.getSetting(
-      BotTable.DISCORD_SOURCE,
-      discordMessage.guild.id,
+      message.source.name,
+      message.orgId,
       ServerSettingsTable.SERVER_SETTINGS.commandPrefix.name,
-      DiscordCommand.DEFAULT_COMMAND_PREFIX
+      message.source.DEFAULT_COMMAND_PREFIX
     );
 
-    const currentLocale = await this.context.dbManager.getSetting(
-      BotTable.DISCORD_SOURCE,
-      discordMessage.guild.id,
-      ServerSettingsTable.SERVER_SETTINGS.localeName.name
-    );
+    const commandLangManager = await this.getCommandLangManager(message);
+    const command = this.parseMessage(message, currentPrefix, commandLangManager);
+    if (command) {
+      await this.executeCommand(message, command, commandLangManager);
+    }
+    return command !== null;
+  }
 
-    const currentUserLocale = await this.context.dbManager.getUserSetting(
-      BotTable.DISCORD_SOURCE,
-      discordMessage.guild.id,
-      discordMessage.author.id,
-      UserSettingsTable.USER_SETTINGS.localeName.name
-    );
-
-    const commandLangManager = new LangManager(
-      this.context.localizationPath,
-      currentUserLocale === undefined ? currentLocale : currentUserLocale
-    );
-
+  /**
+   * Parse message to get a bot command
+   * @param message
+   * @param currentPrefix
+   * @param commandLangManager
+   * @returns {constructor|HelpCommand|null}
+   */
+  parseMessage(message, currentPrefix, commandLangManager) {
     if (
-      !discordMessage.content.startsWith(currentPrefix) &&
-      discordMessage.content.startsWith(DiscordCommand.DEFAULT_COMMAND_PREFIX)
+      !message.content.startsWith(currentPrefix) &&
+      message.content.startsWith(message.source.DEFAULT_COMMAND_PREFIX)
     ) {
-      const fallbackCommandName = discordMessage.content.slice(
-        DiscordCommand.DEFAULT_COMMAND_PREFIX.length,
-        discordMessage.content.includes(' ') ? discordMessage.content.indexOf(' ') : discordMessage.content.length
+      const fallbackCommandName = message.content.slice(
+        message.source.DEFAULT_COMMAND_PREFIX.length,
+        message.content.includes(' ') ? message.content.indexOf(' ') : message.content.length
       );
 
       if (
         fallbackCommandName === this.context.langManager.getString(HelpCommand.getCommandInterfaceName()) ||
         fallbackCommandName === commandLangManager.getString(HelpCommand.getCommandInterfaceName())
       ) {
-        this.context.log.i('Found help command with default prefix: ' + discordMessage.content);
-        await this.executeDiscordCommand(discordMessage, HelpCommand, commandLangManager);
-        return true;
+        this.context.log.i('Found help command with default prefix: ' + message.content);
+        return HelpCommand;
       }
 
-      return false;
+      return null;
     }
 
-    if (!discordMessage.content.startsWith(currentPrefix)) {
-      return false;
+    if (!message.content.startsWith(currentPrefix)) {
+      return null;
     }
 
-    const commandName = discordMessage.content.slice(
+    const commandName = message.content.slice(
       currentPrefix.length,
-      discordMessage.content.includes(' ') ? discordMessage.content.indexOf(' ') : discordMessage.content.length
+      message.content.includes(' ') ? message.content.indexOf(' ') : message.content.length
     );
-    this.context.log.i('parseDiscordCommand: command: ' + discordMessage.content + '; commandName: ' + commandName);
+    this.context.log.i('parseDiscordCommand: command: ' + message.content + '; commandName: ' + commandName);
 
-    let commandFound = false;
-    for (const command of DiscordCommands) {
+    for (const command of message.source.commandManager.definedCommands) {
       if (commandName === commandLangManager.getString(command.getCommandInterfaceName())) {
-        this.context.log.i('Found command: ' + discordMessage.content);
-        commandFound = true;
-        // False positive for ESLint, since we break the loop immediately.
-        /* eslint-disable no-await-in-loop */
-        await this.executeDiscordCommand(discordMessage, command, commandLangManager);
-        /* eslint-enable no-await-in-loop */
-        break;
+        this.context.log.i('Found command: ' + message.content);
+        return command;
       }
     }
 
-    return commandFound;
+    return null;
+  }
+
+  /**
+   * Get command lang manager based on message locale
+   * @param message
+   * @returns {Promise<void>}
+   */
+  async getCommandLangManager(message) {
+    const currentLocale = await this.context.dbManager.getSetting(
+      message.source.name,
+      message.orgId,
+      ServerSettingsTable.SERVER_SETTINGS.localeName.name
+    );
+
+    const currentUserLocale = await this.context.dbManager.getUserSetting(
+      message.source.name,
+      message.orgId,
+      message.userId,
+      UserSettingsTable.USER_SETTINGS.localeName.name
+    );
+
+    return new LangManager(
+      this.context.localizationPath,
+      currentUserLocale === undefined ? currentLocale : currentUserLocale
+    );
   }
 
   /**
@@ -221,33 +149,31 @@ class CommandsParser {
    * Processing is somewhat similar to the gu8ld commands, but with respect to the fact that there is no
    * guild, so cannot use guild settings etc.
    * @todo To consider implementing user settings not related to any guild.
-   * @see CommandsParser#parseDiscordCommand
-   * @param  {Message}          discordMessage the incoming Discord message
+   * @see CommandsParser#processMessage
+   * @param  {BaseMessage}         message the incoming Discord message
    * @return {Promise<Boolean>}                true if a command was executed successfully, false otherwise
    */
-  async parsePrivateDiscordCommand(discordMessage) {
+  async parsePrivateDiscordCommand(message) {
     const commandLangManager = this.context.langManager;
-    const currentPrefix = DiscordCommand.DEFAULT_COMMAND_PREFIX;
-    if (!discordMessage.content.startsWith(currentPrefix)) {
+    const currentPrefix = message.source.DEFAULT_COMMAND_PREFIX;
+    if (!message.content.startsWith(currentPrefix)) {
       return false;
     }
 
-    const commandName = discordMessage.content.slice(
+    const commandName = message.content.slice(
       currentPrefix.length,
-      discordMessage.content.includes(' ') ? discordMessage.content.indexOf(' ') : discordMessage.content.length
+      message.content.includes(' ') ? message.content.indexOf(' ') : message.content.length
     );
-    this.context.log.i(
-      'parsePrivateDiscordCommand: command: ' + discordMessage.content + '; commandName: ' + commandName
-    );
+    this.context.log.i('parsePrivateDiscordCommand: command: ' + message.content + '; commandName: ' + commandName);
 
     let commandFound = false;
-    for (const command of DiscordPrivateCommands) {
+    for (const command of message.source.commandManager.definedPrivateCommands) {
       if (commandName === commandLangManager.getString(command.getCommandInterfaceName())) {
-        this.context.log.i('Found private command: ' + discordMessage.content);
+        this.context.log.i('Found private command: ' + message.content);
         commandFound = true;
         // False positive for ESLint, since we break the loop immediately.
         /* eslint-disable no-await-in-loop */
-        await this.executePrivateDiscordCommand(discordMessage, command, commandLangManager);
+        await this.executePrivateDiscordCommand(message, command, commandLangManager);
         /* eslint-enable no-await-in-loop */
         break;
       }
@@ -262,30 +188,29 @@ class CommandsParser {
    * If there were errors during parsing then replies to the source text channel with info about the error.
    * If there was no error, then replies to the channel with a string result generated by the command object.
    * @see DiscordCommand
-   * @param  {Message}                      discordMessage     the message
+   * @param  {BaseMessage}                     message     the message
    * @param  {constructor<DiscordCommand>}  commandClass       the command class/constructor
    * @param  {LangManager}                  commandLangManager the language manager to be used for the command
    * @return {Promise}                                         nothing
    */
-  async executeDiscordCommand(discordMessage, commandClass, commandLangManager) {
-    const command = await this.tryParseDiscordCommand(commandClass, discordMessage, commandLangManager);
+  async executeCommand(message, commandClass, commandLangManager) {
+    const command = await this.tryParseDiscordCommand(commandClass, message, commandLangManager);
     if (command === null) {
       return;
     }
 
     try {
-      await this.context.permManager.checkDiscordCommandPermissions(this.discordClient, discordMessage, command);
+      await this.context.permManager.checkDiscordCommandPermissions(message, command);
     } catch (error) {
       this.context.log.w(
-        'executeDiscordCommand: Not permitted to execute: "' +
-          discordMessage.content +
+        'executeCommand: Not permitted to execute: "' +
+          message.content +
           '"; Error message: ' +
           error +
           '; stack: ' +
           error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        discordMessage.channel,
+      message.reply(
         commandLangManager.getString(
           'permission_command_error',
           error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
@@ -296,18 +221,17 @@ class CommandsParser {
 
     let result;
     try {
-      result = await command.executeForDiscord(discordMessage);
+      result = await command.executeForDiscord(message);
     } catch (error) {
       this.context.log.w(
-        'executeDiscordCommand: failed to execute command: "' +
-          discordMessage.content +
+        'executeCommand: failed to execute command: "' +
+          message.content +
           '"; Error message: ' +
           error +
           '; stack: ' +
           error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        discordMessage.channel,
+      message.reply(
         commandLangManager.getString(
           'execute_command_error',
           error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
@@ -317,7 +241,7 @@ class CommandsParser {
     }
 
     if (result !== undefined && result !== null && result !== '') {
-      DiscordUtils.sendToTextChannel(discordMessage.channel, result);
+      message.reply(result);
     }
   }
 
@@ -327,31 +251,30 @@ class CommandsParser {
    * If there were errors during parsing then replies to the source text channel with info about the error.
    * If there was no error, then replies to the channel with a string result generated by the command object.
    * @see DiscordPrivateCommand
-   * @param  {Message}                      discordMessage     the message
+   * @param  {BaseMessage}                      message     the message
    * @param  {constructor<DiscordCommand>}  commandClass       the command class/constructor
    * @param  {LangManager}                  commandLangManager the language manager to be used for the command
    * @return {Promise}                                         nothing
    */
-  async executePrivateDiscordCommand(discordMessage, commandClass, commandLangManager) {
-    const command = await this.tryParsePrivateDiscordCommand(commandClass, discordMessage, commandLangManager);
+  async executePrivateDiscordCommand(message, commandClass, commandLangManager) {
+    const command = await this.tryParsePrivateDiscordCommand(commandClass, message, commandLangManager);
     if (command === null) {
       return;
     }
 
     let result;
     try {
-      result = await command.executeForDiscord(discordMessage);
+      result = await command.executeForDiscord(message);
     } catch (error) {
       this.context.log.w(
         'executePrivateDiscordCommand: failed to execute command: "' +
-          discordMessage.content +
+          message.content +
           '"; Error message: ' +
           error +
           '; stack: ' +
           error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        discordMessage.channel,
+      message.reply(
         commandLangManager.getString(
           'execute_command_error',
           error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
@@ -361,7 +284,7 @@ class CommandsParser {
     }
 
     if (result !== undefined && result !== null && result !== '') {
-      DiscordUtils.sendToTextChannel(discordMessage.channel, result);
+      message.reply(result);
     }
   }
 
@@ -370,40 +293,34 @@ class CommandsParser {
    * If there were errors during parsing then replies to the source text channel with info about the error.
    * @see DiscordCommand
    * @param  {constructor<DiscordCommand>}  commandClass       the command class/constructor
-   * @param  {Message}                      discordMessage     the message
+   * @param  {BaseMessage}                      message     the message
    * @param  {LangManager}                  commandLangManager the language manager to be used for the command
    * @return {Promise<DiscordCommand>}                         the command object with all arguments set up
    */
-  async tryParseDiscordCommand(commandClass, discordMessage, commandLangManager) {
-    const command = commandClass.createForOrg(
-      this.context,
-      BotTable.DISCORD_SOURCE,
-      commandLangManager,
-      discordMessage.guild.id
-    );
+  async tryParseDiscordCommand(commandClass, message, commandLangManager) {
+    const command = commandClass.createForOrg(this.context, message.source.name, commandLangManager, message.orgId);
 
     try {
-      await command.parseFromDiscord(this.discordClient, discordMessage);
+      await command.parseFromDiscord(message);
     } catch (error) {
       this.context.log.w(
         'tryParseDiscordCommand: failed to parse command: "' +
-          discordMessage.content +
+          message.content +
           '"; Error message: ' +
           error +
           '; stack: ' +
           error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        discordMessage.channel,
+      message.reply(
         commandLangManager.getString(
           'validate_command_error',
           error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),
           await new HelpCommand(
             this.context,
-            BotTable.DISCORD_SOURCE,
+            message.source.name,
             commandLangManager,
-            discordMessage.guild.id
-          ).getHelpCommandString(commandClass.getCommandInterfaceName())
+            message.orgId
+          ).getHelpCommandString(commandClass.getCommandInterfaceName(), message.source)
         )
       );
       return null;
@@ -417,26 +334,25 @@ class CommandsParser {
    * If there were errors during parsing then replies to the source text channel with info about the error.
    * @see DiscordCommand
    * @param  {constructor<DiscordCommand>}  commandClass       the command class/constructor
-   * @param  {Message}                      discordMessage     the message
+   * @param  {BaseMessage}                     message     the message
    * @param  {LangManager}                  commandLangManager the language manager to be used for the command
    * @return {Promise<DiscordCommand>}                         the command object with all arguments set up
    */
-  async tryParsePrivateDiscordCommand(commandClass, discordMessage, commandLangManager) {
-    const command = commandClass.createForUser(this.context, BotTable.DISCORD_SOURCE, commandLangManager);
+  async tryParsePrivateDiscordCommand(commandClass, message, commandLangManager) {
+    const command = commandClass.createForUser(this.context, message.source.name, commandLangManager);
 
     try {
-      await command.parseFromDiscord(this.discordClient, discordMessage);
+      await command.parseFromDiscord(message);
     } catch (error) {
       this.context.log.w(
         'tryParsePrivateDiscordCommand: failed to parse command: "' +
-          discordMessage.content +
+          message.content +
           '"; Error message: ' +
           error +
           '; stack: ' +
           error.stack
       );
-      DiscordUtils.sendToTextChannel(
-        discordMessage.channel,
+      message.reply(
         commandLangManager.getString(
           'validate_command_error',
           error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error'),

@@ -10,7 +10,6 @@ const TimeArgScanner = require('./time-arg-scanner');
 
 const TimeArg = require('../command_meta/time-arg');
 
-const BotTable = require('../mongo_classes/bot-table');
 const ServerSettingsTable = require('../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../mongo_classes/user-settings-table');
 
@@ -27,7 +26,7 @@ class DiscordTimeArgScanner extends TimeArgScanner {
    * Appends a timezone definition to a TimeArg, based on organization's or individual preference for the timezone.
    * @see TimeArg
    * @param  {Context}      context     the Bot's context
-   * @param  {Message}      message     the Discord message with the argument
+   * @param  {BaseMessage}  message     the Discord message with the argument
    * @param  {TimeArg}      timeArg     the time argument to edit
    * @return {Promise}                  nothing
    */
@@ -37,15 +36,15 @@ class DiscordTimeArgScanner extends TimeArgScanner {
     }
 
     const serverTimezone = await context.dbManager.getSetting(
-      BotTable.DISCORD_SOURCE,
-      message.guild.id,
+      message.source.name,
+      message.orgId,
       ServerSettingsTable.SERVER_SETTINGS.timezone.name
     );
 
     const userTimezone = await context.dbManager.getUserSetting(
-      BotTable.DISCORD_SOURCE,
-      message.guild.id,
-      message.member.id,
+      message.source.name,
+      message.orgId,
+      message.userId,
       UserSettingsTable.USER_SETTINGS.timezone.name
     );
 

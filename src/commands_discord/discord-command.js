@@ -47,7 +47,7 @@ class DiscordCommand extends Command {
    * Gets the default value for a given argument definition.
    * Used when unable to scan the argument from the command's text.
    * @param  {Context}        context the Bot's context
-   * @param  {Message}        message the command's message
+   * @param  {BaseMessage}    message the command's message
    * @param  {CommandArgDef}  arg     the argument definition
    * @return {Object}                 the default value
    */
@@ -62,10 +62,10 @@ class DiscordCommand extends Command {
    * Throws BotPublicError if any of the validations was violated.
    * @see CommandArgDef
    * @throws {BotPublicError}
-   * @param  {Message}  discordMessage the command's message
+   * @param  {BaseMessage}  message the command's message
    * @return {Promise}                 nothing
    */
-  async validateFromDiscord(discordMessage) {
+  async validateFromDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     await ArgValidationTree.validateCommandArguments(this);
@@ -75,10 +75,10 @@ class DiscordCommand extends Command {
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {Message}         discordMessage the Discord message as the source of the command
+   * @param  {BaseMessage}         message the Discord message as the source of the command
    * @return {Promise<string>}                the result text to be replied as the response of the execution
    */
-  async executeForDiscord(discordMessage) {
+  async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     throw new Error('executeForDiscord: ' + this.constructor.name + ' is an abstract class.');
@@ -129,44 +129,41 @@ class DiscordCommand extends Command {
    * In any case, all defined arguments will have at least null value after executing this function.
    * @see DiscordCommand#findArgValue
    * @see Command.getDefinedArgs
-   * @param  {Client}   client         the Discord client
-   * @param  {Message}  discordMessage the Discord message with the command
+   * @param  {BaseMessage}  message the Discord message with the command
    * @return {Promise}                 nothing
    */
-  async parseFromDiscordByNames(client, discordMessage) {
+  async parseFromDiscordByNames(message) {
     const definedArgs = this.constructor.getDefinedArgs();
     const argsKeys = Object.keys(definedArgs);
     const thiz = this;
 
     const results = [];
     for (const argKey of argsKeys) {
-      const argText = this.findArgValue(discordMessage.content, definedArgs[argKey]);
+      const argText = this.findArgValue(message.content, definedArgs[argKey]);
       results.push(
-        definedArgs[argKey].scanner
-          .scan(this.context, this.langManager, discordMessage, argText)
-          .then(async scanResult => {
-            let argValue = scanResult.value;
-            thiz.context.log.d(
-              'argValue: ' + util.inspect(argValue, { showHidden: false, depth: 2 }) + '; for key: ' + argKey
+        definedArgs[argKey].scanner.scan(this.context, this.langManager, message, argText).then(async scanResult => {
+          let argValue = scanResult.value;
+          thiz.context.log.d(
+            'argValue: ' + util.inspect(argValue, { showHidden: false, depth: 2 }) + '; for key: ' + argKey
+          );
+          if (argValue === null || argValue === undefined) {
+            scanResult = await definedArgs[argKey].scanner.scan(
+              thiz.context,
+              thiz.langManager,
+              message,
+              thiz.getDefaultDiscordArgValue(message, definedArgs[argKey])
             );
-            if (argValue === null || argValue === undefined) {
-              scanResult = await definedArgs[argKey].scanner.scan(
-                thiz.context,
-                thiz.langManager,
-                discordMessage,
-                thiz.getDefaultDiscordArgValue(discordMessage, definedArgs[argKey])
-              );
-              argValue = scanResult.value;
-              thiz.context.log.d(
-                'argValue after checking default: ' +
-                  util.inspect(argValue, { showHidden: false, depth: 2 }) +
-                  '; for key: ' +
-                  argKey
-              );
-            }
+            argValue = scanResult.value;
+            thiz.context.log.d(
+              'argValue after checking default: ' +
+                util.inspect(argValue, { showHidden: false, depth: 2 }) +
+                '; for key: ' +
+                argKey
+            );
+          }
 
-            thiz[argKey] = argValue;
-          })
+          thiz[argKey] = argValue;
+        })
       );
     }
 
@@ -185,15 +182,14 @@ class DiscordCommand extends Command {
    * In any case, all defined arguments will have at least null value after executing this function.
    * @see CommandArgDef
    * @see Command.getDefinedArgs
-   * @param  {Client}   client         the Discord client
-   * @param  {Message}  discordMessage the Discord message with the command
+   * @param  {BaseMessage}  message the Discord message with the command
    * @return {Promise}                 nothing
    */
-  async parseFromDiscordSequentially(client, discordMessage) {
+  async parseFromDiscordSequentially(message) {
     const definedArgs = this.constructor.getDefinedArgs();
     const argsKeys = Object.keys(definedArgs);
 
-    const trimmedContent = OhUtils.dry(discordMessage.content);
+    const trimmedContent = OhUtils.dry(message.content);
     let remainingArgText = '';
     if (trimmedContent.indexOf(' ') > 0) {
       remainingArgText = trimmedContent.slice(Math.max(0, trimmedContent.indexOf(' ') + 1));
@@ -202,13 +198,13 @@ class DiscordCommand extends Command {
     for (const argKey of argsKeys) {
       let argValue = null;
       if (definedArgs[argKey].skipInSequentialRead) {
-        const defaultValue = this.getDefaultDiscordArgValue(discordMessage, definedArgs[argKey]);
+        const defaultValue = this.getDefaultDiscordArgValue(message, definedArgs[argKey]);
         // Must scan arguments one by one, since it's a sequential scan, and results depend on previous scanning.
         /* eslint-disable no-await-in-loop */
         const scanResult = await definedArgs[argKey].scanner.scan(
           this.context,
           this.langManager,
-          discordMessage,
+          message,
           defaultValue
         );
         /* eslint-enable no-await-in-loop */
@@ -221,13 +217,13 @@ class DiscordCommand extends Command {
         );
       } else {
         if (remainingArgText === '') {
-          const defaultValue = this.getDefaultDiscordArgValue(discordMessage, definedArgs[argKey]);
+          const defaultValue = this.getDefaultDiscordArgValue(message, definedArgs[argKey]);
           // Must scan arguments one by one, since it's a sequential scan, and results depend on previous scanning.
           /* eslint-disable no-await-in-loop */
           const scanResult = await definedArgs[argKey].scanner.scan(
             this.context,
             this.langManager,
-            discordMessage,
+            message,
             defaultValue
           );
           /* eslint-enable no-await-in-loop */
@@ -244,7 +240,7 @@ class DiscordCommand extends Command {
           const scanResult = await definedArgs[argKey].scanner.scan(
             this.context,
             this.langManager,
-            discordMessage,
+            message,
             remainingArgText
           );
           /* eslint-enable no-await-in-loop */
@@ -276,20 +272,20 @@ class DiscordCommand extends Command {
    * (e.g. '!kill Bill knife').
    * After finishing the scanning, launches the arguments validation.
    * @param  {Client}   client         the Discord client
-   * @param  {Message}  discordMessage the Discord message with the command
+   * @param  {BaseMessage}  message the Discord message with the command
    * @return {Promise}                 nothing
    */
-  async parseFromDiscord(client, discordMessage) {
-    const index = OhUtils.findFirstNonQuotedIndex(discordMessage.content, this.constructor.ARG_PREFIX);
+  async parseFromDiscord(message) {
+    const index = OhUtils.findFirstNonQuotedIndex(message.content, this.constructor.ARG_PREFIX);
     if (index === -1) {
       this.context.log.d('Sequential arg scan');
-      await this.parseFromDiscordSequentially(client, discordMessage);
+      await this.parseFromDiscordSequentially(message);
     } else {
       this.context.log.d('Arg scan by name');
-      await this.parseFromDiscordByNames(client, discordMessage);
+      await this.parseFromDiscordByNames(message);
     }
 
-    await this.validateFromDiscord(client, discordMessage);
+    await this.validateFromDiscord(message);
   }
 }
 
