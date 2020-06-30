@@ -360,6 +360,10 @@ class TimeArg {
    * @return {Array<Object>}      the array of parsed definitions, each containing the shift time and shift amount
    */
   parseTimeDefinitions(text) {
+    if (text === undefined || text === null || text === '') {
+      return null;
+    }
+
     // Firstly check predefined definitions.
     if (text === this.langManager.getString(TimeArgPredefinedValues.today)) {
       const currentDate = new Date();
