@@ -119,3 +119,6 @@ dist
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+
+# E2E tests
+test_results.txt

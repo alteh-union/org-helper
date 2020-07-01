@@ -1,0 +1,17 @@
+// THESE ARE NOT PREFERENCES FOR THE ORG HELPER BOT ITSELF,
+// THESE ARE JUST PREFERENCES FOR THE TEST END-TO-END SYSTEM NEEDED TO AUTOMATICALLY VERIFY ORG HELPER'S FUNCTIONS.
+// FOR ORG HELPER'S PREFERENCES, CHECK A SIMILAR FILE IN THE PARENT FOLDER.
+// Use this file as a template for preferences of your E2E test bot's instance.
+// Comments via // are allowed at the beginning of lines.
+// Replace <...> with actual values, tweak other values as you need,
+// Then copy-paste the content into the actual preferences.xml which you will use.
+test_results_file_path = test_results.txt
+test_discord_token = <YOUR E2E TEST DISCORD BOT TOKEN>
+discord_client_to_be_tested = <THE CLIENT ID OF BOT TO BE TESTED>
+test_discord_guild_id = <THE DISCORD GUILD ID WHERE YOU WILL TEST YOUR BOT INSTANCE>
+test_discord_role_1_id = <THE ID OF THE FIRST ROLE TO TEST THE ROLE-RELATED FUNCTIONS>
+test_discord_role_2_id = <THE ID OF THE SECOND ROLE TO TEST THE ROLE-RELATED FUNCTIONS>
+test_discord_text_channel_1_id = <THE ID OF THE FIRST TEXT CHANNEL TO TEST THE BOT IN>
+test_discord_text_channel_2_id = <THE ID OF THE SECOND TEXT CHANNEL TO TEST THE BOT IN>
+test_discord_user_1_id = <THE ID OF THE FIRST USER TO TEST THE USER-RELATED FUNCTIONS>
+test_discord_user_2_id = <THE ID OF THE SECOND USER TO TEST THE USER-RELATED FUNCTIONS>

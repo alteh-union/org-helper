@@ -8,7 +8,7 @@
 
 const fs = require('fs');
 
-const SecuredPreferences = Object.freeze(['discord_token', 'db_username', 'db_password']);
+const SecuredPreferences = Object.freeze(['test_discord_token']);
 
 /**
  * Keeps Bot-wide preferences (settings related to the bot's server itself).
@@ -52,6 +52,15 @@ class PrefsManager {
           (SecuredPreferences.includes(trimmedName) ? '<HIDDEN>' : trimmedValue)
       );
     }
+  }
+
+  /**
+   * Checks if specific preference value is a template value or missing
+   * @param  {string}  pref the preference to check
+   * @return {Boolean}      true if undefined, null or enclosed in angle brackets, false otherwise
+   */
+  isNullOrTemplate(pref) {
+    return (pref === undefined || pref === null || (pref.startsWith('<') && pref.endsWith('>')));
   }
 }
 
