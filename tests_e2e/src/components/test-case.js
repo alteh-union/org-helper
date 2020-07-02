@@ -29,6 +29,8 @@ class TestCase {
     this.processor = testSuit.casesManager.processor;
     this.waitingForReply = false;
     this.replyMessage = null;
+    this.waitingForAllReplies = false;
+    this.replyMessages = null;
   }
 
   /**
@@ -75,17 +77,39 @@ class TestCase {
   }
 
   /**
+   * Waits for all replies within the specified timeframe
+   * @param  {Channel}       channel the channel where the reply messages should appear
+   * @param  {Number}        timeout the timeframe in milliseconds during which the replies will be received
+   * @return {Array<Object>}         the reply messages
+   */
+  async getAllReplies(channel, timeout) {
+    this.currentChannel = channel;
+    if (timeout === undefined) {
+      timeout = DefaultReplyTimeout;
+    }
+    this.replyMessages = [];
+    this.waitingForAllReplies = true;
+
+    await this.sleep(DefaultReplyTimeout);
+
+    this.waitingForAllReplies = false;
+    this.currentChannel = null;
+    return this.replyMessages;
+  }
+
+  /**
    * Handles new message from Discord as a potential reply
    * @param  {Message} message the message from Discord
    */
   onDiscordReply(message) {
-    if (!this.waitingForReply ||
-      message.author.id !== this.processor.prefsManager.discord_client_to_be_tested ||
-      message.channel.id !== this.currentChannel.id) {
-      return;
+    if (message.author.id === this.processor.prefsManager.discord_client_to_be_tested &&
+      message.channel.id === this.currentChannel.id) {
+      if (this.waitingForReply) {
+        this.replyMessage = message;
+      } else if (this.waitingForAllReplies) {
+        this.replyMessages.push(message);
+      }
     }
-
-    this.replyMessage = message;
   }
 
   /**
@@ -133,6 +157,40 @@ class TestCase {
       throw new AssertionError('assertEquals failed for the following objects: object 1: '
         + util.inspect(obj1, { showHidden: true, depth: 2 })
         + '; object 2: ' + util.inspect(obj2, { showHidden: true, depth: 2 }));
+    }
+  }
+
+  /**
+   * Asserts that the given number is greater than the other given number
+   * @param  {Number} num1 the first number to compare (should be the greater one)
+   * @param  {Number} num2 the second number to compare
+   * @throws AssertionError
+   */
+  assertGreaterThan(num1, num2) {
+    if (num1 === undefined || num1 === null || num1 === '' || isNaN(num1)) {
+      throw new AssertionError('assertGreaterThan failed because the first param is not a number: '
+        + util.inspect(num1, { showHidden: true, depth: 2 }));
+    }
+    if (num2 === undefined || num2 === null || num2 === '' || isNaN(num2)) {
+      throw new AssertionError('assertGreaterThan failed because the second param is not a number: '
+        + util.inspect(num2, { showHidden: true, depth: 2 }));
+    }
+    if (num1 <= num2) {
+      throw new AssertionError('assertGreaterThan failed because num1 is not greater than num2: number 1: '
+        + util.inspect(num1, { showHidden: true, depth: 2 })
+        + '; number 2: ' + util.inspect(num2, { showHidden: true, depth: 2 }));
+    }
+  }
+
+  /**
+   * Asserts that the given boolean expression result is true
+   * @param  {Boolean} expressionResult the result of a boolean expression calculation, true ot false
+   * @throws AssertionError
+   */
+  assertTrue(expressionResult) {
+    if (expressionResult !== true) {
+      throw new AssertionError('assertTrue failed for the following object: '
+        + util.inspect(expressionResult, { showHidden: true, depth: 2 }));
     }
   }
 }
