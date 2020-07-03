@@ -211,6 +211,50 @@
   "command_permitremind_success": "Successfully added the permission.",
   "command_permitremind_duplicate": "Such permission already exists. Skipped.",
 
+  "command_makeimage_name": "makeimage",
+  "command_makeimage_help": "Make new image using existing template, e.g. !makeimage tmp1 https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png",
+  "command_makeimage_error_undefined_template": "Undefined template %s",
+
+
+
+  "command_makeimage_arg_templateName_alias_templateName": "templateName",
+  "command_makeimage_arg_templateName_alias_n": "n",
+  "command_makeimage_arg_templateName_help": "Template name",
+
+  "command_makeimage_arg_imgUrl_alias_imgUrl": "imgUrl",
+  "command_makeimage_arg_imgUrl_alias_i": "i",
+  "command_makeimage_arg_imgUrl_help": "URL of base image",
+
+  "command_makeimage_arg_text_alias_text": "text",
+  "command_makeimage_arg_text_alias_t": "t",
+  "command_makeimage_arg_text_help": "Text for a template",
+
+  "command_makeimage_arg_fontSize_alias_fontSize": "fontSize",
+  "command_makeimage_arg_fontSize_alias_fs": "fs",
+  "command_makeimage_arg_fontSize_help": "Font size",
+
+  "command_makeimage_arg_xShift_alias_xShift": "xShift",
+  "command_makeimage_arg_xShift_alias_x_shift": "x_shift",
+  "command_makeimage_arg_xShift_help": "X axis shift for a base image",
+
+  "command_makeimage_arg_yShift_alias_yShift": "yShift",
+  "command_makeimage_arg_yShift_alias_y_shift": "y_shift",
+  "command_makeimage_arg_yShift_help": "Y axis shift for a base image",
+
+  "command_listimagetemplates_name": "listtemplates",
+  "command_listimagetemplates_help": "List all available templates",
+  "command_listimagetemplates_success": "List of available templates %s",
+
+  "command_addimagetemplate_name": "addtemplate",
+  "command_addimagetemplate_help": "Create new template, e.g. !addtemplate tmp1 {\"input\": { \"type\": \"fixed\", \"width\": 1576, \"height\": 1080} }",
+  "command_addimagetemplate_success": "Template %s created!",
+  "command_addimagetemplate_error_not_unique_name": "Failed to create template %s. Such template already exists",
+  "command_addimagetemplate_arg_templateName_alias_templateName": "templateName",
+  "command_addimagetemplate_arg_templateName_alias_n": "n",
+  "command_addimagetemplate_arg_templateName_help": "Template name",
+  "command_addimagetemplate_arg_jsonConfig_alias_jsonConfig": "jsonConfig",
+  "command_addimagetemplate_arg_jsonConfig_alias_c": "c",
+  "command_addimagetemplate_arg_jsonConfig_help": "Config for a template in a JSON format",
 
   "command_ping_name": "ping",
   "command_ping_help": "Replies with \"pong!\". Can be used to check if the bot is responding at all.",
