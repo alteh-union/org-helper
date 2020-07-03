@@ -45,8 +45,6 @@ class BaseMessage {
    * @returns {BaseMessage}
    */
   static createFromDiscord(discordMessage, discordSource) {
-    console.log(discordMessage.member.id);
-    console.log(discordMessage.author.id);
     return new BaseMessage(
       discordMessage.guild ? discordMessage.guild.id : null,
       discordMessage.channel ? discordMessage.channel.id : null,

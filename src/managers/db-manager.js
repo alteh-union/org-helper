@@ -19,6 +19,7 @@ const RolesTable = require('../mongo_classes/roles-table');
 const TasksTable = require('../mongo_classes/tasks-table');
 const ServerSettingsTable = require('../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../mongo_classes/user-settings-table');
+const ImageTemplateTable = require('../mongo_classes/image-template-table');
 
 const CurrentVersion = 2;
 
@@ -34,7 +35,8 @@ const Tables = Object.freeze({
   rolesTable: RolesTable,
   tasksTable: TasksTable,
   serverSettingsTable: ServerSettingsTable,
-  userSettingsTable: UserSettingsTable
+  userSettingsTable: UserSettingsTable,
+  imageTemplateTable: ImageTemplateTable
 });
 
 /**

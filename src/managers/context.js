@@ -13,6 +13,7 @@ const CommandsParser = require('./commands-parser');
 const MessageModerator = require('./message-moderator');
 const Scheduler = require('./scheduler');
 const Log = require('../utils/log');
+const ImageGenerator = require('./image-generator');
 
 /**
  * Contains global managers of the bot.
@@ -40,6 +41,7 @@ class Context {
     this.commandsParser = new CommandsParser(this);
     this.messageModerator = new MessageModerator(this);
     this.scheduler = new Scheduler(this);
+    this.imageGenerator = new ImageGenerator();
 
     this.discordClient = discordClient;
     this.discordClientReady = false;

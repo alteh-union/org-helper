@@ -197,7 +197,6 @@
   "command_permissions_no_permissions": "Разрешения, специфичные для бота, не найдены.",
   "command_permissions_permission": "Разрешение номер: %s с типом \"%s\" дано субъекту типа %s по имени %s, со следующими условиями: %s",
 
-
   "command_permitremind_name": "разрешитьнапоминания",
   "command_permitremind_help": "Добавляет разрешение указанным ролям и/или участникам на управление напоминаниями в указанном канале (или в любом канале, если таковой не указан).",
 
@@ -211,6 +210,48 @@
   "command_permitremind_success": "Разрешение добавлено успешно.",
   "command_permitremind_duplicate": "Такое разрешение уже существует. Пропускаем.",
 
+  "command_makeimage_name": "создатькартинку",
+  "command_makeimage_help": "Создать картинку, используя существующий шаблон, например: !создатькартинку tmp1 https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png",
+  "command_makeimage_error_undefined_template": "Неизвестный шаблон %s",
+
+  "command_makeimage_arg_templateName_alias_templateName": "имяШаблона",
+  "command_makeimage_arg_templateName_alias_n": "и",
+  "command_makeimage_arg_templateName_help": "Имя шаблона",
+
+  "command_makeimage_arg_imgUrl_alias_imgUrl": "адресКартинки",
+  "command_makeimage_arg_imgUrl_alias_i": "а",
+  "command_makeimage_arg_imgUrl_help": "Адрес основной картинки",
+
+  "command_makeimage_arg_text_alias_text": "текст",
+  "command_makeimage_arg_text_alias_t": "т",
+  "command_makeimage_arg_text_help": "Текст для шаблона",
+
+  "command_makeimage_arg_fontSize_alias_fontSize": "размерШрифта",
+  "command_makeimage_arg_fontSize_alias_fs": "рш",
+  "command_makeimage_arg_fontSize_help": "Размер шрифта",
+
+  "command_makeimage_arg_xShift_alias_xShift": "горизонтальныйСдвиг",
+  "command_makeimage_arg_xShift_alias_x_shift": "гор_сдвиг",
+  "command_makeimage_arg_xShift_help": "Смещение по оси X для базовой картинки",
+
+  "command_makeimage_arg_yShift_alias_yShift": "вертикальныйСдвиг",
+  "command_makeimage_arg_yShift_alias_y_shift": "верт_сдвиг",
+  "command_makeimage_arg_yShift_help": "Смещение по оси Y для базовой картинки",
+
+  "command_listimagetemplates_name": "списокшаблонов",
+  "command_listimagetemplates_help": "Список всех доступных шаблонов",
+  "command_listimagetemplates_success": "Доступные шаблоны: %s",
+
+  "command_addimagetemplate_name": "создатьшаблон",
+  "command_addimagetemplate_help": "Создать новый шаблон, например !создатьшаблон tmp1 {\"input\": { \"type\": \"fixed\", \"width\": 1576, \"height\": 1080} }",
+  "command_addimagetemplate_success": "Шаблон %s создан!",
+  "command_addimagetemplate_error_not unique_name": "Не удалось создать шаблон %s. Имя шаблона уже используется",
+  "command_addimagetemplate_arg_templateName_alias_templateName": "имяШаблона",
+  "command_addimagetemplate_arg_templateName_alias_n": "и",
+  "command_addimagetemplate_arg_templateName_help": "Имя шаблона",
+  "command_addimagetemplate_arg_jsonConfig_alias_jsonConfig": "конфиг",
+  "command_addimagetemplate_arg_jsonConfig_alias_c": "к",
+  "command_addimagetemplate_arg_jsonConfig_help": "Конфигурация шаблона в формате JSON",
 
   "command_ping_name": "пинг",
   "command_ping_help": "Отвечает \"понг!\". Можно использовать, чтобы проверить, отвечает ли бот в принципе.",
