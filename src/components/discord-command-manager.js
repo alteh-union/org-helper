@@ -15,6 +15,9 @@ const MySettingsCommand = require('../commands_discord/settings/my-settings-comm
 const PermissionsCommand = require('../commands_discord/permissions/permissions-command');
 const PermitRemindCommand = require('../commands_discord/permissions/permit-remind-command');
 const PingCommand = require('../commands_discord/other/ping-command');
+const MakeImageCommand = require('../commands_discord/image/make-image-command');
+const ListImageTemplatesCommand = require('../commands_discord/image/list-image-templates-command');
+const AddImageTemplateCommand = require('../commands_discord/image/add-image-template-command');
 const PollCommand = require('../commands_discord/social/poll-command');
 const RemindCommand = require('../commands_discord/social/remind-command');
 const RemindersCommand = require('../commands_discord/social/reminders-command');
@@ -41,6 +44,9 @@ class DiscordCommandManager extends CommandManager {
    */
   get definedCommands() {
     return Object.freeze([
+      MakeImageCommand,
+      ListImageTemplatesCommand,
+      AddImageTemplateCommand,
       AddBadWordsCommand,
       AddRoleCommand,
       AddRoleManagerCommand,
