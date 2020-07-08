@@ -156,8 +156,8 @@
   "command_clean_arg_silent_value_silent": "тихо",
   "command_clean_arg_silent_value_s": "т",
 
-  "command_clean_success": "очищено %d сообщений из %d в канале.",
-  "command_clean_success_multi_channels": "очищено %d сообщений %d в %d каналах.",
+  "command_clean_success": "очищено %d сообщений из просмотренных %d в канале.",
+  "command_clean_success_multi_channels": "очищено %d сообщений %d из просмотренных в %d каналах.",
 
 
   "command_denyremind_name": "запретитьнапоминания",

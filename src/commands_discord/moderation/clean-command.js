@@ -42,6 +42,8 @@ const SilentArgPredefinedValues = Object.freeze({
 
 const MESSAGES_FETCH_LIMIT = 50;
 
+const TIME_LIMIT_FOR_BULK_DELETE = 1000 * 60 * 60 * 24 * 14 - 60 * 1000;
+
 /**
  * Command to clean Discord text-channels from recent messages.
  * @alias CleanCommand
@@ -145,7 +147,10 @@ class CleanCommand extends DiscordCommand {
           break;
         }
 
-        const messagesToDelete = [];
+        const currentTimeMillis = new Date().getTime();
+
+        const messagesToDeleteAsBulk = [];
+        const messagesToDeleteIndividually = [];
         for (const message of messagesArray) {
           this.context.log.v(
             'messages delete check; id = ' +
@@ -153,20 +158,25 @@ class CleanCommand extends DiscordCommand {
               '; timestamp: ' +
               message.createdTimestamp +
               '; limit ' +
-              timestampLimit +
-              '; content: ' +
-              message.content
+              timestampLimit
           );
           if (message.createdTimestamp > timestampLimit) {
             needRefetch = true;
-            messagesToDelete.push(message);
             deletedCount++;
+            if (currentTimeMillis - TIME_LIMIT_FOR_BULK_DELETE < message.createdTimestamp) {
+              messagesToDeleteAsBulk.push(message);
+            } else {
+              messagesToDeleteIndividually.push(message);
+            }
           }
 
           checkedCount++;
         }
 
-        await channel.bulkDelete(messagesToDelete);
+        await channel.bulkDelete(messagesToDeleteAsBulk);
+        for (const message of messagesToDeleteIndividually) {
+          await message.delete();
+        }
       } while (needRefetch);
     }
     /* eslint-enable no-await-in-loop */
@@ -174,9 +184,9 @@ class CleanCommand extends DiscordCommand {
     this.context.log.i(
       'CleanCommand done: deleted ' +
         deletedCount +
-        ' out of ' +
+        ' out of checked ' +
         checkedCount +
-        ' in ' +
+        ' messages in ' +
         this.channelIds.channels.length +
         ' channels'
     );

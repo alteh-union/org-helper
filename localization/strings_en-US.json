@@ -156,8 +156,8 @@
   "command_clean_arg_silent_value_silent": "silent",
   "command_clean_arg_silent_value_s": "s",
 
-  "command_clean_success": "cleaned %d messages out of %d in the channel.",
-  "command_clean_success_multi_channels": "cleaned %d messages out of %d in %d channels.",
+  "command_clean_success": "cleaned %d messages out of %d checked in the channel.",
+  "command_clean_success_multi_channels": "cleaned %d messages out of %d checked in %d channels.",
 
 
   "command_denyremind_name": "denyremind",
