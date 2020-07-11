@@ -213,6 +213,7 @@
   "command_makeimage_name": "создатькартинку",
   "command_makeimage_help": "Создать картинку, используя существующий шаблон, например: !создатькартинку tmp1 https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png",
   "command_makeimage_error_undefined_template": "Неизвестный шаблон %s",
+  "command_makeimage_error_broken_template": "Не удалось создать изображение используя шаблон %s. Детали ошибки: %s.",
 
   "command_makeimage_arg_templateName_alias_templateName": "имяШаблона",
   "command_makeimage_arg_templateName_alias_n": "и",

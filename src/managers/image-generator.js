@@ -2,9 +2,15 @@
 
 const TextToImage = require('text-to-image');
 const Jimp = require('jimp');
+const { Canvas } = require('canvas');
+const request = require('request');
+const fs = require('fs');
+const crypto = require('crypto');
+
 const FONT_SIZE_TO_LINE_HEIGHT = 1.1;
 const JPEG_QUALITY = 90;
-const { Canvas } = require('canvas');
+const FILE_CACHE_FOLDER = 'cache/';
+const MAX_FONT_FILE_SIZE = 1024 * 1024; // 1 Mb
 
 /**
  * Image generator
@@ -19,14 +25,136 @@ class ImageGenerator {
     Canvas._registerFont('assets/fonts/BebasNeue-Regular.ttf', { family: 'Bebas Neue' });
   }
 
+  /**
+   * Main class method. Generates image based on provided template
+   * @param picUrl
+   * @param params
+   * @param templateConfig
+   * @returns {Promise<DepreciatedJimp | DepreciatedJimp>}
+   */
   async generateImage(picUrl, params, templateConfig) {
     const baseImg = await Jimp.read(picUrl);
     await this._prepareBaseImage(baseImg, params, templateConfig);
+    await this._addFonts(templateConfig);
     if (templateConfig.items) {
       await this._composeImage(baseImg, templateConfig.items, params);
     }
     return baseImg;
   }
+
+  /**
+   * Delete file
+   * @param filePath
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _deleteFile(filePath) {
+    await fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('Delete error: ' + err);
+      } else {
+        console.log(`File ${filePath} deleted successfully`);
+      }
+    });
+  }
+
+  /**
+   * Download file with a size limit
+   * @param url
+   * @param filePath
+   * @param fileSizeLimit
+   * @returns {Promise<unknown>}
+   * @private
+   */
+  async _downloadFileWithSizeLimit(url, filePath, fileSizeLimit) {
+
+    console.log(`Download file ${url} to ${filePath}`);
+    const downloadFunc = (url, filePath, resolve, reject) => {
+      request({
+        url: url,
+        method: 'HEAD'
+      }, (err, headRes) => {
+        if (err) {
+          console.log(`HEAD request failed for ${url}`);
+          reject(err.message);
+          return;
+        }
+
+        if (headRes.headers['content-length'] && headRes.headers['content-length'] > fileSizeLimit) {
+          console.log('File size exceeds limit (' + headRes.headers['content-length'] + ')');
+          reject('File size exceeds limit (' + headRes.headers['content-length'] + ')');
+
+        } else {
+          if (headRes.headers['content-length']) {
+            console.log(`File size ${url} is ${headRes.headers['content-length']}`);
+          }
+
+          const file = fs.createWriteStream(filePath);
+          const res = request({ url: url });
+          let size = 0;
+
+          res.on('response', (response) => {
+            if (response.statusCode !== 200) {
+              reject('Response status was ' + response.statusCode);
+            }
+          });
+
+          res.on('error', (err) => {
+            this._deleteFile(filePath);
+            reject(err.message);
+          });
+
+          res.on('data', (data) => {
+            size += data.length;
+            if (size > fileSizeLimit) {
+              console.log('Resource stream exceeded limit (' + size + ')');
+              res.abort(); // Abort the response (close and cleanup the stream)
+              this._deleteFile(filePath);
+              reject('File size  exceeds limit');
+
+            }
+          }).pipe(file);
+
+          file.on('error', (err) => { // Handle errors
+            console.log(`ImageGenerator: File error ${err}`);
+            this._deleteFile(filePath);
+            reject(err.message);
+          });
+
+          file.on('finish', () => file.close(resolve));
+        }
+      });
+    };
+    return new Promise((resolve, reject) => downloadFunc(url, filePath, resolve, reject));
+  }
+
+  /**
+   * Process `fonts` block of the config
+   * @param templateConfig
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _addFonts(templateConfig) {
+    if (templateConfig.fonts && Array.isArray(templateConfig.fonts)) {
+      for (const font of templateConfig.fonts) {
+        const fileName = crypto.createHash('md5').update(font.url).digest('hex');
+        const filePath = FILE_CACHE_FOLDER + fileName;
+
+        try {
+          if (!fs.existsSync(filePath)) {
+            await this._downloadFileWithSizeLimit(font.url, filePath, MAX_FONT_FILE_SIZE);
+          }
+          Canvas._registerFont(filePath, { family: font.name });
+
+        } catch (error) {
+          console.log(`ImageGenerator: Failed to download and include font ${font.url} with 
+          message: ${error}, stack: ${error.stack}`);
+          throw error;
+        }
+      }
+    }
+  }
+
 
   /**
    * Prepare base image for according to template requirements
