@@ -34,6 +34,12 @@ class CleanSilent extends TestCase {
     await this.checkSilentClean(channel, '!clean -t 5s -silent silent');
   }
 
+  /**
+   * Checks if the "clean" can silently clean a given channel
+   * @param  {Channel}  channel     the channel where the command needs to be executed
+   * @param  {string}   commandText the text of the command
+   * @return {Promise}              nothing
+   */
   async checkSilentClean(channel, commandText) {
     await this.sleep(5000);
 

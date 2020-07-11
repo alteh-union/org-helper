@@ -13,6 +13,8 @@ const AssertionError = require('./assertion-error');
 const DefaultReplyTimeout = 5000;
 const WaitingInterval = 100;
 
+const DefaultTimeZone = 'Etc/UTC';
+
 /**
  * Represents a single test case.
  * @alias TestCase
@@ -31,6 +33,14 @@ class TestCase {
     this.replyMessage = null;
     this.waitingForAllReplies = false;
     this.replyMessages = null;
+  }
+
+  /**
+   * Gets the string representing the default timezone.
+   * @type {String}
+   */
+  static get DEFAULT_TIMEZONE() {
+    return DefaultTimeZone;
   }
 
   /**
@@ -120,6 +130,60 @@ class TestCase {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
+  }
+
+  /**
+   * Parses the value for a given setting from a settings/mysettings response of the main Bot
+   * @param  {string} settingsResponse the response from the main Bot
+   * @param  {string} settingName      the setting to find
+   * @param  {string} defaultValue     the default value to be used if the setting is not found
+   * @return {string}                  the setting value if found, default value if not found
+   */
+  getSettingValue(settingsResponse, settingName, defaultValue) {
+    const array = settingsResponse.split('\n');
+    for (const line of array) {
+      if (line.startsWith(settingName + ' : ')) {
+        return line.slice((settingName + ' : ').length);
+      }
+    }
+    return defaultValue;
+  }
+
+  /**
+   * Converts a Date's class month number (0-11) into a text representation of the corresponding month.
+   * E.g. 0 -> January, 1 -> February etc.
+   * @param  {Number} monthNumber the month's number according to the JS Date class
+   * @return {string}             the month's name
+   */
+  dateMonthToString(monthNumber) {
+    switch (monthNumber) {
+      case 0:
+        return 'January';
+      case 1:
+        return 'February';
+      case 2:
+        return 'March';
+      case 3:
+        return 'April';
+      case 4:
+        return 'May';
+      case 5:
+        return 'June';
+      case 6:
+        return 'July';
+      case 7:
+        return 'August';
+      case 8:
+        return 'September';
+      case 9:
+        return 'October';
+      case 10:
+        return 'November';
+      case 11:
+        return 'December';
+      default:
+        return null;
+    }
   }
 
   /**
