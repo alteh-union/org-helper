@@ -321,7 +321,7 @@
   "command_removerolemanager_arg_rolesIds_alias_r": "r",
   "command_removerolemanager_arg_rolesIds_help": "The names of the roles which permissions will be losed for. By default - all roles. Use mentions, like @privileged.",
 
-  "command_removerolemanager_success": "Successfully removed %d permission.",
+  "command_removerolemanager_success": "Successfully removed %d permission(s).",
   "command_removerolemanager_no_matches": "No matching permissions found.",
 
 

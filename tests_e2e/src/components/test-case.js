@@ -10,8 +10,12 @@ const util = require('util');
 
 const AssertionError = require('./assertion-error');
 
-const DefaultReplyTimeout = 5000;
 const WaitingInterval = 100;
+// In the absolute majority of cases the waiting time is below 5 seconds,
+// however depending on the workload and performance of the server and also
+// depending on the nature of the command, the main bot may respond in about 7-8 seconds.
+// To avoid failing test cases for this reason, we set the timeout with a good margin.
+const DefaultReplyTimeout = 10000;
 
 const DefaultTimeZone = 'Etc/UTC';
 
@@ -100,7 +104,7 @@ class TestCase {
     this.replyMessages = [];
     this.waitingForAllReplies = true;
 
-    await this.sleep(DefaultReplyTimeout);
+    await this.sleep(timeout);
 
     this.waitingForAllReplies = false;
     this.currentChannel = null;

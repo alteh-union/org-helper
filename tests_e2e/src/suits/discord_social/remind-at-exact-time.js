@@ -40,7 +40,7 @@ class RemindAtExactTime extends TestCase {
     this.assertNotNull(receivedMessage);
     const timezone = this.getSettingValue(receivedMessage.content, 'timezone', TestCase.DEFAULT_TIMEZONE);
 
-    const targetTime = new Date(new Date().getTime() + 8000);
+    const targetTime = new Date(new Date().getTime() + 9000);
     const year = targetTime.getFullYear();
     const month = this.dateMonthToString(targetTime.getMonth());
     const day = targetTime.getDate();
@@ -55,7 +55,7 @@ class RemindAtExactTime extends TestCase {
     this.assertEquals(receivedMessage.content, 'Successfully added and scheduled a reminder.');
 
     channel.send('!reminders');
-    let receivedMessages = await this.getAllReplies(channel);
+    let receivedMessages = await this.getAllReplies(channel, 5000);
     this.assertNotNull(receivedMessages);
     let totalText = '';
     for (const message of receivedMessages) {
@@ -76,7 +76,7 @@ class RemindAtExactTime extends TestCase {
 
     this.assertTrue(reminderFound);
 
-    receivedMessage = await this.getReply(channel, 9000);
+    receivedMessage = await this.getReply(channel, 12000);
     this.assertNotNull(receivedMessage);
     this.assertEquals(receivedMessage.content, 'e2e test');
 
