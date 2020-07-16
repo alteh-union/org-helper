@@ -1,10 +1,12 @@
 {
   "privacy_guild_member_records": "We have the following records of you as a member of guilds:",
   "privacy_no_guild_member_records": "We don't have records of you as a member of guilds.",
-  "privacy_user_settings_records": "We have the following records of settings set up via the Bot for you:",
-  "privacy_no_user_settings_records": "We don't have records of settings set up via the Bot for you.",
-  "privacy_permissions_records": "We have the following records of permissions set up via the Bot for you:",
-  "privacy_no_permissions_records": "We don't have records of permissions set up via the Bot for you.",
+  "privacy_user_settings_records": "We have the following records of settings set up for you via the Bot:",
+  "privacy_no_user_settings_records": "We don't have records of settings set up for you via the Bot.",
+  "privacy_permissions_records": "We have the following records of permissions set up for you via the Bot:",
+  "privacy_no_permissions_records": "We don't have records of permissions set up for you via the Bot.",
+  "privacy_warnings_records": "We have the following records of warnings issued to you via the Bot:",
+  "privacy_no_warnings_records": "We don't have records of warnings issued to you via the Bot.",
 
   "permission_missing_bot": "You need to have \"%s\" permission to launch the command with the specified arguments. Contact server's admin if you need to get the permission.",
   "permission_missing_discord": "You need to have the following Discord permission to launch the command: %s. Contact server's admin if you need to get the permission.",
@@ -25,6 +27,9 @@
   "setting_timezone": "timezone",
   "setting_badwords": "badwords",
   "setting_censoring": "censoring",
+  "setting_moderLogsEnabled": "moder logs enabled",
+  "setting_moderLogsChannel": "moder logs channel",
+  "setting_banOnWarnings": "ban on warnings",
 
   "moderator_censored_message": "User %s wrote a message, but for the sake of decency we had to replace it with the following text:\n%s",
 
@@ -48,6 +53,11 @@
   "arg_validation_time_only_distance_allowed": "Only time amounts are allowed for this argument: %s. You provided a schedule",
   "arg_validation_time_only_schedule_allowed": "Only schedules are allowed for this argument: %s. You provided a time amount",
   "arg_validation_time_zero_shift": "0 time amount is now allowed for this argument: %s",
+  "arg_validation_non_single_subject_array": "You specified more than one subject (user or role) for argument %s. Only one subject is allowed",
+  "arg_validation_non_single_channel_array": "You specified more than one channel for argument %s. Only one channel is allowed",
+  "arg_validation_non_single_entity_array": "You specified more than one entity for argument %s. Only one entity is allowed",
+  "arg_validation_wrong_integer": "Could not parse the value for argument %s as an integer",
+  "arg_validation_wrong_non_negative_integer": "Could not parse the value for argument %s as a non-negative integer",
 
   "arg_boolean_off": "off",
   "arg_boolean_on": "on",
@@ -458,5 +468,101 @@
   "command_deletepermission_arg_ids_alias_ids": "ids",
   "command_deletepermission_arg_ids_alias_i": "i",
   "command_deletepermission_arg_ids_help": "The list of ids, comma separated.",
-  "command_deletepermission_success": "Successfully removed the permissions."
+  "command_deletepermission_success": "Successfully removed the permissions.",
+
+
+  "command_setmoderlogschannel_name": "setmoderlogschannel",
+  "command_setmoderlogschannel_help": "Sets the channel where the moderation logs will be placed (if enabled). If this command has not been used but someone used one of the moderation commands, then the logs will be placed to %s channel.",
+
+  "command_setmoderlogschannel_arg_channelId_alias_channelName": "channelName",
+  "command_setmoderlogschannel_arg_channelId_alias_c": "c",
+  "command_setmoderlogschannel_arg_channelId_help": "The channel where the logs will be placed.",
+  "command_setmoderlogschannel_success": "Successfully set the channel.",
+
+
+  "command_setmoderlogs_name": "setmoderlogs",
+  "command_setmoderlogs_help": "Enables or disables moderation logging (e.g. after using commands like kick, ban etc.). Use '%s' command to set the channel where the logs will be placed.",
+
+  "command_setmoderlogs_arg_enable_alias_enable": "enable",
+  "command_setmoderlogs_arg_enable_alias_e": "e",
+  "command_setmoderlogs_enabled": "Successfully enabled the moderation logs.",
+  "command_setmoderlogs_disabled": "Successfully disabled the moderation logs.",
+
+
+  "command_kick_name": "kick",
+  "command_kick_help": "Kicks a user from the server and optionally writes the reason to the moderation logs. Use '%s' command to enable/disable moderation logging.",
+
+  "command_kick_arg_subjectIds_alias_subjectIds": "subjectId",
+  "command_kick_arg_subjectIds_alias_s": "s",
+  "command_kick_arg_subjectIds_help": "The user(s) to be kicked. Use mentions like @TheNaughty.",
+  "command_kick_arg_reason_alias_reason": "reason",
+  "command_kick_arg_reason_alias_r": "r",
+  "command_kick_arg_reason_help": "The reason to kick (can be empty).",
+
+  "command_kick_success": "Kicked %s users out of %s requested. Error count: %s.",
+  "command_kick_log": "User %s was kicked by moderator %s for the following reason: %s",
+
+
+  "command_ban_name": "ban",
+  "command_ban_help": "Bans a user from the server and optionally writes the reason to the moderation logs. Use '%s' command to enable/disable moderation logging. Additionally cleans up the user's messages for mentioned last days, if '%s' parameter was set by name.",
+
+  "command_ban_arg_subjectIds_alias_subjectIds": "subjectId",
+  "command_ban_arg_subjectIds_alias_s": "s",
+  "command_ban_arg_subjectIds_help": "The user(s) to be kicked. Use mentions like @TheDaring.",
+  "command_ban_arg_daysToClean_alias_daysToClean": "daysToClean",
+  "command_ban_arg_daysToClean_alias_d": "d",
+  "command_ban_arg_daysToClean_help": "For how many last days to clean the messages of the banned user.",
+  "command_ban_arg_reason_alias_reason": "reason",
+  "command_ban_arg_reason_alias_r": "r",
+  "command_ban_arg_reason_help": "The reason to kick (can be empty).",
+
+  "command_ban_success": "Banned %s users out of %s requested. Error count: %s.",
+  "command_ban_log": "User %s was banned by moderator %s for the following reason: %s",
+
+
+  "command_setbanonwarnings_name": "setbanonwarnings",
+  "command_setbanonwarnings_help": "Sets the limit on warnings which a user should get in order to be automatically banned from the server. Use 0 to disable the auto-ban. Use '%s' command to give warnings.",
+
+  "command_setbanonwarnings_arg_count_alias_count": "count",
+  "command_setbanonwarnings_arg_count_alias_c": "c",
+  "command_setbanonwarnings_arg_count_help": "The limit of warnings at which the user will be banned. Use 0 to disable the feature.",
+
+  "command_setbanonwarnings_enabled": "Set warning limit to %s.",
+  "command_setbanonwarnings_disabled": "Set warning limit to %s. Disabling the auto-ban on warnings.",
+
+
+  "command_warn_name": "warn",
+  "command_warn_help": "Warns a user and optionally writes the reason to the moderation logs. Use '%s' command to enable/disable moderation logging. Additionally bans the user if he got enough warnings and the auto-ban was enabled.",
+
+  "command_warn_arg_subjectIds_alias_subjectIds": "subjectId",
+  "command_warn_arg_subjectIds_alias_s": "s",
+  "command_warn_arg_subjectIds_help": "The user(s) to be warned. Use mentions like @TheBad.",
+  "command_warn_arg_reason_alias_reason": "reason",
+  "command_warn_arg_reason_alias_r": "r",
+  "command_warn_arg_reason_help": "The reason to warn (can be empty).",
+
+  "command_warn_success": "Warned %s users out of %s requested. Error count: %s.",
+  "command_warn_log": "User %s was warned by moderator %s for the following reason: %s",
+  "command_warn_banreason": "Got too many warnings",
+
+
+  "command_warnings_name": "warnings",
+  "command_warnings_help": "Gets the warnings issued in the server.",
+
+  "command_warnings_arg_subjectIds_alias_subjectIds": "subjectIds",
+  "command_warnings_arg_subjectIds_alias_s": "s",
+  "command_warnings_arg_subjectIds_help": "The names of the users for which you want to get warnings. By default - all users. Use mentions like @TheUgly.",
+
+  "command_warnings_no_warnings": "No warnings found.",
+  "command_warnings_warning": "Warning id = %d was issued to user %s by moderator %s at %s with the following reason: %s\n",
+
+
+  "command_deletewarning_name": "deletewarning",
+  "command_deletewarning_help": "Deletes warnings by their ids. Use '%s' command to get ids of the warnings",
+
+  "command_deletewarning_arg_ids_alias_ids": "ids",
+  "command_deletewarning_arg_ids_alias_i": "i",
+  "command_deletewarning_arg_ids_help": "The list of ids, comma separated.",
+  "command_deletewarning_no_ids_found": "No warnings found matching the id.",
+  "command_deletewarning_success": "Successfully removed the warnings."
 }

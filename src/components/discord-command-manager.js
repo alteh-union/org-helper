@@ -5,11 +5,14 @@ const AddBadWordsCommand = require('../commands_discord/settings/add-bad-words-c
 const AddRoleCommand = require('../commands_discord/moderation/add-role-command');
 const AddRoleManagerCommand = require('../commands_discord/permissions/add-role-manager-command');
 const BadWordsCommand = require('../commands_discord/settings/bad-words-command');
+const BanCommand = require('../commands_discord/moderation/ban-command');
 const CleanCommand = require('../commands_discord/moderation/clean-command');
 const DeleteReminderCommand = require('../commands_discord/social/delete-reminder-command');
 const DeletePermissionCommand = require('../commands_discord/permissions/delete-permission-command');
+const DeleteWarningCommand = require('../commands_discord/moderation/delete-warning-command');
 const DenyRemindCommand = require('../commands_discord/permissions/deny-remind-command');
 const HelpCommand = require('../commands_discord/other/help-command');
+const KickCommand = require('../commands_discord/moderation/kick-command');
 const MyPermissionsCommand = require('../commands_discord/permissions/my-permissions-command');
 const MySettingsCommand = require('../commands_discord/settings/my-settings-command');
 const PermissionsCommand = require('../commands_discord/permissions/permissions-command');
@@ -24,13 +27,18 @@ const RemindersCommand = require('../commands_discord/social/reminders-command')
 const RemoveBadWordsCommand = require('../commands_discord/settings/remove-bad-words-command');
 const RemoveRoleCommand = require('../commands_discord/moderation/remove-role-command');
 const RemoveRoleManagerCommand = require('../commands_discord/permissions/remove-role-manager-command');
+const SetBanOnWarningsCommand = require('../commands_discord/settings/set-ban-on-warnings-command');
 const SetCensoringCommand = require('../commands_discord/settings/set-censoring-command');
 const SetLocaleCommand = require('../commands_discord/settings/set-locale-command');
+const SetModerLogsChannelCommand = require('../commands_discord/settings/set-moder-logs-channel-command');
+const SetModerLogsCommand = require('../commands_discord/settings/set-moder-logs-command');
 const SetMyLocaleCommand = require('../commands_discord/settings/set-my-locale-command');
 const SetMyTimezoneCommand = require('../commands_discord/settings/set-my-timezone-command');
 const SetPrefixCommand = require('../commands_discord/settings/set-prefix-command');
 const SetTimezoneCommand = require('../commands_discord/settings/set-timezone-command');
 const SettingsCommand = require('../commands_discord/settings/settings-command');
+const WarnCommand = require('../commands_discord/moderation/warn-command');
+const WarningsCommand = require('../commands_discord/moderation/warnings-command');
 
 const MyDataCommand = require('../commands_discord/private_privacy/my-data-command');
 
@@ -51,11 +59,14 @@ class DiscordCommandManager extends CommandManager {
       AddRoleCommand,
       AddRoleManagerCommand,
       BadWordsCommand,
+      BanCommand,
       CleanCommand,
       DeleteReminderCommand,
       DeletePermissionCommand,
+      DeleteWarningCommand,
       DenyRemindCommand,
       HelpCommand,
+      KickCommand,
       MyPermissionsCommand,
       MySettingsCommand,
       PermissionsCommand,
@@ -67,13 +78,18 @@ class DiscordCommandManager extends CommandManager {
       RemoveBadWordsCommand,
       RemoveRoleCommand,
       RemoveRoleManagerCommand,
+      SetBanOnWarningsCommand,
       SetCensoringCommand,
       SetLocaleCommand,
+      SetModerLogsChannelCommand,
+      SetModerLogsCommand,
       SetMyLocaleCommand,
       SetMyTimezoneCommand,
       SetPrefixCommand,
       SetTimezoneCommand,
-      SettingsCommand
+      SettingsCommand,
+      WarnCommand,
+      WarningsCommand
     ]);
   }
 

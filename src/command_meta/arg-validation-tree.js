@@ -66,7 +66,13 @@ class ArgValidationTree {
                   isIdsArray: { validationFunc: this.isIdsArray }
                 }
               },
-              isOnOff: { validationFunc: this.isOnOff }
+              isOnOff: { validationFunc: this.isOnOff },
+              isInteger: {
+                validationFunc: this.isInteger,
+                impliers: {
+                  isNonNegativeInteger: { validationFunc: this.isNonNegativeInteger }
+                }
+              }
             }
           }
         }
@@ -208,6 +214,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the isSubjects condition.
+   * If singleEntity option is true, then also checks the count of subjects (should be 1).
    * @throws BotPublicError
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
@@ -221,6 +228,10 @@ class ArgValidationTree {
         'wrong subjects provided:',
         'arg_validation_wrong_subjects'
       );
+    }
+    if (argDef.validationOptions.singleEntity && (argValue.subjectIds.length + argValue.subjectRoles.length) > 1) {
+      ArgValidationTree.generateValidationError(argDef, command, 'subjects array length > 1:',
+        'arg_validation_non_single_subject_array');
     }
   }
 
@@ -299,6 +310,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the isChannels condition.
+   * If singleEntity option is true, then also checks the count of channels (should be 1).
    * @throws BotPublicError
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
@@ -312,6 +324,10 @@ class ArgValidationTree {
         'wrong channels provided:',
         'arg_validation_wrong_channels'
       );
+    }
+    if (argDef.validationOptions.singleEntity && argValue.channels.length > 1) {
+      ArgValidationTree.generateValidationError(argDef, command, 'channels array length > 1:',
+        'arg_validation_non_single_channel_array');
     }
   }
 
@@ -452,6 +468,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the isArray condition.
+   * If singleEntity option is true, then also checks the count of elements (should be 1).
    * @throws BotPublicError
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
@@ -460,6 +477,10 @@ class ArgValidationTree {
   static async isArray(argDef, argValue, command) {
     if (!Array.isArray(argValue)) {
       ArgValidationTree.generateValidationError(argDef, command, 'wrong array:', 'arg_validation_wrong_array');
+    }
+    if (argDef.validationOptions.singleEntity && argValue.length > 1) {
+      ArgValidationTree.generateValidationError(argDef, command, 'array length > 1:',
+        'arg_validation_non_single_entity_array');
     }
   }
 
@@ -501,6 +522,42 @@ class ArgValidationTree {
       ArgValidationTree.generateValidationError(argDef, command, 'wrong on/off arg:', 'arg_validation_wrong_on_off', [
         acceptableStrings.join(', ')
       ]);
+    }
+  }
+
+  /**
+   * Validates a command's argument value against the isInteger condition.
+   * @throws BotPublicError
+   * @param  {CommandArgDef} argDef      the argument definition
+   * @param  {Object}        argValue    the argument value
+   * @param  {string}        commandName the command name
+   */
+  static async isInteger(argDef, argValue, command) {
+    if (!argValue.match(/^\d+$/) || argValue === '') {
+      ArgValidationTree.generateValidationError(
+        argDef,
+        command,
+        'wrong integer:',
+        'arg_validation_wrong_integer'
+      );
+    }
+  }
+
+  /**
+   * Validates a command's argument value against the isNonNegativeInteger condition.
+   * @throws BotPublicError
+   * @param  {CommandArgDef} argDef      the argument definition
+   * @param  {Object}        argValue    the argument value
+   * @param  {string}        commandName the command name
+   */
+  static async isNonNegativeInteger(argDef, argValue, command) {
+    if (Number.parseInt(argValue, 10) < 0) {
+      ArgValidationTree.generateValidationError(
+        argDef,
+        command,
+        'wrong non-negative integer:',
+        'arg_validation_wrong_non_negative_integer'
+      );
     }
   }
 

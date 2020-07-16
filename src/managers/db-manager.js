@@ -20,8 +20,9 @@ const TasksTable = require('../mongo_classes/tasks-table');
 const ServerSettingsTable = require('../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../mongo_classes/user-settings-table');
 const ImageTemplateTable = require('../mongo_classes/image-template-table');
+const WarningsTable = require('../mongo_classes/warnings-table');
 
-const CurrentVersion = 2;
+const CurrentVersion = 3;
 
 /**
  * The defined tables.
@@ -36,7 +37,8 @@ const Tables = Object.freeze({
   tasksTable: TasksTable,
   serverSettingsTable: ServerSettingsTable,
   userSettingsTable: UserSettingsTable,
-  imageTemplateTable: ImageTemplateTable
+  imageTemplateTable: ImageTemplateTable,
+  warningsTable: WarningsTable
 });
 
 /**
@@ -381,6 +383,21 @@ class DbManager {
       }
     } else {
       result = result + langManager.getString('privacy_no_permissions_records') + '\n';
+    }
+
+    const warningsRows = await this.warningsTable.getRows({ source: BotTable.DISCORD_SOURCE, userId: userId });
+
+    if (warningsRows.length > 0) {
+      result = result + langManager.getString('privacy_warnings_records') + '\n';
+      for (const warningRow of warningsRows) {
+        const dbRecord = orgs.find(org => {
+          return org.id === warningRow.orgId;
+        });
+        warningRow.orgId = warningRow.orgId + (dbRecord === undefined ? '' : ' (' + dbRecord.name + ')');
+        result = result + util.inspect(warningRow) + '\n';
+      }
+    } else {
+      result = result + langManager.getString('privacy_no_warnings_records') + '\n';
     }
 
     return result;

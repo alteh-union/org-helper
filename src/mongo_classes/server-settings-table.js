@@ -18,7 +18,10 @@ const DefinedSettings = Object.freeze({
   localeName: new MultiLangValue('localeName', 'setting_locale_name'),
   timezone: new MultiLangValue('timezone', 'setting_timezone'),
   badwords: new MultiLangValue('badwords', 'setting_badwords'),
-  censoring: new MultiLangValue('censoring', 'setting_censoring')
+  censoring: new MultiLangValue('censoring', 'setting_censoring'),
+  moderLogsEnabled: new MultiLangValue('moderLogsEnabled', 'setting_moderLogsEnabled'),
+  moderLogsChannel: new MultiLangValue('moderLogsChannel', 'setting_moderLogsChannel'),
+  banOnWarnings: new MultiLangValue('banOnWarnings', 'setting_banOnWarnings')
 });
 
 /**

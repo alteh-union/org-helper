@@ -3,8 +3,10 @@
   "privacy_no_guild_member_records": "У нас нет записей о вас как о члене гильдий.",
   "privacy_user_settings_records": "У нас следующие записи о ваших настройках, созданных с помощью Бота:",
   "privacy_no_user_settings_records": "У нас нет записей о ваших настройках, созданных с помощью Бота.",
-  "privacy_permissions_records": "У нас есть следующие записи о разрешениях, настроенных с помощью Бота для вас:",
-  "privacy_no_permissions_records": "У нас нет записей о разрешениях, настроенных с помощью Бота для вас.",
+  "privacy_permissions_records": "У нас есть следующие записи о разрешениях, настроенных для вас с помощью Бота:",
+  "privacy_no_permissions_records": "У нас нет записей о разрешениях, настроенных для вас с помощью Бота.",
+  "privacy_warnings_records": "У нас есть следующие записи о предупрждениях, выданных вам с помощью Бота:",
+  "privacy_no_warnings_records": "У нас нет записей о предупрждениях, выданных вам с помощью Бота.",
 
   "permission_missing_bot": "Вам нужно иметь разрешение \"%s\", чтобы запускать эту команду с такими аргументами. Свяжитесь с админом сервера, чтобы получить разрешение.",
   "permission_missing_discord": "Вам нужно иметь следующее право в Дискорде, чтобы запускать эту команду: %s. Свяжитесь с админом сервера, чтобы получить нужные права.",
@@ -25,6 +27,9 @@
   "setting_timezone": "часовой пояс",
   "setting_badwords": "плохие слова",
   "setting_censoring": "цензура",
+  "setting_moderLogsEnabled": "логи модерирования включены",
+  "setting_moderLogsChannel": "канал для логов модерирования",
+  "setting_banForWarnings": "бан за предупреждения",
 
   "moderator_censored_message": "Пользователь %s написал сообщение, но во имя благопристойности нам пришлость заменить его на следующее:\n%s",
 
@@ -48,6 +53,11 @@
   "arg_validation_time_only_distance_allowed": "Только временное смещение допустимо для этого аргумента: %s. Вы предоставили расписание",
   "arg_validation_time_only_schedule_allowed": "Только расписание допустимо для этого аргумента: %s. Вы предоставили временное смещение",
   "arg_validation_time_zero_shift": "Нулевое смещение недопустимо для этого аргумента: %s",
+  "arg_validation_non_single_subject_array": "Вы указали более одного пользователя/роли для аргумента %s. Можно указать только одного пользователя/роль",
+  "arg_validation_non_single_channel_array": "Вы указали более одного канала для аргумента %s. Можно указать только один канал",
+  "arg_validation_non_single_entity_array": "Вы указали более одного объекта для аргумента %s. Можно указат только один объект",
+  "arg_validation_wrong_integer": "Требуется целочисленное значение аргумента %s, но вы не предоставили такового",
+  "arg_validation_wrong_non_negative_integer": "Требуется неотрицательное целочисленное значение аргумента %s, но вы не предоставили такового",
 
   "arg_boolean_off": "выкл",
   "arg_boolean_on": "вкл",
@@ -311,7 +321,7 @@
   "command_removerolemanager_name": "убратьменеджераролей",
   "command_removerolemanager_help": "Убирает разрешение с участников/ролей на добавление/снятие указанных ролей.",
 
-  "command_removerolemanager_arg_subjectIds_alias_subjectIds": "идСуъектов",
+  "command_removerolemanager_arg_subjectIds_alias_subjectIds": "идСубъектов",
   "command_removerolemanager_arg_subjectIds_alias_s": "с",
   "command_removerolemanager_arg_subjectIds_help": "Роли/участники, которые потеряют разрешение. Используйте упоминания, типа @Killer777, @плохиемодеры.",
   "command_removerolemanager_arg_rolesIds_alias_rolesIds": "роли",
@@ -455,5 +465,101 @@
   "command_deletepermission_arg_ids_alias_ids": "ид",
   "command_deletepermission_arg_ids_alias_i": "и",
   "command_deletepermission_arg_ids_help": "Список номеров (идентификаторов), через запятую.",
-  "command_deletepermission_success": "Разрешения успешно удалены."
+  "command_deletepermission_success": "Разрешения успешно удалены.",
+
+
+  "command_setmoderlogschannel_name": "задатьканаллоговмодерации",
+  "command_setmoderlogschannel_help": "Задаёт канал, куда будут записываться логи модерации (если она включена). Если эта команда не была использована, но кто-то использовал команды модерации, то по умолчанию логи будут записаны в канал %s.",
+
+  "command_setmoderlogschannel_arg_channelId_alias_channelName": "имяКанала",
+  "command_setmoderlogschannel_arg_channelId_alias_c": "к",
+  "command_setmoderlogschannel_arg_channelId_help": "Канал, куда будут записываться логи.",
+  "command_setmoderlogschannel_success": "Канал установлен успешно.",
+
+
+  "command_setmoderlogs_name": "задатьлогимодерации",
+  "command_setmoderlogs_help": "Включает или выключает логирование для модерации (то есть, когда модераторы используют команды типа пнуть, бан и т.д.). Испоьзуйте команду '%s', чтобы задать канал, в который будут записываться логи.",
+
+  "command_setmoderlogs_arg_enable_alias_enable": "включить",
+  "command_setmoderlogs_arg_enable_alias_e": "в",
+  "command_setmoderlogs_enabled": "Логирование успешно включено.",
+  "command_setmoderlogs_disabled": "Логирование успешно выключено.",
+
+
+  "command_kick_name": "пнуть",
+  "command_kick_help": "Убирает указанного пользователя с сервера и опционально записывает причину этого в логи. Используйте команду '%s', чтобы включить/выключить модераторские логи.",
+
+  "command_kick_arg_subjectIds_alias_subjectIds": "идУчастников",
+  "command_kick_arg_subjectIds_alias_s": "и",
+  "command_kick_arg_subjectIds_help": "Пользователь(ли), которого нужно удалить. Используйте упоминания, например, @Непослушный.",
+  "command_kick_arg_reason_alias_reason": "причина",
+  "command_kick_arg_reason_alias_r": "п",
+  "command_kick_arg_reason_help": "Причина удаления (можно не указывать).",
+
+  "command_kick_success": "%s пользователей удалено из %s запрошенных. Число ошибок: %s.",
+  "command_kick_log": "Пользователь %s был выпнут модератором %s по следующей причине: %s",
+
+
+  "command_ban_name": "бан",
+  "command_ban_help": "Банит указанного пользователя с сервера и опционально записывает причину этого в логи. Используйте команду '%s', чтобы включить/выключить модераторские логи. Дополнительно удаляет сообщения от пользователя за указанное кол-во последних дней, если аргумент '%s' был задан по имени.",
+
+  "command_ban_arg_subjectIds_alias_subjectIds": "идУчастников",
+  "command_ban_arg_subjectIds_alias_s": "и",
+  "command_ban_arg_subjectIds_help": "Пользователь(ли), которого нужно забанить. Используйте упоминания, например, @Дерзкий.",
+  "command_ban_arg_daysToClean_alias_daysToClean": "дниДляУдаления",
+  "command_ban_arg_daysToClean_alias_d": "д",
+  "command_ban_arg_daysToClean_help": "За сколько последних дней удалить сообщения от этого пользователя.",
+  "command_ban_arg_reason_alias_reason": "причина",
+  "command_ban_arg_reason_alias_r": "п",
+  "command_ban_arg_reason_help": "Причина бана (можно не указывать).",
+
+  "command_ban_success": "%s пользователей забанено из %s запрошенных. Число ошибок: %s.",
+  "command_ban_log": "Пользователь %s был забанен модератором %s по следующей причине: %s",
+
+
+  "command_setbanonwarnings_name": "задатьбаннапредупреждения",
+  "command_setbanonwarnings_help": "Задаёт число предупреждений, после получения которых пользователь автоматически банится на сервере. Используйте 0, чтобы отключить автоматический бан. Используйте команду '%s', чтобы делать замечания.",
+
+  "command_setbanonwarnings_arg_count_alias_count": "число",
+  "command_setbanonwarnings_arg_count_alias_c": "ч",
+  "command_setbanonwarnings_arg_count_help": "Максимальное число предупреждений. Используйте 0, чтобы выключить фичу.",
+
+  "command_setbanonwarnings_enabled": "Лимит установлен на %s.",
+  "command_setbanonwarnings_disabled": "Лимит установлен на %s. Авто-бан отключён." ,
+
+
+  "command_warn_name": "предупредить",
+  "command_warn_help": "Предупреждает указанного пользователя и опционально записывает причину этого в логи. Используйте команду '%s', чтобы включить/выключить модераторские логи. Также, банит пользователя, если тот получил достаточно предупреждений и авто-бан был включен на сервере.",
+
+  "command_warn_arg_subjectIds_alias_subjectIds": "идУчастников",
+  "command_warn_arg_subjectIds_alias_s": "и",
+  "command_warn_arg_subjectIds_help": "Пользователь(ли), которого нужно предупредить. Используйте упоминания, например, @Плохой.",
+  "command_warn_arg_reason_alias_reason": "причина",
+  "command_warn_arg_reason_alias_r": "п",
+  "command_warn_arg_reason_help": "Причина предупреждения (можно не указывать).",
+
+  "command_warn_success": "Предупрждено %s пользователей из %s запрошенных. Число ошибок: %s.",
+  "command_warn_log": "Пользователь %s получил предупреждение от модератора %s по следующей причине: %s",
+  "command_warn_banreason": "Получено слишком много предупреждений",
+
+
+  "command_warnings_name": "предупреждения",
+  "command_warnings_help": "Показывает предупреждения, выданные на сервере.",
+
+  "command_warnings_arg_subjectIds_alias_subjectIds": "идУчастников",
+  "command_warnings_arg_subjectIds_alias_s": "и",
+  "command_warnings_arg_subjectIds_help": "Имена участников, для которых нужно получить предупреждения. По умолчанию - все пользователи. Используйте упоминания, например, @Злой.",
+
+  "command_warnings_no_warnings": "Предупреждения не найдены.",
+  "command_warnings_warning": "Предупреждение с номером = %d было выдано пользователю %s модератором %s в %s по следующей причине: %s\n",
+
+
+  "command_deletewarning_name": "удалитьпредупреждение",
+  "command_deletewarning_help": "Удаляет предупреждение по номеру. Используйте команду '%s', чтобы получить список предупреждений",
+
+  "command_deletewarning_arg_ids_alias_ids": "ид",
+  "command_deletewarning_arg_ids_alias_i": "и",
+  "command_deletewarning_arg_ids_help": "Список номеров (идентификаторов), через запятую.",
+  "command_deletewarning_no_ids_found": "Предупреждений с такими номерами не найдено.",
+  "command_deletewarning_success": "Предупреждения удалены успешно."
 }
