@@ -7,6 +7,7 @@ const AddRoleManagerCommand = require('../commands_discord/permissions/add-role-
 const BadWordsCommand = require('../commands_discord/settings/bad-words-command');
 const BanCommand = require('../commands_discord/moderation/ban-command');
 const CleanCommand = require('../commands_discord/moderation/clean-command');
+const DeleteImageTemplateCommand = require('../commands_discord/image/delete-image-template-command');
 const DeleteReminderCommand = require('../commands_discord/social/delete-reminder-command');
 const DeletePermissionCommand = require('../commands_discord/permissions/delete-permission-command');
 const DeleteWarningCommand = require('../commands_discord/moderation/delete-warning-command');
@@ -61,6 +62,7 @@ class DiscordCommandManager extends CommandManager {
       BadWordsCommand,
       BanCommand,
       CleanCommand,
+      DeleteImageTemplateCommand,
       DeleteReminderCommand,
       DeletePermissionCommand,
       DeleteWarningCommand,

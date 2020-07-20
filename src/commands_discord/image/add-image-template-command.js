@@ -36,7 +36,7 @@ const AddImageTemplateCommandArgDefs = Object.freeze({
 
 /**
  * Command to list caller's permissions set via the Bot on the Discord server.
- * @alias ImageListCommand
+ * @alias AddImageTemplateCommand
  * @extends DiscordCommand
  */
 class AddImageTemplateCommand extends DiscordCommand {
@@ -126,6 +126,18 @@ class AddImageTemplateCommand extends DiscordCommand {
   async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
+    const existingTemplates = await this.context.dbManager.getDiscordRows(
+      this.context.dbManager.imageTemplateTable,
+      this.orgId,
+      {});
+
+    if (existingTemplates.length >= this.context.prefsManager.max_image_templates_per_discord_org) {
+      return this.langManager.getString(
+        'command_addimagetemplate_too_many_image_templates',
+        this.context.prefsManager.max_image_templates_per_discord_org
+      );
+    }
+
     const template = {
       id: this.templateName,
       orgId: this.orgId,
@@ -149,7 +161,7 @@ class AddImageTemplateCommand extends DiscordCommand {
 }
 
 /**
- * Exports the ImageListCommand class
- * @type {ImageListCommand}
+ * Exports the AddImageTemplateCommand class
+ * @type {AddImageTemplateCommand}
  */
 module.exports = AddImageTemplateCommand;

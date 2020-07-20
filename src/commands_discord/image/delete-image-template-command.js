@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @module delete-warning-command
+ * @module delete-image-template-command
  * @author Alteh Union (alteh.union@gmail.com)
  * @license MIT (see the root LICENSE file for details)
  */
@@ -10,25 +10,23 @@ const DiscordCommand = require('../discord-command');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 const ArrayArgScanner = require('../../arg_scanners/array-arg-scanner');
 
-const WarningsCommand = require('./warnings-command');
+const ListImageTemplatesCommand = require('./list-image-templates-command');
 
-const PermissionsManager = require('../../managers/permissions-manager');
-
-const DeleteWarningCommandArgDefs = Object.freeze({
+const DeleteImageTemplateCommandArgDefs = Object.freeze({
   ids: new CommandArgDef('ids', {
-    aliasIds: ['command_deletewarning_arg_ids_alias_ids', 'command_deletewarning_arg_ids_alias_i'],
-    helpId: 'command_deletewarning_arg_ids_help',
+    aliasIds: ['command_deleteimagetemplate_arg_ids_alias_ids', 'command_deleteimagetemplate_arg_ids_alias_i'],
+    helpId: 'command_deleteimagetemplate_arg_ids_help',
     scanner: ArrayArgScanner,
-    validationOptions: { isIdsArray: true }
+    validationOptions: { isArray: true }
   })
 });
 
 /**
- * Command to delete warnings according to their ids in the Discord server.
- * @alias DeleteWarningCommand
+ * Command to delete image templates according to their ids in the Discord server.
+ * @alias DeleteImageTemplateCommand
  * @extends DiscordCommand
  */
-class DeleteWarningCommand extends DiscordCommand {
+class DeleteImageTemplateCommand extends DiscordCommand {
   /**
    * Creates an instance for an organization from a source and assigns a given language manager to it.
    * @param  {Context}     context            the Bot's context
@@ -38,7 +36,7 @@ class DeleteWarningCommand extends DiscordCommand {
    * @return {Command}                        the created instance
    */
   static createForOrg(context, source, commandLangManager, orgId) {
-    return new DeleteWarningCommand(context, source, commandLangManager, orgId);
+    return new DeleteImageTemplateCommand(context, source, commandLangManager, orgId);
   }
 
   /**
@@ -46,7 +44,7 @@ class DeleteWarningCommand extends DiscordCommand {
    * @return {string} the id of the command's name to be localized
    */
   static getCommandInterfaceName() {
-    return 'command_deletewarning_name';
+    return 'command_deleteimagetemplate_name';
   }
 
   /**
@@ -54,7 +52,7 @@ class DeleteWarningCommand extends DiscordCommand {
    * @return {Array<CommandArgDef>} the array of definitions
    */
   static getDefinedArgs() {
-    return DeleteWarningCommandArgDefs;
+    return DeleteImageTemplateCommandArgDefs;
   }
 
   /**
@@ -67,18 +65,9 @@ class DeleteWarningCommand extends DiscordCommand {
    */
   static getHelpText(context, langManager) {
     return langManager.getString(
-      'command_deletewarning_help',
-      langManager.getString(WarningsCommand.getCommandInterfaceName())
+      'command_deleteimagetemplate_help',
+      langManager.getString(ListImageTemplatesCommand.getCommandInterfaceName())
     );
-  }
-
-  /**
-   * Gets the array of defined Discord permission filters for the command.
-   * Source-independent permissions (e.g. stored in the Bot's DB) should be defined in another place.
-   * @return {Array<string>} the array of Discord-specific permissions required
-   */
-  static getRequiredDiscordPermissions() {
-    return [PermissionsManager.DISCORD_PERMISSIONS.BAN_MEMBERS];
   }
 
   /**
@@ -91,35 +80,35 @@ class DeleteWarningCommand extends DiscordCommand {
   async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
-    const idsToDelete = this.ids.map(a => Number.parseInt(a, 10));
-    const warnings = await this.context.dbManager.getDiscordRows(this.context.dbManager.warningsTable, this.orgId);
-    const warningsIds = new Set(warnings.map(a => a.id));
-    const warningsIdsToDelete = [];
+    const templates = await this.context.dbManager.getDiscordRows(
+      this.context.dbManager.imageTemplateTable, this.orgId);
+    const templateIds = new Set(templates.map(a => a.id));
+    const templateIdsToDelete = [];
 
-    for (const idToDelete of idsToDelete) {
-      if (warningsIds.has(idToDelete)) {
-        warningsIdsToDelete.push(idToDelete);
+    for (const idToDelete of this.ids) {
+      if (templateIds.has(idToDelete)) {
+        templateIdsToDelete.push(idToDelete);
       }
     }
 
-    if (warningsIdsToDelete.length === 0) {
-      return this.langManager.getString('command_deletewarning_no_ids_found');
+    if (templateIdsToDelete.length === 0) {
+      return this.langManager.getString('command_deleteimagetemplate_no_ids_found');
     }
 
     const orArray = [];
-    for (const warningIdToDelete of warningsIdsToDelete) {
-      orArray.push({ id: warningIdToDelete });
+    for (const templateIdToDelete of templateIdsToDelete) {
+      orArray.push({ id: templateIdToDelete });
     }
 
     const deleteQuery = { $or: orArray };
-    await this.context.dbManager.deleteDiscordRows(this.context.dbManager.warningsTable, this.orgId, deleteQuery);
+    await this.context.dbManager.deleteDiscordRows(this.context.dbManager.imageTemplateTable, this.orgId, deleteQuery);
 
-    return this.langManager.getString('command_deletewarning_success');
+    return this.langManager.getString('command_deleteimagetemplate_success');
   }
 }
 
 /**
- * Exports the DeleteWarningCommand class
- * @type {DeleteWarningCommand}
+ * Exports the DeleteImageTemplateCommand class
+ * @type {DeleteImageTemplateCommand}
  */
-module.exports = DeleteWarningCommand;
+module.exports = DeleteImageTemplateCommand;

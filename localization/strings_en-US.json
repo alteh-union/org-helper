@@ -258,6 +258,8 @@
   "command_addimagetemplate_help": "Create new template, e.g. !addtemplate tmp1 {\"input\": { \"type\": \"fixed\", \"width\": 1576, \"height\": 1080} }",
   "command_addimagetemplate_success": "Template %s created!",
   "command_addimagetemplate_error_not_unique_name": "Failed to create template %s. Such template already exists",
+  "command_addimagetemplate_too_many_image_templates": "Your server has reached the limit of image templates: %s. Please delete some others before adding a new image template.",
+
   "command_addimagetemplate_arg_templateName_alias_templateName": "templateName",
   "command_addimagetemplate_arg_templateName_alias_n": "n",
   "command_addimagetemplate_arg_templateName_help": "Template name",
@@ -563,5 +565,15 @@
   "command_deletewarning_arg_ids_alias_i": "i",
   "command_deletewarning_arg_ids_help": "The list of ids, comma separated.",
   "command_deletewarning_no_ids_found": "No warnings found matching the id.",
-  "command_deletewarning_success": "Successfully removed the warnings."
+  "command_deletewarning_success": "Successfully removed the warnings.",
+
+
+  "command_deleteimagetemplate_name": "deleteimagetemplate",
+  "command_deleteimagetemplate_help": "Deletes image templates by their ids (names). Use '%s' command to get ids of the templates.",
+
+  "command_deleteimagetemplate_arg_ids_alias_ids": "ids",
+  "command_deleteimagetemplate_arg_ids_alias_i": "i",
+  "command_deleteimagetemplate_arg_ids_help": "The list of ids, comma separated.",
+  "command_deleteimagetemplate_no_ids_found": "No image templates found matching the id.",
+  "command_deleteimagetemplate_success": "Successfully removed the templates."
 }

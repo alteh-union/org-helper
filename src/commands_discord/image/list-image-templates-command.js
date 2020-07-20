@@ -71,7 +71,7 @@ class ListImageTemplatesCommand extends DiscordCommand {
       {});
     return this.langManager.getString(
       'command_listimagetemplates_success',
-      res.map(r => r.id)
+      res.map(r => r.id).join(', ')
     );
   }
 

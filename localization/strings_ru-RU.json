@@ -257,6 +257,8 @@
   "command_addimagetemplate_help": "Создать новый шаблон, например !создатьшаблон tmp1 {\"input\": { \"type\": \"fixed\", \"width\": 1576, \"height\": 1080} }",
   "command_addimagetemplate_success": "Шаблон %s создан!",
   "command_addimagetemplate_error_not_unique_name": "Не удалось создать шаблон %s. Имя шаблона уже используется",
+  "command_addimagetemplate_too_many_image_templates": "Для вашего сервера задано слишком много шаблонов изображений: %s. Пожалуйста, удалите старые шаблоны прежде чем добавлять новое.",
+
   "command_addimagetemplate_arg_templateName_alias_templateName": "имяШаблона",
   "command_addimagetemplate_arg_templateName_alias_n": "и",
   "command_addimagetemplate_arg_templateName_help": "Имя шаблона",
@@ -562,5 +564,15 @@
   "command_deletewarning_arg_ids_alias_i": "и",
   "command_deletewarning_arg_ids_help": "Список номеров (идентификаторов), через запятую.",
   "command_deletewarning_no_ids_found": "Предупреждений с такими номерами не найдено.",
-  "command_deletewarning_success": "Предупреждения удалены успешно."
+  "command_deletewarning_success": "Предупреждения удалены успешно.",
+
+
+  "command_deleteimagetemplate_name": "удалитьшаблонкартинки",
+  "command_deleteimagetemplate_help": "Удаляет шаблоны картинок по их идентификаторам (именам). Используйте команду '%s', чтобы получить список идентификаторов.",
+
+  "command_deleteimagetemplate_arg_ids_alias_ids": "ид",
+  "command_deleteimagetemplate_arg_ids_alias_i": "и",
+  "command_deleteimagetemplate_arg_ids_help": "Список имён (идентификаторов), через запятую.",
+  "command_deleteimagetemplate_no_ids_found": "Шаблонов картинок с такими номерами не найдено.",
+  "command_deleteimagetemplate_success": "Шаблоны удалены успешно."
 }

@@ -13,3 +13,4 @@ db_name = <YOUR DB NAME>
 //CAN BE SKIPPED IF NOT NEEDED: db_password = testUserPassword
 bypass_bot_permissions_for_discord_admins = true
 max_reminders_per_discord_org = 50
+max_image_templates_per_discord_org = 30
