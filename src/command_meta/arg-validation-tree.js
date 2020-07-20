@@ -533,7 +533,7 @@ class ArgValidationTree {
    * @param  {string}        commandName the command name
    */
   static async isInteger(argDef, argValue, command) {
-    if (!argValue.match(/^\d+$/) || argValue === '') {
+    if (!argValue.match(/^[-+]?\d+$/) || argValue === '') {
       ArgValidationTree.generateValidationError(
         argDef,
         command,

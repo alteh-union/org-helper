@@ -46,12 +46,11 @@ class DiscordCommand extends Command {
   /**
    * Gets the default value for a given argument definition.
    * Used when unable to scan the argument from the command's text.
-   * @param  {Context}        context the Bot's context
    * @param  {BaseMessage}    message the command's message
    * @param  {CommandArgDef}  arg     the argument definition
-   * @return {Object}                 the default value
+   * @return {Promise}                the default value
    */
-  getDefaultDiscordArgValue(context, message, arg) {
+  async getDefaultDiscordArgValue(message, arg) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     return null;
@@ -151,7 +150,7 @@ class DiscordCommand extends Command {
               thiz.context,
               thiz.langManager,
               message,
-              thiz.getDefaultDiscordArgValue(message, definedArgs[argKey])
+              await thiz.getDefaultDiscordArgValue(message, definedArgs[argKey])
             );
             argValue = scanResult.value;
             thiz.context.log.d(
@@ -198,7 +197,7 @@ class DiscordCommand extends Command {
     for (const argKey of argsKeys) {
       let argValue = null;
       if (definedArgs[argKey].skipInSequentialRead) {
-        const defaultValue = this.getDefaultDiscordArgValue(message, definedArgs[argKey]);
+        const defaultValue = await this.getDefaultDiscordArgValue(message, definedArgs[argKey]);
         // Must scan arguments one by one, since it's a sequential scan, and results depend on previous scanning.
         /* eslint-disable no-await-in-loop */
         const scanResult = await definedArgs[argKey].scanner.scan(
@@ -217,7 +216,7 @@ class DiscordCommand extends Command {
         );
       } else {
         if (remainingArgText === '') {
-          const defaultValue = this.getDefaultDiscordArgValue(message, definedArgs[argKey]);
+          const defaultValue = await this.getDefaultDiscordArgValue(message, definedArgs[argKey]);
           // Must scan arguments one by one, since it's a sequential scan, and results depend on previous scanning.
           /* eslint-disable no-await-in-loop */
           const scanResult = await definedArgs[argKey].scanner.scan(

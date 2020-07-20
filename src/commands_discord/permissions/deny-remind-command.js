@@ -90,9 +90,9 @@ class DenyRemindCommand extends DiscordCommand {
    * Used when unable to scan the argument from the command's text.
    * @param  {BaseMessage}    message the command's message
    * @param  {CommandArgDef}  arg     the argument definition
-   * @return {Object}                 the default value
+   * @return {Promise}                the default value
    */
-  getDefaultDiscordArgValue(message, arg) {
+  async getDefaultDiscordArgValue(message, arg) {
     switch (arg) {
       case DenyRemindCommandArgDefs.channelIds:
         return this.langManager.getString(DiscordCommand.ANY_VALUE_TEXT);

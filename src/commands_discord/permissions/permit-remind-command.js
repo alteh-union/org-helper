@@ -91,9 +91,9 @@ class PermitRemindCommand extends DiscordCommand {
    * Used when unable to scan the argument from the command's text.
    * @param  {BaseMessage}    message the command's message
    * @param  {CommandArgDef}  arg     the argument definition
-   * @return {Object}                 the default value
+   * @return {Promise}                the default value
    */
-  getDefaultDiscordArgValue(message, arg) {
+  async getDefaultDiscordArgValue(message, arg) {
     switch (arg) {
       case PermitRemindCommandArgDefs.channelIds:
         return this.langManager.getString(DiscordCommand.ANY_VALUE_TEXT);

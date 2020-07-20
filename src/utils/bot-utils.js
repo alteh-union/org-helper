@@ -7,6 +7,7 @@
  */
 
 const stringSimilarity = require('string-similarity');
+const request = require('request');
 
 const MongoProtocol = 'mongodb';
 
@@ -301,6 +302,25 @@ class Utils {
     }
 
     return suggestions;
+  }
+
+  /**
+   * Downloads a page by its URL as a text. Also can download text files directly.
+   * Do not use to download raw images.
+   * @param  {string}  url the URL to download the page from
+   * @return {Promise}     the page body as text, if successful, Error otherwise
+   */
+  static downloadPage(url) {
+    return new Promise((resolve, reject) => {
+      request(url, (error, response, body) => {
+        if (error) reject(error);
+        if (response.statusCode !== 200) {
+          reject(new Error('Invalid status code <' + response.statusCode + '>'));
+        }
+
+        resolve(body);
+      });
+    });
   }
 }
 

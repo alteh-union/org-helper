@@ -1,9 +1,12 @@
-The license defined below applies to the BebasNeue-Regular.ttf file located
-in this project.
+The license defined below applies to the BebasNeue-Regular.ttf,
+BebasNeue-Bold.ttf, BebasNeue-Book.ttf, BebasNeue-Light.ttf and
+BebasNeue-Thin.ttf files located in this project.
 The license and the font file itself are copied from the main repository of
 the Bebas-Neue font project:
 https://github.com/dharmatype/Bebas-Neue
 in accordance with permissions granted by the license.
+
+===========================================================
 
 Copyright © 2010 by Dharma Type.
 

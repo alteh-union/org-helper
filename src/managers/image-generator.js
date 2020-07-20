@@ -23,6 +23,9 @@ class ImageGenerator {
    */
   constructor() {
     Canvas._registerFont('assets/fonts/BebasNeue-Regular.ttf', { family: 'Bebas Neue' });
+    Canvas._registerFont('assets/fonts/BebasNeue-Book.ttf', { family: 'Bebas Neue Book' });
+    Canvas._registerFont('assets/fonts/BebasNeue-Light.ttf', { family: 'Bebas Neue Light' });
+    Canvas._registerFont('assets/fonts/BebasNeue-Thin.ttf', { family: 'Bebas Neue Thin' });
   }
 
   /**
@@ -171,9 +174,9 @@ class ImageGenerator {
         const basePicRatio = baseImg.getWidth() / baseImg.getHeight();
         const inputRatio = templateConfig.input.width / templateConfig.input.height;
         if (basePicRatio <= inputRatio) {
-          await baseImg.scaleToFit(templateConfig.input.width, Jimp.AUTO);
+          await baseImg.resize(templateConfig.input.width, Jimp.AUTO);
         } else {
-          await baseImg.scaleToFit(Jimp.AUTO, templateConfig.input.height);
+          await baseImg.resize(Jimp.AUTO, templateConfig.input.height);
         }
         let x = (baseImg.getWidth() - templateConfig.input.width) / 2 + params.xShift || 0;
         let y = (baseImg.getHeight() - templateConfig.input.height) / 2 + params.yShift || 0;

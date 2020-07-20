@@ -6,6 +6,8 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
+const DiscordUtils = require('../../utils/discord-utils');
+
 const DiscordCommand = require('../discord-command');
 const SimpleArgScanner = require('../../arg_scanners/simple-arg-scanner');
 const FullStringArgScanner = require('../../arg_scanners/full-string-arg-scanner');
@@ -82,6 +84,36 @@ class AddImageTemplateCommand extends DiscordCommand {
    */
   static getRequiredDiscordPermissions() {
     return [];
+  }
+
+  /**
+   * Gets the default value for a given argument definition.
+   * Used when unable to scan the argument from the command's text.
+   * @param  {BaseMessage}    message the command's message
+   * @param  {CommandArgDef}  arg     the argument definition
+   * @return {Promise}                the default value
+   */
+  async getDefaultDiscordArgValue(message, arg) {
+    switch (arg) {
+      case AddImageTemplateCommandArgDefs.jsonConfig:
+      {
+        const discordMessage = message.originalMessage;
+        if (discordMessage.attachments) {
+          let jsonText = null;
+          for (const attachment of discordMessage.attachments.values()) {
+            jsonText = await DiscordUtils.getAttachmentText(attachment, ['txt', 'json'], this.context.log);
+            if (jsonText !== null) {
+              break;
+            }
+          }
+          return jsonText;
+        } else {
+          return null;
+        }
+      }
+      default:
+        return null;
+    }
   }
 
   /**
