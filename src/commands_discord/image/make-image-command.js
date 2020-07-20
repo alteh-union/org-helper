@@ -10,6 +10,8 @@ const DiscordCommand = require('../discord-command');
 const SimpleArgScanner = require('../../arg_scanners/simple-arg-scanner');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 const BotPublicError = require('../../utils/bot-public-error');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 
 const MakeImageCommandArgDefs = Object.freeze({
   templateName: new CommandArgDef('templateName', {
@@ -132,6 +134,7 @@ class MakeImageCommand extends DiscordCommand {
         )
       );
     }
+
     const templateConfig = res[0].config;
 
     const params = {
@@ -141,14 +144,29 @@ class MakeImageCommand extends DiscordCommand {
       yShift: this.yShift
     };
 
-    const imageResult = await this.context.imageGenerator.generateImage(this.imgUrl, params, templateConfig);
-    imageResult.write('images/result.jpg');
+    try {
+      const imageResult = await this.context.imageGenerator.generateImage(this.imgUrl, params, templateConfig);
+      const filePath = `images/ + ${uuidv4()}.jpg`;
+      imageResult.write(filePath);
+      await message.originalMessage.channel.send(null, {
+        files: [filePath]
+      });
 
-    message.originalMessage.channel.send(null, {
-      files: [
-        'images/result.jpg'
-      ]
-    });
+      await fs.unlink(filePath, (err) => {
+        if (err) {
+          console.log(`Failed to delete file ${filePath}. Error: ' + err`);
+        }
+      });
+
+    } catch (error) {
+      throw new BotPublicError(
+        this.langManager.getString(
+          'command_makeimage_error_broken_template',
+          this.templateName,
+          error.message
+        )
+      );
+    }
   }
 }
 

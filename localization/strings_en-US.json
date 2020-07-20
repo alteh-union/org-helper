@@ -224,8 +224,7 @@
   "command_makeimage_name": "makeimage",
   "command_makeimage_help": "Make new image using existing template, e.g. !makeimage tmp1 https:// upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png (remove the space after ://)",
   "command_makeimage_error_undefined_template": "Undefined template %s",
-
-
+  "command_makeimage_error_broken_template": "Failed to generate image using template %s. Error details: %s.",
 
   "command_makeimage_arg_templateName_alias_templateName": "templateName",
   "command_makeimage_arg_templateName_alias_n": "n",
