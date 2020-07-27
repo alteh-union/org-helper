@@ -15,6 +15,8 @@ const Scheduler = require('./scheduler');
 const Log = require('../utils/log');
 const ImageGenerator = require('./image-generator');
 
+const CurrentVersion = '1.0.1';
+
 /**
  * Contains global managers of the bot.
  * @alias Context
@@ -47,6 +49,15 @@ class Context {
     this.discordClientReady = false;
 
     this.langManager.printMissingTranslations(this.log);
+  }
+
+  /**
+   * Gets the current public release version of the bot.
+   * @todo make setting this version a part of ci
+   * @type {number}
+   */
+  static get CURRENT_VERSION() {
+    return CurrentVersion;
   }
 }
 

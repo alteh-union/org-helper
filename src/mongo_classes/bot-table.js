@@ -58,7 +58,19 @@ class BotTable {
       indexObject[column] = 1;
     }
 
-    await collection.createIndex(indexObject);
+    await collection.createIndex(indexObject, { unique: true });
+
+    const uniqueIndices = this.getRowClass().getUniqueIndices();
+    for (const index of uniqueIndices) {
+      const uniqueIndexObject = {};
+      for (const column of index) {
+        uniqueIndexObject[column] = 1;
+      }
+
+      if (!OhUtils.isEmpty(uniqueIndexObject)) {
+        await collection.createIndex(uniqueIndexObject, { unique: true });
+      }
+    }
   }
 
   /**
@@ -89,9 +101,39 @@ class BotTable {
   }
 
   /**
+   * Drops all indices pf this table.
+   * @return {Promise} nothing
+   */
+  async dropIndexes() {
+    await this.dbManager.dbo.collection(this.getTableName()).dropIndexes();
+  }
+
+  /**
+   * Inserts an entity to this table.
+   * @param  {Object}             entity the entity to be inserted
+   * @return {Promise<boolean>}          true if successful, false otherwise
+   */
+  async insertOne(entity) {
+    if (entity.orgId === undefined) {
+      return false;
+    }
+
+    this.dbManager.context.log.v('insertOne: ' + util.inspect(entity, { showHidden: true, depth: 5 }));
+
+    try {
+      await this.dbManager.dbo.collection(this.getTableName()).insertOne(entity);
+    } catch (e) {
+      this.dbManager.context.log.w('insertOne error: ' + util.inspect(e, { showHidden: true, depth: 5 }));
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
    * Inserts or updates a DB row based on whether the key matches to one of the existing rows.
-   * @param  {Object}  entity raw object which values need to be inserted
-   * @return {Promise}        nothing
+   * @param  {Object}             entity raw object which values need to be inserted
+   * @return {Promise<boolean>}          true if successful, false otherwise
    */
   async insertOrUpdate(entity) {
     const keyColumns = this.getRowClass().getKeyColumns();
@@ -111,7 +153,12 @@ class BotTable {
         insertQuery[column] = entity[column];
       }
 
-      await this.dbManager.dbo.collection(this.getTableName()).insertOne(insertQuery);
+      try {
+        await this.dbManager.dbo.collection(this.getTableName()).insertOne(insertQuery);
+      } catch (e) {
+        this.dbManager.context.log.w('insertOrUpdate insert error: ' + util.inspect(e, { showHidden: true, depth: 5 }));
+        return false;
+      }
 
       this.dbManager.context.log.i(
         'Table: ' +
@@ -136,7 +183,14 @@ class BotTable {
       } else {
         const newValues = { $set: valuesToUpdate };
 
-        await this.dbManager.dbo.collection(this.getTableName()).updateOne(updateQuery, newValues);
+        try {
+          await this.dbManager.dbo.collection(this.getTableName()).updateOne(updateQuery, newValues);
+        } catch (e) {
+          this.dbManager.context.log.w('insertOrUpdate update error: ' +
+            util.inspect(e, { showHidden: true, depth: 5 }));
+          return false;
+        }
+
         this.dbManager.context.log.i(
           'Table: ' +
             this.getTableName() +
@@ -147,6 +201,8 @@ class BotTable {
         );
       }
     }
+
+    return true;
   }
 
   /**

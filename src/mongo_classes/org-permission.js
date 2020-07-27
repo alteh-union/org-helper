@@ -40,6 +40,15 @@ class OrgPermission extends BotRow {
   static getKeyColumns() {
     return [PermissionsColumns.id, PermissionsColumns.source, PermissionsColumns.orgId];
   }
+
+  /**
+   * Gets the array of unique indices, each containing the list of columns to be unique.
+   * @return {Array<Array<string>>} the array of indices
+   */
+  static getUniqueIndices() {
+    return [[PermissionsColumns.source, PermissionsColumns.orgId, PermissionsColumns.subjectType,
+      PermissionsColumns.subjectId, PermissionsColumns.permissionType, PermissionsColumns.filter]];
+  }
 }
 
 /**

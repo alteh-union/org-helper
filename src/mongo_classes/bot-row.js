@@ -63,6 +63,14 @@ class BotRow {
   }
 
   /**
+   * Gets the array of unique indices, each containing the list of columns to be unique.
+   * @return {Array<Array<string>>} the array of indices
+   */
+  static getUniqueIndices() {
+    return [[]];
+  }
+
+  /**
    * Creates an instance based on a Discord entity
    * @param  {Object} discordEntity the Discord object to create instance from
    * @param  {Guild}  discordGuild  the Discord guild which the object belongs to

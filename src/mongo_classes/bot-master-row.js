@@ -1,33 +1,31 @@
 'use strict';
 
 /**
- * @module server-setting-row
+ * @module bot-master-row
  * @author Alteh Union (alteh.union@gmail.com)
  * @license MIT (see the root LICENSE file for details)
  */
 
 const BotRow = require('./bot-row');
 
-const ServerSettingColumns = Object.freeze({
-  source: 'source',
-  orgId: 'orgId',
+const MasterSettingColumns = Object.freeze({
   settingName: 'settingName',
   settingValue: 'settingValue'
 });
 
 /**
- * Represents a DB row of a setting defined for a user's server (organization).
- * @see ServerSettingsTable
- * @alias ServerSettingRow
+ * Represents a DB row of a bot-wide defined setting.
+ * @see BotMasterTable
+ * @alias BotMasterRow
  * @extends BotRow
  */
-class ServerSettingRow extends BotRow {
+class BotMasterRow extends BotRow {
   /**
    * Gets all defined columns of the DB row.
    * @return {Array<string>} the array of column names
    */
   static getColumns() {
-    return Object.values(ServerSettingColumns);
+    return Object.values(MasterSettingColumns);
   }
 
   /**
@@ -35,12 +33,12 @@ class ServerSettingRow extends BotRow {
    * @return {Array<string>} the array of key column names
    */
   static getKeyColumns() {
-    return [ServerSettingColumns.source, ServerSettingColumns.orgId, ServerSettingColumns.settingName];
+    return [MasterSettingColumns.settingName];
   }
 }
 
 /**
- * Exports the ServerSettingRow class
- * @type {ServerSettingRow}
+ * Exports the BotMasterRow class
+ * @type {BotMasterRow}
  */
-module.exports = ServerSettingRow;
+module.exports = BotMasterRow;

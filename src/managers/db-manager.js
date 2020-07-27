@@ -11,6 +11,7 @@ const util = require('util');
 const PermissionsManager = require('./permissions-manager');
 
 const BotTable = require('../mongo_classes/bot-table');
+const BotMasterTable = require('../mongo_classes/bot-master-table');
 const OrgsTable = require('../mongo_classes/orgs-table');
 const ChannelsTable = require('../mongo_classes/channels-table');
 const MembersTable = require('../mongo_classes/members-table');
@@ -22,13 +23,15 @@ const UserSettingsTable = require('../mongo_classes/user-settings-table');
 const ImageTemplateTable = require('../mongo_classes/image-template-table');
 const WarningsTable = require('../mongo_classes/warnings-table');
 
-const CurrentVersion = 3;
+const FirstManagedDbVersion = 3;
+const CurrentDbVersion = 4;
 
 /**
  * The defined tables.
  * @type {Object}
  */
 const Tables = Object.freeze({
+  botMasterTable: BotMasterTable,
   orgsTable: OrgsTable,
   channelsTable: ChannelsTable,
   membersTable: MembersTable,
@@ -56,10 +59,11 @@ class DbManager {
 
   /**
    * Gets the current version of database model.
+   * Particularly needed to check if the DB model has been changed since the last start.
    * @type {number}
    */
-  static get CURRENT_VERSION() {
-    return CurrentVersion;
+  static get CURRENT_DB_VERSION() {
+    return CurrentDbVersion;
   }
 
   /**
@@ -67,6 +71,8 @@ class DbManager {
    * @return {Promise} nothing
    */
   async init() {
+    await this.upgradeIfNeeded();
+
     const tablesKeys = Object.keys(Tables);
     this.tables = [];
     const initResults = [];
@@ -77,6 +83,61 @@ class DbManager {
     }
 
     await Promise.all(initResults);
+  }
+
+  /**
+   * Compares the last saved version number of the DB model, and if it is below the current DB version -
+   * performs the upgrade.
+   * Throws error if trying to downgrade the DB (not supported).
+   * @throws Error
+   * @return {Promise} nothing
+   */
+  async upgradeIfNeeded() {
+    const botMasterTable = new BotMasterTable(this);
+    const defaultValue = FirstManagedDbVersion;
+    let savedVersion = defaultValue;
+    try {
+      savedVersion = await botMasterTable.getSetting(BotMasterTable.MASTER_SETTINGS.dbVersion, defaultValue);
+    } catch (e) {
+      this.context.log.w(botMasterTable.getTableName() + ' does not exist yet.' +
+        ' Assuming we have version ' + FirstManagedDbVersion);
+      savedVersion = defaultValue;
+    }
+
+    this.context.log.i('Saved DB version: ' + savedVersion + '; current DB version: ' + CurrentDbVersion);
+
+    if (savedVersion > CurrentDbVersion) {
+      throw new Error('Downgraing the database is not supported');
+    }
+
+    const startVersion = savedVersion;
+
+    while (savedVersion < CurrentDbVersion) {
+      this.context.log.w('Trying to upgrade the DB to version: ' + (savedVersion + 1));
+      switch (savedVersion) {
+        case 3:
+          {
+            const tablesKeys = Object.keys(Tables);
+            const initResults = [];
+            for (const key of tablesKeys) {
+              const tableToProcess = new Tables[key](this);
+              initResults.push(this.dbo.createCollection(tableToProcess.getTableName())
+                .then(tableToProcess.dropIndexes()));
+            }
+
+            await Promise.all(initResults);
+          }
+          break;
+        default:
+          break;
+      }
+      savedVersion++;
+      this.context.log.w('Successfully upgraded the DB to version: ' + savedVersion);
+    }
+
+    if (startVersion !== savedVersion) {
+      await botMasterTable.setSetting(BotMasterTable.MASTER_SETTINGS.dbVersion, savedVersion);
+    }
   }
 
   /**
@@ -145,27 +206,7 @@ class DbManager {
    * @return {Promise}          nothing
    */
   async insertOne(table, entity) {
-    if (entity.orgId === undefined) {
-      return false;
-    }
-
-    const duplicateQuery = {};
-    const keys = Object.keys(entity);
-    for (const key of keys) {
-      if (!table.getRowClass().getKeyColumns().includes(key)) {
-        duplicateQuery[key] = entity[key];
-      }
-    }
-
-    const duplicateRows = await this.getDiscordRows(table, entity.orgId, duplicateQuery);
-    if (duplicateRows !== null && duplicateRows.length > 0) {
-      return false;
-    }
-
-    this.context.log.v('insertOne: ' + util.inspect(entity, { showHidden: true, depth: 5 }));
-    await this.dbo.collection(table.getTableName()).insertOne(entity);
-
-    return true;
+    return await table.insertOne(entity);
   }
 
   /**
