@@ -238,6 +238,11 @@ class ImageGenerator {
     const picText = await TextToImage.generate(params.text, itemConfig.style || {});
     const picTextBuffer = Buffer.from(picText.split(',')[1], 'base64');
     const jimpText = await Jimp.read(picTextBuffer);
+
+    if (itemConfig.rotate) {
+      jimpText.rotate(itemConfig.rotate);
+    }
+
     baseImg.composite(jimpText, x, y);
   }
 
@@ -291,6 +296,10 @@ class ImageGenerator {
         if (itemConfig.autoscale) {
           tmpPic.scaleToFit(baseImg.getWidth(), baseImg.getHeight());
         }
+    }
+
+    if (itemConfig.rotate) {
+      tmpPic.rotate(itemConfig.rotate);
     }
 
     baseImg.composite(tmpPic, composeX, composeY, blendMode);
