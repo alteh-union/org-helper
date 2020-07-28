@@ -243,6 +243,10 @@ class ImageGenerator {
       jimpText.rotate(itemConfig.rotate);
     }
 
+    if (itemConfig.shear) {
+      this._shear(jimpText,itemConfig.shear);
+    }
+
     baseImg.composite(jimpText, x, y);
   }
 
@@ -302,7 +306,45 @@ class ImageGenerator {
       tmpPic.rotate(itemConfig.rotate);
     }
 
+    if (itemConfig.shear) {
+      this._shear(tmpPic,itemConfig.shear);
+    }
+
+
     baseImg.composite(tmpPic, composeX, composeY, blendMode);
+  }
+
+  /**
+   * Shears an image
+   * @param img
+   * @param offset number Pixels to share
+   * @returns {*}
+   * @private
+   */
+  _shear(img, offset) {
+    const source = img.cloneQuiet();
+    img.scanQuiet(0, 0, img.bitmap.width, img.bitmap.height,
+      (x, y, idx) => {
+        img.bitmap.data.writeUInt32BE(img._background, idx);
+      });
+
+    // Resize to fit result
+    img.resize(source.getWidth(), source.getHeight() + Math.abs(offset));
+
+    source.scanQuiet(0, 0, source.bitmap.width, source.bitmap.height,
+      (x, y, idx) => {
+        let displacement = 0;
+        if (offset > 0) {
+          displacement = Math.round(x / source.getWidth() * offset);
+        } else {
+          displacement = Math.round((x - source.getWidth()) / source.getWidth() * offset);
+        }
+        const pixelRGBA = source.bitmap.data.readUInt32BE(idx);
+        const ids = img.getPixelIndex(x, y + displacement);
+        img.bitmap.data.writeUInt32BE(pixelRGBA, ids);
+      });
+
+    return img;
   }
 }
 
