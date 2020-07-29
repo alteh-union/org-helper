@@ -244,7 +244,7 @@ class ImageGenerator {
     }
 
     if (itemConfig.shear) {
-      this._shear(jimpText,itemConfig.shear);
+      this._shear(jimpText, itemConfig.shear);
     }
 
     baseImg.composite(jimpText, x, y);
@@ -307,7 +307,7 @@ class ImageGenerator {
     }
 
     if (itemConfig.shear) {
-      this._shear(tmpPic,itemConfig.shear);
+      this._shear(tmpPic, itemConfig.shear);
     }
 
 
@@ -329,22 +329,68 @@ class ImageGenerator {
       });
 
     // Resize to fit result
-    img.resize(source.getWidth(), source.getHeight() + Math.abs(offset));
+    img.resize(img.getWidth(), img.getHeight() + Math.abs(offset));
 
-    source.scanQuiet(0, 0, source.bitmap.width, source.bitmap.height,
+    img.scanQuiet(0, 0, img.bitmap.width, img.bitmap.height,
       (x, y, idx) => {
         let displacement = 0;
         if (offset > 0) {
-          displacement = Math.round(x / source.getWidth() * offset);
+          displacement = x / source.getWidth() * offset;
         } else {
-          displacement = Math.round((x - source.getWidth()) / source.getWidth() * offset);
+          displacement = (x - source.getWidth()) / source.getWidth() * offset;
         }
-        const pixelRGBA = source.bitmap.data.readUInt32BE(idx);
-        const ids = img.getPixelIndex(x, y + displacement);
-        img.bitmap.data.writeUInt32BE(pixelRGBA, ids);
+        const pixelOffset = displacement - Math.round(displacement);
+        displacement = Math.round(displacement);
+
+        const sourceY = y - displacement;
+        let pixelRGBA = img._background;
+        if (sourceY >= 0) {
+          pixelRGBA = source.bitmap.data.readUInt32BE(source.getPixelIndex(x, sourceY));
+        }
+
+        const sourceBlendY = pixelOffset < 0 ? sourceY + 1 : sourceY - 1;
+        let pixelToBlend = img._background;
+        if (sourceBlendY >= 0) {
+          const pixelToBlendIds = source.getPixelIndex(x, sourceBlendY);
+          pixelToBlend = source.bitmap.data.readUInt32BE(pixelToBlendIds);
+        }
+        const pixelBlended = this._blendPixels(pixelRGBA, pixelToBlend, Math.abs(pixelOffset));
+        img.bitmap.data.writeUInt32BE(pixelBlended, idx);
       });
 
     return img;
+  }
+
+  /**
+   * Blend to pixels using weight of 2nd pixel
+   * @param pix1
+   * @param pix2
+   * @param weight
+   * @returns {number|*}
+   * @private
+   */
+  _blendPixels(pix1, pix2, weight) {
+    if (pix1 === pix2 || weight === 0) {
+      return pix1;
+    }
+
+    function toBytesInt32(num) {
+      const arr = new Uint8Array([
+        (num & 0xff000000) >> 24,
+        (num & 0x00ff0000) >> 16,
+        (num & 0x0000ff00) >> 8,
+        (num & 0x000000ff)
+      ]);
+      return arr.buffer;
+    }
+
+    const pix1Bytes = new Uint8Array(toBytesInt32(pix1));
+    const pix2Bytes = new Uint8Array(toBytesInt32(pix2));
+    const resultArr = new Uint8Array(4);
+    for (let i = 0; i < 4; i++) {
+      resultArr[i] = Math.round(Math.sqrt(Math.pow(pix1Bytes[i], 2) * (1 - weight) + Math.pow(pix2Bytes[i], 2) * weight));
+    }
+    return new Uint32Array(resultArr.buffer)[0];
   }
 }
 
