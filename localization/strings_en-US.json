@@ -15,6 +15,7 @@
 
   "permission_type_remind": "remind",
   "permission_type_role": "role",
+  "permission_type_imagetemplate": "imagetemplate",
 
   "permission_filter_channelId": "channel",
   "permission_filter_roleId": "role",
@@ -205,7 +206,8 @@
 
   "command_permissions_error_wrong_type": "Such type of permission is undefined: %s",
   "command_permissions_no_permissions": "No bot-specific permissions are set up",
-  "command_permissions_permission": "Permission id: %s of type \"%s\" is granted for %s with name %s, with the following conditions: %s",
+  "command_permissions_permission": "Permission id: %s of type \"%s\" is granted for %s with name %s%s",
+  "command_permissions_filter_condition": ", with the following conditions: %s",
 
 
   "command_permitremind_name": "permitremind",
@@ -575,5 +577,27 @@
   "command_deleteimagetemplate_arg_ids_alias_i": "i",
   "command_deleteimagetemplate_arg_ids_help": "The list of ids, comma separated.",
   "command_deleteimagetemplate_no_ids_found": "No image templates found matching the id.",
-  "command_deleteimagetemplate_success": "Successfully removed the templates."
+  "command_deleteimagetemplate_success": "Successfully removed the templates.",
+
+
+  "command_denyimagetemplate_name": "denyimagetemplate",
+  "command_denyimagetemplate_help": "Removes permission to the specified role or user to manage image templates.",
+
+  "command_denyimagetemplate_arg_subjectIds_alias_subjectIds": "subjectIds",
+  "command_denyimagetemplate_arg_subjectIds_alias_s": "s",
+  "command_denyimagetemplate_arg_subjectIds_help": "The roles and/or members which will lose the permission. Use mentions, like @Jane, @hacker.",
+
+  "command_denyimagetemplate_success": "Successfully removed %d permission(s).",
+  "command_denyimagetemplate_no_matches": "No matching permissions found.",
+
+
+  "command_permitimagetemplate_name": "permitimagetemplate",
+  "command_permitimagetemplate_help": "Adds permission to the specified role or user to manage image templates.",
+
+  "command_permitimagetemplate_arg_subjectIds_alias_subjectIds": "subjectIds",
+  "command_permitimagetemplate_arg_subjectIds_alias_s": "s",
+  "command_permitimagetemplate_arg_subjectIds_help": "The roles and/or members which will get the permission. Use metnions, like @Caramba, @editor.",
+
+  "command_permitimagetemplate_success": "Successfully added the permission.",
+  "command_permitimagetemplate_duplicate": "Such permission already exists. Skipped."
 }

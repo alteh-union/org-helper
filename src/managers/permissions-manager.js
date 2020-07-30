@@ -16,7 +16,8 @@ const DiscordSubjectsArg = require('../command_meta/discord-subjects-arg');
 
 const DefinedPermissions = Object.freeze({
   remind: new MultiLangValue('remind', 'permission_type_remind'),
-  role: new MultiLangValue('role', 'permission_type_role')
+  role: new MultiLangValue('role', 'permission_type_role'),
+  imagetemplate: new MultiLangValue('imagetemplate', 'permission_type_imagetemplate')
 });
 
 const DefinedFilters = Object.freeze({
@@ -164,7 +165,7 @@ class PermissionsManager {
   }
 
   /**
-   * Build mongodDb query to get a permissions
+   * Build mongodDb query to get permissions
    * @param source
    * @param command
    * @param commandUserId
@@ -192,6 +193,20 @@ class PermissionsManager {
 
     andArray.push({ permissionType: permissionFilter.permissionName });
 
+    if (permissionFilter.filterFields !== undefined && permissionFilter.filterFields.length > 0) {
+      this.addFilterFields(command, permissionFilter, andArray);
+    }
+
+    return { $and: andArray };
+  }
+
+  /**
+   * Adds particular fields to the filter according to filter definitions from the command.
+   * @param {Command}                 command          the command defining the permission
+   * @param {CommandPermissionFilter} permissionFilter the filter definition
+   * @param {Object}                  parentArray      the query $and object to add the fields into
+   */
+  addFilterFields(command, permissionFilter, parentArray) {
     const filtersArrayQuery = [];
     const filtersFields = permissionFilter.filterFields;
     for (const filtersField of filtersFields) {
@@ -229,9 +244,7 @@ class PermissionsManager {
       filtersArrayQuery.push({ $or: orFilterArray });
     }
 
-    andArray.push({ $and: filtersArrayQuery });
-
-    return { $and: andArray };
+    parentArray.push({ $and: filtersArrayQuery });
   }
 
   /**

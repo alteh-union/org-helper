@@ -15,6 +15,7 @@
 
   "permission_type_remind": "напоминание",
   "permission_type_role": "роль",
+  "permission_type_imagetemplate": "шаблонкартинок",
 
   "permission_filter_channelId": "канал",
   "permission_filter_roleId": "роль",
@@ -205,7 +206,8 @@
 
   "command_permissions_error_wrong_type": "Такой тип разрешений не определён: %s",
   "command_permissions_no_permissions": "Разрешения, специфичные для бота, не найдены.",
-  "command_permissions_permission": "Разрешение номер: %s с типом \"%s\" дано субъекту типа %s по имени %s, со следующими условиями: %s",
+  "command_permissions_permission": "Разрешение номер: %s с типом \"%s\" дано субъекту типа %s по имени %s%s",
+  "command_permissions_filter_condition": ", со следующими условиями: %s",
 
   "command_permitremind_name": "разрешитьнапоминания",
   "command_permitremind_help": "Добавляет разрешение указанным ролям и/или участникам на управление напоминаниями в указанном канале (или в любом канале, если таковой не указан).",
@@ -574,5 +576,27 @@
   "command_deleteimagetemplate_arg_ids_alias_i": "и",
   "command_deleteimagetemplate_arg_ids_help": "Список имён (идентификаторов), через запятую.",
   "command_deleteimagetemplate_no_ids_found": "Шаблонов картинок с такими номерами не найдено.",
-  "command_deleteimagetemplate_success": "Шаблоны удалены успешно."
+  "command_deleteimagetemplate_success": "Шаблоны удалены успешно.",
+
+
+  "command_denyimagetemplate_name": "запретитьшаблоныкартинок",
+  "command_denyimagetemplate_help": "Убирает разрешение участника или роли на управление шаблонами картинок.",
+
+  "command_denyimagetemplate_arg_subjectIds_alias_subjectIds": "идСубъектов",
+  "command_denyimagetemplate_arg_subjectIds_alias_s": "с",
+  "command_denyimagetemplate_arg_subjectIds_help": "Роли и/или участники, которые потеряют разрешение. Используйте упоминания, типа @Алехандро, @хакер.",
+
+  "command_denyimagetemplate_success": "Успешно убрано %d разрешений.",
+  "command_denyimagetemplate_no_matches": "Не найдено подходящих разрешений.",
+
+
+  "command_permitimagetemplate_name": "разрешитьшаблоныкартинок",
+  "command_permitimagetemplate_help": "Добавляет разрешение указанным ролям и/или участникам на управление шаблонами картинок.",
+
+  "command_permitimagetemplate_arg_subjectIds_alias_subjectIds": "идСубъектов",
+  "command_permitimagetemplate_arg_subjectIds_alias_s": "с",
+  "command_permitimagetemplate_arg_subjectIds_help": "Роли или субъекты, которые получат разрешение. Используйте упоминания, типа @Виктор, @редактор.",
+
+  "command_permitimagetemplate_success": "Разрешение добавлено успешно.",
+  "command_permitimagetemplate_duplicate": "Такое разрешение уже существует. Пропускаем."
 }

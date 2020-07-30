@@ -11,7 +11,11 @@ const DiscordUtils = require('../../utils/discord-utils');
 const DiscordCommand = require('../discord-command');
 const SimpleArgScanner = require('../../arg_scanners/simple-arg-scanner');
 const FullStringArgScanner = require('../../arg_scanners/full-string-arg-scanner');
+
 const CommandArgDef = require('../../command_meta/command-arg-def');
+const CommandPermissionFilter = require('../../command_meta/command-permission-filter');
+
+const PermissionsManager = require('../../managers/permissions-manager');
 
 const AddImageTemplateCommandArgDefs = Object.freeze({
   templateName: new CommandArgDef('templateName', {
@@ -78,12 +82,14 @@ class AddImageTemplateCommand extends DiscordCommand {
 
 
   /**
-   * Gets the array of defined Discord permission filters for the command.
-   * Source-independent permissions (e.g. stored in the Bot's DB) should be defined in another place.
-   * @return {Array<string>} the array of Discord-specific permissions required
+   * Gets the array of defined Bot's permission filters for the command.
+   * Source-defined permissions (e.g. Discord permissions) should be defined in another place.
+   * @return {Array<CommandPermissionFilter>} the array of Bot's permission filters
    */
-  static getRequiredDiscordPermissions() {
-    return [];
+  static getRequiredBotPermissions() {
+    return [
+      new CommandPermissionFilter(PermissionsManager.DEFINED_PERMISSIONS.imagetemplate.name, [])
+    ];
   }
 
   /**

@@ -208,6 +208,10 @@ class PermissionsCommand extends DiscordCommand {
    * @return {string}                   the result text
    */
   makeFilterDescription(permission) {
+    if (permission.filter === undefined || permission.filter === null) {
+      return '';
+    }
+
     const filterKeys = Object.keys(permission.filter);
     let filterDescription = ' { ';
     for (const filterKey of filterKeys) {
@@ -266,7 +270,7 @@ class PermissionsCommand extends DiscordCommand {
 
     filterDescription += ' } ';
 
-    return filterDescription;
+    return this.langManager.getString('command_permissions_filter_condition', filterDescription);
   }
 }
 

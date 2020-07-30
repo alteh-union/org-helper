@@ -7,10 +7,14 @@
  */
 
 const DiscordCommand = require('../discord-command');
-const CommandArgDef = require('../../command_meta/command-arg-def');
 const ArrayArgScanner = require('../../arg_scanners/array-arg-scanner');
 
 const ListImageTemplatesCommand = require('./list-image-templates-command');
+
+const CommandArgDef = require('../../command_meta/command-arg-def');
+const CommandPermissionFilter = require('../../command_meta/command-permission-filter');
+
+const PermissionsManager = require('../../managers/permissions-manager');
 
 const DeleteImageTemplateCommandArgDefs = Object.freeze({
   ids: new CommandArgDef('ids', {
@@ -68,6 +72,17 @@ class DeleteImageTemplateCommand extends DiscordCommand {
       'command_deleteimagetemplate_help',
       langManager.getString(ListImageTemplatesCommand.getCommandInterfaceName())
     );
+  }
+
+  /**
+   * Gets the array of defined Bot's permission filters for the command.
+   * Source-defined permissions (e.g. Discord permissions) should be defined in another place.
+   * @return {Array<CommandPermissionFilter>} the array of Bot's permission filters
+   */
+  static getRequiredBotPermissions() {
+    return [
+      new CommandPermissionFilter(PermissionsManager.DEFINED_PERMISSIONS.imagetemplate.name, [])
+    ];
   }
 
   /**

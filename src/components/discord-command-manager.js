@@ -11,12 +11,14 @@ const DeleteImageTemplateCommand = require('../commands_discord/image/delete-ima
 const DeleteReminderCommand = require('../commands_discord/social/delete-reminder-command');
 const DeletePermissionCommand = require('../commands_discord/permissions/delete-permission-command');
 const DeleteWarningCommand = require('../commands_discord/moderation/delete-warning-command');
+const DenyImageTemplateCommand = require('../commands_discord/permissions/deny-image-template-command');
 const DenyRemindCommand = require('../commands_discord/permissions/deny-remind-command');
 const HelpCommand = require('../commands_discord/other/help-command');
 const KickCommand = require('../commands_discord/moderation/kick-command');
 const MyPermissionsCommand = require('../commands_discord/permissions/my-permissions-command');
 const MySettingsCommand = require('../commands_discord/settings/my-settings-command');
 const PermissionsCommand = require('../commands_discord/permissions/permissions-command');
+const PermitImageTemplateCommand = require('../commands_discord/permissions/permit-image-template-command');
 const PermitRemindCommand = require('../commands_discord/permissions/permit-remind-command');
 const PingCommand = require('../commands_discord/other/ping-command');
 const MakeImageCommand = require('../commands_discord/image/make-image-command');
@@ -66,12 +68,14 @@ class DiscordCommandManager extends CommandManager {
       DeleteReminderCommand,
       DeletePermissionCommand,
       DeleteWarningCommand,
+      DenyImageTemplateCommand,
       DenyRemindCommand,
       HelpCommand,
       KickCommand,
       MyPermissionsCommand,
       MySettingsCommand,
       PermissionsCommand,
+      PermitImageTemplateCommand,
       PermitRemindCommand,
       PingCommand,
       PollCommand,
