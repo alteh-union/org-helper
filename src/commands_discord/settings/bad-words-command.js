@@ -65,7 +65,7 @@ class BadWordsCommand extends DiscordCommand {
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
    * @param  {BaseMessage}         message the Discord message as the source of the command
-   * @return {Promise<string>}                the result text to be replied as the response of the execution
+   * @return {Promise<string>}             the result text to be replied as the response of the execution
    */
   async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.

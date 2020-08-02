@@ -29,7 +29,7 @@ class MessageModerator {
   /**
    * Premoderates incoming message (e.g. replaces bad words etc.)
    * @param  {BaseMessage}  message the Discordmessage
-   * @return {Promise}                 nothing
+   * @return {Promise}              nothing
    */
   async premoderateDiscordMessage(message) {
     const censoringEnabled = await this.context.dbManager.getSetting(

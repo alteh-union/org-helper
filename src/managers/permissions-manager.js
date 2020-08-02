@@ -330,9 +330,9 @@ class PermissionsManager {
    * Checks if the author of the Discord message has necessary permissions in the channel.
    * Throws public error if the permissions are not found.
    * @throws {BotPublicError}
-   * @param  {BaseMessage}         message the command's message
-   * @param  {DiscordCommand}  command        the command instance
-   * @return {Promise}                        nothing
+   * @param  {BaseMessage}     message the command's message
+   * @param  {DiscordCommand}  command the command instance
+   * @return {Promise}                 nothing
    */
   async checkDiscordPermissions(message, command) {
     const requiredDiscordPermissions = command.constructor.getRequiredDiscordPermissions();
@@ -354,9 +354,9 @@ class PermissionsManager {
    * the bypass is enabled in Bot's preferences (typically should be "true" for all non-dev Bot's instances).
    * Throws public error if the permissions are not found.
    * @throws {BotPublicError}
-   * @param  {BaseMessage}         message the command's message
-   * @param  {DiscordCommand}  command        the command instance
-   * @return {Promise}                        nothing
+   * @param  {BaseMessage}     message the command's message
+   * @param  {DiscordCommand}  command the command instance
+   * @return {Promise}                 nothing
    */
   async checkDiscordCommandPermissions(message, command) {
     const roleIds = message.originalMessage.member.roles.cache.array().map(r => r.id);
@@ -376,7 +376,7 @@ class PermissionsManager {
   /**
    * Checks if the author of the Discord message is admin on the server.
    * @param  {BaseMessage}  message the message
-   * @return {Boolean}                 true if admin, false otherwise
+   * @return {Boolean}              true if admin, false otherwise
    */
   isAuthorAdmin(message) {
     return message.originalMessage.member

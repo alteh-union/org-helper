@@ -1,16 +1,24 @@
 'use strict';
 
 /**
- * Wrapper for a source specific message
+ * @module base-message
+ * @author Alteh Union (alteh.union@gmail.com)
+ * @license MIT (see the root LICENSE file for details)
+ */
+
+/**
+ * Wrapper for a source-specific message
+ * @alias BaseMessage
  */
 class BaseMessage {
   /**
-   * @param {String} orgId
-   * @param {String} channelId
-   * @param {String} userId
-   * @param {String} content
-   * @param {?} originalMessage
-   * @param {BaseSource} source
+   * Creates a base (source-independent) message from source-specific message
+   * @param {string}     orgId           the organization id where the message was posted
+   * @param {string}     channelId       the channel id where the message was posted
+   * @param {string}     userId          the author id as text
+   * @param {string}     content         the text content of the message
+   * @param {Object}     originalMessage the original source-dependent message
+   * @param {BaseSource} source          the source class of the message
    */
   constructor(orgId, channelId, userId, content, originalMessage, source) {
     this.orgId = orgId;
@@ -23,9 +31,9 @@ class BaseMessage {
 
   /**
    * Create BaseMessage from a Slack message
-   * @param slackMessage
-   * @param slackSource
-   * @returns {BaseMessage}
+   * @param   {Object}      slackMessage the Slack native message object
+   * @param   {Object}      slackSource  the Slack source object
+   * @returns {BaseMessage}              the result source-independent message
    */
   static createFromSlack(slackMessage, slackSource) {
     return new BaseMessage(
@@ -40,9 +48,9 @@ class BaseMessage {
 
   /**
    * Create BaseMessage from a Discord message
-   * @param discordMessage
-   * @param discordSource
-   * @returns {BaseMessage}
+   * @param   {Object}      discordMessage the Discord native message object
+   * @param   {Object}      discordSource  the Discord source object
+   * @returns {BaseMessage}                the result source-independent message
    */
   static createFromDiscord(discordMessage, discordSource) {
     return new BaseMessage(
@@ -56,13 +64,19 @@ class BaseMessage {
   }
 
   /**
-   * Simple reply to a message with a text
-   * @param text
-   * @returns {Promise<void>}
+   * Replies to the message with a text using the respective source-dependent class.
+   * The source-dependent function called from here should take care of technical nuances of the respective
+   * platform (for example, that Discord does not allow to send messages with more than 2000 symbols at a time).
+   * @param   {string}  text the text to reply with
+   * @returns {Promise}      nothing
    */
   async reply(text) {
     this.source.replyToMessage(this, text);
   }
 }
 
+/**
+ * Exports the BaseMessage class
+ * @type {BaseMessage}
+ */
 module.exports = BaseMessage;

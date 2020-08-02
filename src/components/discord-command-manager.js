@@ -1,4 +1,11 @@
 'use strict';
+
+/**
+ * @module discord-command-manager
+ * @author Alteh Union (alteh.union@gmail.com)
+ * @license MIT (see the root LICENSE file for details)
+ */
+
 const CommandManager = require('./command-manager');
 
 const AddBadWordsCommand = require('../commands_discord/settings/add-bad-words-command');
@@ -46,11 +53,13 @@ const WarningsCommand = require('../commands_discord/moderation/warnings-command
 const MyDataCommand = require('../commands_discord/private_privacy/my-data-command');
 
 /**
- * Class represents command available for the Discord
+ * Represents commands available for Discord
+ * @alias DiscordCommandManager
+ * @extends CommandManager
  */
 class DiscordCommandManager extends CommandManager {
   /**
-   * Gets the array of defined Discord command classes.
+   * Gets the array of public command classes defined for specific source.
    * @return {Array<constructor>} the defined commands
    */
   get definedCommands() {
@@ -100,12 +109,16 @@ class DiscordCommandManager extends CommandManager {
   }
 
   /**
-   * The defined private Discord command classes.
-   * @type {Array<constructor>}
+   * Gets the array of private (direct-messages) command classes defined for specific source.
+   * @return {Array<constructor>} the defined commands
    */
   get definedPrivateCommands() {
     return Object.freeze([MyDataCommand]);
   }
 }
 
+/**
+ * Exports the DiscordCommandManager class
+ * @type {DiscordCommandManager}
+ */
 module.exports = DiscordCommandManager;

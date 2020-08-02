@@ -93,7 +93,7 @@ class SettingsCommand extends DiscordCommand {
    * @see CommandArgDef
    * @throws {BotPublicError}
    * @param  {BaseMessage}  message the command's message
-   * @return {Promise}                 nothing
+   * @return {Promise}              nothing
    */
   async validateFromDiscord(message) {
     await super.validateFromDiscord(message);
@@ -114,7 +114,7 @@ class SettingsCommand extends DiscordCommand {
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
    * @param  {BaseMessage}         message the Discord message as the source of the command
-   * @return {Promise<string>}                the result text to be replied as the response of the execution
+   * @return {Promise<string>}             the result text to be replied as the response of the execution
    */
   async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
@@ -133,12 +133,12 @@ class SettingsCommand extends DiscordCommand {
 
   /**
    * Makes a related settings description (single setting if the setting arg is specified).
-   * @param  {BaseMessage}    message    the Discord message with the command
+   * @param  {BaseMessage}    message           the Discord message with the command
    * @param  {Array<Object>}  availableSettings the array of available settings
    * @param  {string}         emptyTextId       the text id of string to be used if no settings are found
    * @param  {Function}       dbFunc            the DB function to fetch the settings
    * @param  {Boolean}        includeUser       true if need to include member id into the DB function call
-   * @return {Promise<string>}                  [description]
+   * @return {Promise<string>}                  the settings description as text
    */
   async getSettingsDescription(message, availableSettings, emptyTextId, dbFunc, includeUser) {
     dbFunc = dbFunc.bind(this.context.dbManager);

@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @module image-list-command
+ * @module add-image-template-command
  * @author Alteh Union (alteh.union@gmail.com)
  * @license MIT (see the root LICENSE file for details)
  */
@@ -39,7 +39,7 @@ const AddImageTemplateCommandArgDefs = Object.freeze({
 });
 
 /**
- * Command to list caller's permissions set via the Bot on the Discord server.
+ * Adds a new image template for the server.
  * @alias AddImageTemplateCommand
  * @extends DiscordCommand
  */
@@ -76,10 +76,13 @@ class AddImageTemplateCommand extends DiscordCommand {
     return langManager.getString('command_addimagetemplate_help');
   }
 
+  /**
+   * Gets the array of all arguments definitions of the command.
+   * @return {Array<CommandArgDef>} the array of definitions
+   */
   static getDefinedArgs() {
     return AddImageTemplateCommandArgDefs;
   }
-
 
   /**
    * Gets the array of defined Bot's permission filters for the command.
@@ -127,7 +130,7 @@ class AddImageTemplateCommand extends DiscordCommand {
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
    * @param  {BaseMessage}         message the Discord message as the source of the command
-   * @return {Promise<string>}                the result text to be replied as the response of the execution
+   * @return {Promise<string>}             the result text to be replied as the response of the execution
    */
   async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.

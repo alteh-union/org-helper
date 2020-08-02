@@ -43,7 +43,7 @@ class Context {
     this.commandsParser = new CommandsParser(this);
     this.messageModerator = new MessageModerator(this);
     this.scheduler = new Scheduler(this);
-    this.imageGenerator = new ImageGenerator();
+    this.imageGenerator = new ImageGenerator(this);
 
     this.discordClient = discordClient;
     this.discordClientReady = false;

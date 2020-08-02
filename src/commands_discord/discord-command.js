@@ -62,7 +62,7 @@ class DiscordCommand extends Command {
    * @see CommandArgDef
    * @throws {BotPublicError}
    * @param  {BaseMessage}  message the command's message
-   * @return {Promise}                 nothing
+   * @return {Promise}              nothing
    */
   async validateFromDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
@@ -75,7 +75,7 @@ class DiscordCommand extends Command {
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
    * @param  {BaseMessage}         message the Discord message as the source of the command
-   * @return {Promise<string>}                the result text to be replied as the response of the execution
+   * @return {Promise<string>}             the result text to be replied as the response of the execution
    */
   async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
@@ -129,7 +129,7 @@ class DiscordCommand extends Command {
    * @see DiscordCommand#findArgValue
    * @see Command.getDefinedArgs
    * @param  {BaseMessage}  message the Discord message with the command
-   * @return {Promise}                 nothing
+   * @return {Promise}              nothing
    */
   async parseFromDiscordByNames(message) {
     const definedArgs = this.constructor.getDefinedArgs();
@@ -182,7 +182,7 @@ class DiscordCommand extends Command {
    * @see CommandArgDef
    * @see Command.getDefinedArgs
    * @param  {BaseMessage}  message the Discord message with the command
-   * @return {Promise}                 nothing
+   * @return {Promise}              nothing
    */
   async parseFromDiscordSequentially(message) {
     const definedArgs = this.constructor.getDefinedArgs();
@@ -270,9 +270,8 @@ class DiscordCommand extends Command {
    * Otherwise tries to parse the arguments sequentially in the order in which they are defined
    * (e.g. '!kill Bill knife').
    * After finishing the scanning, launches the arguments validation.
-   * @param  {Client}   client         the Discord client
    * @param  {BaseMessage}  message the Discord message with the command
-   * @return {Promise}                 nothing
+   * @return {Promise}              nothing
    */
   async parseFromDiscord(message) {
     const index = OhUtils.findFirstNonQuotedIndex(message.content, this.constructor.ARG_PREFIX);

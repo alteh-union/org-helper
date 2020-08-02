@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @module image-generate
+ * @module make-image-command
  * @author Alteh Union (alteh.union@gmail.com)
  * @license MIT (see the root LICENSE file for details)
  */
@@ -71,7 +71,8 @@ const MakeImageCommandArgDefs = Object.freeze({
 });
 
 /**
- * MakeImage command.
+ * Command to make an image based on a picture from URL and a template to add some watermarks,
+ * stylish things and arbitrary title.
  * @alias MakeImageCommand
  * @extends DiscordCommand
  */
@@ -108,6 +109,10 @@ class MakeImageCommand extends DiscordCommand {
     return langManager.getString('command_makeimage_help');
   }
 
+  /**
+   * Gets the array of all arguments definitions of the command.
+   * @return {Array<CommandArgDef>} the array of definitions
+   */
   static getDefinedArgs() {
     return MakeImageCommandArgDefs;
   }
@@ -117,7 +122,7 @@ class MakeImageCommand extends DiscordCommand {
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
    * @param  {BaseMessage}         message the Discord message as the source of the command
-   * @return {Promise<string>}                the result text to be replied as the response of the execution
+   * @return {Promise<string>}             the result text to be replied as the response of the execution
    */
   async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
@@ -154,7 +159,7 @@ class MakeImageCommand extends DiscordCommand {
 
       await fs.unlink(filePath, (err) => {
         if (err) {
-          console.log(`Failed to delete file ${filePath}. Error: ' + err`);
+          this.context.log.e(`Failed to delete file ${filePath}. Error: ${err}`);
         }
       });
 

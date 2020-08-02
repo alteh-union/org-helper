@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @module image-list-command
+ * @module list-image-templates-command
  * @author Alteh Union (alteh.union@gmail.com)
  * @license MIT (see the root LICENSE file for details)
  */
@@ -47,20 +47,11 @@ class ListImageTemplatesCommand extends DiscordCommand {
   }
 
   /**
-   * Gets the array of defined Discord permission filters for the command.
-   * Source-independent permissions (e.g. stored in the Bot's DB) should be defined in another place.
-   * @return {Array<string>} the array of Discord-specific permissions required
-   */
-  static getRequiredDiscordPermissions() {
-    return [];
-  }
-
-  /**
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
    * @param  {BaseMessage}         message the Discord message as the source of the command
-   * @return {Promise<string>}                the result text to be replied as the response of the execution
+   * @return {Promise<string>}             the result text to be replied as the response of the execution
    */
   async executeForDiscord(message) {
     // Inherited function with various possible implementations, some args may be unused.
