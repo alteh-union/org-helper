@@ -6,6 +6,8 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
+const BotPublicError = require('../../utils/bot-public-error');
+const BotUtils = require('../../utils/bot-utils');
 const DiscordUtils = require('../../utils/discord-utils');
 
 const DiscordCommand = require('../discord-command');
@@ -126,6 +128,52 @@ class AddImageTemplateCommand extends DiscordCommand {
   }
 
   /**
+   * Validates each of the arguments according to validation types set in their definition.
+   * Throws BotPublicError if any of the validations was violated.
+   * @see CommandArgDef
+   * @throws {BotPublicError}
+   * @param  {BaseMessage}  message the command's message
+   * @return {Promise}              nothing
+   */
+  async validateFromDiscord(message) {
+    await super.validateFromDiscord(message);
+
+    try {
+      this.parsedJsonConfig = JSON.parse(this.jsonConfig);
+    } catch (e) {
+      throw new BotPublicError(this.langManager.getString('command_addimagetemplate_malformed_template', e.message));
+    }
+
+    const complexity = BotUtils.calculateComplexity(this.parsedJsonConfig);
+    if (complexity > this.context.prefsManager.max_image_template_complexity) {
+      throw new BotPublicError(this.langManager.getString('command_addimagetemplate_too_complex_template',
+        complexity, this.context.prefsManager.max_image_template_complexity));
+    }
+
+    const templateString = JSON.stringify(this.parsedJsonConfig);
+    if (templateString.length < 3 || templateString.length > this.context.prefsManager.max_image_template_length) {
+      throw new BotPublicError(this.langManager.getString('command_addimagetemplate_too_long_template',
+        templateString.length, this.context.prefsManager.max_image_template_length));
+    }
+
+    if (this.parsedJsonConfig.input === undefined || this.parsedJsonConfig.input.type === undefined ||
+      this.parsedJsonConfig.input.width === undefined || typeof this.parsedJsonConfig.input.width !== 'number' ||
+      this.parsedJsonConfig.input.height === undefined || typeof this.parsedJsonConfig.input.height !== 'number') {
+      throw new BotPublicError(this.langManager.getString('command_addimagetemplate_no_input_parameters'));
+    }
+
+    if (this.parsedJsonConfig.input.width > this.context.prefsManager.max_image_template_max_width) {
+      throw new BotPublicError(this.langManager.getString('command_addimagetemplate_too_large_width',
+        this.parsedJsonConfig.input.width, this.context.prefsManager.max_image_template_max_width));
+    }
+
+    if (this.parsedJsonConfig.input.height > this.context.prefsManager.max_image_template_max_height) {
+      throw new BotPublicError(this.langManager.getString('command_addimagetemplate_too_large_height',
+        this.parsedJsonConfig.input.height, this.context.prefsManager.max_image_template_max_height));
+    }
+  }
+
+  /**
    * Executes the command instance. The main function of a command, it's essence.
    * All arguments scanning, validation and permissions check is considered done before entering this function.
    * So if any exception happens inside the function, it's considered a Bot's internal problem.
@@ -151,7 +199,7 @@ class AddImageTemplateCommand extends DiscordCommand {
       id: this.templateName,
       orgId: this.orgId,
       source: this.source,
-      config: JSON.parse(this.jsonConfig)
+      config: this.parsedJsonConfig
     };
 
     const res = await this.context.dbManager.insertOne(this.context.dbManager.imageTemplateTable, template);

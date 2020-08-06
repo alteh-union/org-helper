@@ -595,6 +595,12 @@
   "command_addimagetemplate_success": "Шаблон %s создан!",
   "command_addimagetemplate_error_not_unique_name": "Не удалось создать шаблон %s. Имя шаблона уже используется",
   "command_addimagetemplate_too_many_image_templates": "Для вашего сервера задано слишком много шаблонов изображений: %s. Пожалуйста, удалите старые шаблоны прежде чем добавлять новое.",
+  "command_addimagetemplate_malformed_template": "Невозможно прочитать ваш шаблон как JSON-строку..",
+  "command_addimagetemplate_too_complex_template": "Вы указали слишком сложный шаблон. Его сложность: %s. Максимальная допустимая сложность: %s. Сложность считается как число всех свойств JSON-объекта на всех уровнях глубины.",
+  "command_addimagetemplate_too_long_template": "Вы указали слишком длинный шаблон (слишком много символов). Ваша длина: %s. Максимальная допустимая длина: %s.",
+  "command_addimagetemplate_no_input_parameters": "Вы указали шаблон без необходимых входных параметров. Либо 'type' (тип), либо 'width' (ширина), либо 'height' (высота) пропущены, либо весь блок входных параметров ('input') пропущен.",
+  "command_addimagetemplate_too_large_width": "Вы указали шаблон со слишком большой входной шириной: %s. Максимальная допустимая ширина: %s.",
+  "command_addimagetemplate_too_large_height": "Вы указали шаблон со слишком большой входной высотой: %s. Максимальная допустимая высота: %s.",
 
 
   "command_listimagetemplates_name": "списокшаблоновкартинок",

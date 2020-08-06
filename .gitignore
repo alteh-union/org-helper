@@ -10,6 +10,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# downloads cache
+cache
+
 # line count
 line-count.txt
 

@@ -39,7 +39,7 @@ const MakeImageCommandArgDefs = Object.freeze({
     ],
     helpId: 'command_makeimage_arg_text_help',
     scanner: SimpleArgScanner,
-    validationOptions: { nonNull: false }
+    validationOptions: { nonNull: true }
   }),
   fontSize: new CommandArgDef('fontSize', {
     aliasIds: [
@@ -118,15 +118,15 @@ class MakeImageCommand extends DiscordCommand {
   }
 
   /**
-   * Executes the command instance. The main function of a command, it's essence.
-   * All arguments scanning, validation and permissions check is considered done before entering this function.
-   * So if any exception happens inside the function, it's considered a Bot's internal problem.
-   * @param  {BaseMessage}         message the Discord message as the source of the command
-   * @return {Promise<string>}             the result text to be replied as the response of the execution
+   * Validates each of the arguments according to validation types set in their definition.
+   * Throws BotPublicError if any of the validations was violated.
+   * @see CommandArgDef
+   * @throws {BotPublicError}
+   * @param  {BaseMessage}  message the command's message
+   * @return {Promise}              nothing
    */
-  async executeForDiscord(message) {
-    // Inherited function with various possible implementations, some args may be unused.
-    /* eslint no-unused-vars: ["error", { "args": "none" }] */
+  async validateFromDiscord(message) {
+    await super.validateFromDiscord(message);
 
     const res = await this.context.dbManager.getDiscordRows(this.context.dbManager.imageTemplateTable,
       this.orgId, { id: this.templateName });
@@ -140,7 +140,19 @@ class MakeImageCommand extends DiscordCommand {
       );
     }
 
-    const templateConfig = res[0].config;
+    this.parsedJsonConfig = res[0].config;
+  }
+
+  /**
+   * Executes the command instance. The main function of a command, it's essence.
+   * All arguments scanning, validation and permissions check is considered done before entering this function.
+   * So if any exception happens inside the function, it's considered a Bot's internal problem.
+   * @param  {BaseMessage}         message the Discord message as the source of the command
+   * @return {Promise<string>}             the result text to be replied as the response of the execution
+   */
+  async executeForDiscord(message) {
+    // Inherited function with various possible implementations, some args may be unused.
+    /* eslint no-unused-vars: ["error", { "args": "none" }] */
 
     const params = {
       text: this.text ? this.text.replace(/^"(.*)"$/, '$1') : undefined,
@@ -150,7 +162,7 @@ class MakeImageCommand extends DiscordCommand {
     };
 
     try {
-      const imageResult = await this.context.imageGenerator.generateImage(this.imgUrl, params, templateConfig);
+      const imageResult = await this.context.imageGenerator.generateImage(this.imgUrl, params, this.parsedJsonConfig);
       const filePath = `images/ + ${uuidv4()}.jpg`;
       imageResult.write(filePath);
       await message.originalMessage.channel.send(null, {
@@ -163,14 +175,9 @@ class MakeImageCommand extends DiscordCommand {
         }
       });
 
-    } catch (error) {
-      throw new BotPublicError(
-        this.langManager.getString(
-          'command_makeimage_error_broken_template',
-          this.templateName,
-          error.message
-        )
-      );
+    } catch (e) {
+      this.context.log.e(this.name + ': Cannot make image: ' + e.stack);
+      return this.langManager.getString('command_makeimage_error_broken_template', this.templateName, e.message);
     }
   }
 }

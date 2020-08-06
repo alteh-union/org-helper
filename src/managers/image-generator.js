@@ -6,17 +6,17 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
-const TextToImage = require('text-to-image');
-const Jimp = require('jimp');
+const path = require('path');
+const textToImage = require('text-to-image');
+const jimp = require('jimp');
 const { Canvas } = require('canvas');
-const request = require('request');
 const fs = require('fs');
 const crypto = require('crypto');
 
+const OhUtils = require('../utils/bot-utils');
+
 const FONT_SIZE_TO_LINE_HEIGHT = 1.1;
-const JPEG_QUALITY = 95;
 const FILE_CACHE_FOLDER = 'cache/';
-const MAX_FONT_FILE_SIZE = 1024 * 1024; // 1 Mb
 
 /**
  * Allows to generate new image based on baseImage using template rules.
@@ -43,98 +43,13 @@ class ImageGenerator {
    * @returns {Promise<DepreciatedJimp>}                          the result image
    */
   async generateImage(picUrl, params, templateConfig) {
-    const baseImg = await Jimp.read(picUrl);
+    const baseImg = await jimp.read(picUrl);
     await this.prepareBaseImage(baseImg, params, templateConfig);
     await this.addFonts(templateConfig);
     if (templateConfig.items) {
       await this.composeImage(baseImg, templateConfig.items, params);
     }
     return baseImg;
-  }
-
-  /**
-   * Deletes a file at a given path.
-   * @private
-   * @param  {string}  filePath the file path
-   * @return {Promise}          nothing
-   */
-  async deleteFile(filePath) {
-    await fs.unlink(filePath, (err) => {
-      if (err) {
-        this.context.log.e('Delete error: ' + err);
-      } else {
-        this.context.log.v(`File ${filePath} deleted successfully`);
-      }
-    });
-  }
-
-  /**
-   * Downloads a file if it's content length is below a specified limit in bytes.
-   * @private
-   * @param  {string}  url           the URL of the remote file to be downloaded
-   * @param  {string}  filePath      the local path to save the file into
-   * @param  {Number}  fileSizeLimit the size limit in bytes
-   * @return {Promise}               nothing
-   */
-  async downloadFileWithSizeLimit(url, filePath, fileSizeLimit) {
-    this.context.log.d(`Download file ${url} to ${filePath}`);
-    const downloadFunc = (url, filePath, resolve, reject) => {
-      request({
-        url: url,
-        method: 'HEAD'
-      }, (err, headRes) => {
-        if (err) {
-          this.context.log.e(`HEAD request failed for ${url}`);
-          reject(err.message);
-          return;
-        }
-
-        if (headRes.headers['content-length'] && headRes.headers['content-length'] > fileSizeLimit) {
-          this.context.log.e('File size exceeds limit (' + headRes.headers['content-length'] + ')');
-          reject('File size exceeds limit (' + headRes.headers['content-length'] + ')');
-
-        } else {
-          if (headRes.headers['content-length']) {
-            this.context.log.v(`File size ${url} is ${headRes.headers['content-length']}`);
-          }
-
-          const file = fs.createWriteStream(filePath);
-          const res = request({ url: url });
-          let size = 0;
-
-          res.on('response', (response) => {
-            if (response.statusCode !== 200) {
-              reject('Response status was ' + response.statusCode);
-            }
-          });
-
-          res.on('error', (err) => {
-            this.deleteFile(filePath);
-            reject(err.message);
-          });
-
-          res.on('data', (data) => {
-            size += data.length;
-            if (size > fileSizeLimit) {
-              this.context.log.e('Resource stream exceeded limit (' + size + ')');
-              res.abort(); // Abort the response (close and cleanup the stream)
-              this.deleteFile(filePath);
-              reject('File size  exceeds limit');
-
-            }
-          }).pipe(file);
-
-          file.on('error', (err) => { // Handle errors
-            this.context.log.e(`ImageGenerator: File error ${err}`);
-            this.deleteFile(filePath);
-            reject(err.message);
-          });
-
-          file.on('finish', () => file.close(resolve));
-        }
-      });
-    };
-    return new Promise((resolve, reject) => downloadFunc(url, filePath, resolve, reject));
   }
 
   /**
@@ -146,13 +61,17 @@ class ImageGenerator {
    */
   async addFonts(templateConfig) {
     if (templateConfig.fonts && Array.isArray(templateConfig.fonts)) {
+      if (!fs.existsSync(FILE_CACHE_FOLDER)) {
+        fs.mkdirSync(FILE_CACHE_FOLDER);
+      }
       for (const font of templateConfig.fonts) {
-        const fileName = crypto.createHash('md5').update(font.url).digest('hex');
-        const filePath = FILE_CACHE_FOLDER + fileName;
+        const fileName = crypto.createHash('md5').update(font.url).digest('hex') + '.ttf';
+        const filePath = path.join(FILE_CACHE_FOLDER, fileName);
 
         try {
           if (!fs.existsSync(filePath)) {
-            await this.downloadFileWithSizeLimit(font.url, filePath, MAX_FONT_FILE_SIZE);
+            await OhUtils.downloadFileWithSizeLimit(font.url, filePath,
+              this.context.prefsManager.max_image_template_font_size, this.context.log);
           }
           Canvas._registerFont(filePath, { family: font.name });
 
@@ -175,16 +94,16 @@ class ImageGenerator {
    * @returns {Promise}                        nothing
    */
   async prepareBaseImage(baseImg, params, templateConfig) {
-    await baseImg.quality(JPEG_QUALITY);
+    await baseImg.quality(Number.parseInt(this.context.prefsManager.max_image_template_target_jpeg_quality, 10));
 
     if (templateConfig.input) {
       if (templateConfig.input.type === 'fixed') {
         const basePicRatio = baseImg.getWidth() / baseImg.getHeight();
         const inputRatio = templateConfig.input.width / templateConfig.input.height;
         if (basePicRatio <= inputRatio) {
-          await baseImg.resize(templateConfig.input.width, Jimp.AUTO);
+          await baseImg.resize(templateConfig.input.width, jimp.AUTO);
         } else {
-          await baseImg.resize(Jimp.AUTO, templateConfig.input.height);
+          await baseImg.resize(jimp.AUTO, templateConfig.input.height);
         }
         let x = (baseImg.getWidth() - templateConfig.input.width) / 2 + params.xShift || 0;
         let y = (baseImg.getHeight() - templateConfig.input.height) / 2 + params.yShift || 0;
@@ -244,9 +163,9 @@ class ImageGenerator {
       itemConfig.style.fontSize = params.fontSize;
       itemConfig.style.lineHeight = Math.round(params.fontSize * FONT_SIZE_TO_LINE_HEIGHT);
     }
-    const picText = await TextToImage.generate(params.text, itemConfig.style || {});
+    const picText = await textToImage.generate(params.text, itemConfig.style || {});
     const picTextBuffer = Buffer.from(picText.split(',')[1], 'base64');
-    const jimpText = await Jimp.read(picTextBuffer);
+    const jimpText = await jimp.read(picTextBuffer);
 
     if (itemConfig.rotate) {
       jimpText.rotate(itemConfig.rotate);
@@ -268,7 +187,7 @@ class ImageGenerator {
    * @returns {Promise}                    nothing
    */
   async processImageTemplate(itemConfig, params, baseImg) {
-    const tmpPic = await Jimp.read(itemConfig.url);
+    const tmpPic = await jimp.read(itemConfig.url);
     // Recursive call for child items
     if (itemConfig.items !== undefined) {
       await this.composeImage(tmpPic, itemConfig.items, params);

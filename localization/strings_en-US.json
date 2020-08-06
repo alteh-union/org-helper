@@ -596,6 +596,12 @@
   "command_addimagetemplate_success": "Template %s created!",
   "command_addimagetemplate_error_not_unique_name": "Failed to create template %s. Such template already exists",
   "command_addimagetemplate_too_many_image_templates": "Your server has reached the limit of image templates: %s. Please delete some others before adding a new image template.",
+  "command_addimagetemplate_malformed_template": "Could not parse your template as a valid JSON string.",
+  "command_addimagetemplate_too_complex_template": "You provided a too complex template. Your complexity is: %s. The maximum allowed complexity is: %s. Complexity is calculated as the number of all properties of the JSON at all levels of depth.",
+  "command_addimagetemplate_too_long_template": "You provided a too long template (too many symbols in the template text). Your length is: %s. The maximum allowed length is: %s.",
+  "command_addimagetemplate_no_input_parameters": "You provided a template without necessary input parameters. Either 'type' or 'width' or 'height' parameter is missing, or the whole 'input' block is missing.",
+  "command_addimagetemplate_too_large_width": "You provided a template with too large input width: %s. The maximum allowed input width is: %s.",
+  "command_addimagetemplate_too_large_height": "You provided a template with too large input height: %s. The maximum allowed input height is: %s.",
 
 
   "command_listimagetemplates_name": "listimagetemplates",

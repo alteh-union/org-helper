@@ -6,8 +6,9 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
-const stringSimilarity = require('string-similarity');
+const fs = require('fs');
 const request = require('request');
+const stringSimilarity = require('string-similarity');
 
 const MongoProtocol = 'mongodb';
 
@@ -20,6 +21,7 @@ const OffValue = 'off';
 const EuphemismTemplate = '$%*!@&';
 const DefaultMaxSuggestions = 10;
 const DefaultRandomStringLength = 5;
+const DefaultMaxComplexityLimit = 1000;
 
 /**
  * General utils.
@@ -302,6 +304,124 @@ class Utils {
     }
 
     return suggestions;
+  }
+
+  /**
+   * Calculates the total complexity of a given object, considering all its properties on all levels of depth.
+   * However, stops at the limit.
+   * @param  {Object} object     the object to inspect
+   * @param  {Number} limit      the limit (to save time and to avoid indefinite loops)
+   * @param  {Object} complexity the object to pass the complexity by reference, must contain "value" numeric field
+   * @return {Number}            the total complexity of the object
+   */
+  static calculateComplexity(object, limit, complexity) {
+    if (complexity === undefined) {
+      complexity = { value: 1 };
+    }
+    if (limit === undefined || typeof limit !== 'number' || limit > DefaultMaxComplexityLimit) {
+      limit = DefaultMaxComplexityLimit;
+    }
+
+    if (complexity.value > limit) {
+      return complexity.value;
+    }
+
+    for (var key in object) {
+      complexity.value++;
+      if (typeof object[key] === 'object') {
+        this.calculateComplexity(object[key], limit, complexity);
+      }
+    }
+
+    return complexity.value;
+  }
+
+  /**
+   * Deletes a file at a given path.
+   * @private
+   * @param  {string}  filePath the file path
+   * @param  {Log}     log      the Logs manager to save result/errors of the operation
+   * @return {Promise}          nothing
+   */
+  static async deleteFile(filePath, log) {
+    await fs.unlink(filePath, (err) => {
+      if (err) {
+        log.e('Delete error: ' + err);
+      } else {
+        log.v(`File ${filePath} deleted successfully`);
+      }
+    });
+  }
+
+  /**
+   * Downloads a file if it's content length is below a specified limit in bytes.
+   * @private
+   * @param  {string}  url           the URL of the remote file to be downloaded
+   * @param  {string}  filePath      the local path to save the file into
+   * @param  {Number}  fileSizeLimit the size limit in bytes
+   * @param  {Log}     log      the Logs manager to save result/errors of the operation
+   * @return {Promise}               nothing
+   */
+  static async downloadFileWithSizeLimit(url, filePath, fileSizeLimit, log) {
+    log.d(`Download file ${url} to ${filePath}`);
+    const downloadFunc = (url, filePath, resolve, reject) => {
+      request({
+        url: url,
+        method: 'HEAD'
+      }, (err, headRes) => {
+        if (err) {
+          log.e(`BotUtils: downloadFileWithSizeLimit - HEAD request failed for ${url}`);
+          reject(err.message);
+          return;
+        }
+
+        if (headRes.headers['content-length'] && headRes.headers['content-length']
+          > Number.parseInt(fileSizeLimit, 10)) {
+          log.e(`BotUtils: downloadFileWithSizeLimit - file size exceeds limit ${headRes.headers['content-length']}`);
+          reject('File size exceeds limit (' + headRes.headers['content-length'] + ')');
+
+        } else {
+          if (headRes.headers['content-length']) {
+            log.v(`BotUtils: downloadFileWithSizeLimit - file size ${url} is ${headRes.headers['content-length']}`);
+          }
+
+          const file = fs.createWriteStream(filePath);
+          const res = request({ url: url });
+          let size = 0;
+
+          res.on('response', (response) => {
+            if (response.statusCode !== 200) {
+              reject('Response status was ' + response.statusCode);
+            }
+          });
+
+          res.on('error', (err) => {
+            this.deleteFile(filePath, log);
+            reject(err.message);
+          });
+
+          res.on('data', (data) => {
+            size += data.length;
+            if (size > Number.parseInt(fileSizeLimit, 10)) {
+              log.e('BotUtils: downloadFileWithSizeLimit - resource stream exceeded limit (' + size + ')');
+              res.abort(); // Abort the response (close and cleanup the stream)
+              this.deleteFile(filePath, log);
+              reject('File size  exceeds limit');
+
+            }
+          }).pipe(file);
+
+          file.on('error', (err) => { // Handle errors
+            log.e(`BotUtils: downloadFileWithSizeLimit - file error ${err}`);
+            this.deleteFile(filePath, log);
+            reject(err.message);
+          });
+
+          file.on('finish', () => file.close(resolve));
+        }
+      });
+    };
+    return new Promise((resolve, reject) => downloadFunc(url, filePath, resolve, reject));
   }
 
   /**
