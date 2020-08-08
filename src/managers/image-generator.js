@@ -168,11 +168,15 @@ class ImageGenerator {
     const jimpText = await jimp.read(picTextBuffer);
 
     if (itemConfig.rotate) {
-      jimpText.rotate(itemConfig.rotate);
+      await jimpText.rotate(itemConfig.rotate);
     }
 
     if (itemConfig.shear) {
       this.shear(jimpText, itemConfig.shear);
+    }
+
+    if (itemConfig.blur) {
+      await jimpText.blur(itemConfig.blur);
     }
 
     baseImg.composite(jimpText, x, y);
@@ -232,13 +236,16 @@ class ImageGenerator {
     }
 
     if (itemConfig.rotate) {
-      tmpPic.rotate(itemConfig.rotate);
+      await tmpPic.rotate(itemConfig.rotate);
     }
 
     if (itemConfig.shear) {
       this.shear(tmpPic, itemConfig.shear);
     }
 
+    if (itemConfig.blur) {
+      await tmpPic.blur(itemConfig.blur);
+    }
 
     baseImg.composite(tmpPic, composeX, composeY, blendMode);
   }
