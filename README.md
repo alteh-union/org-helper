@@ -39,6 +39,21 @@ npm install
 node src/index.js
 ```
 
+## Production launch
+
+We recommend to use the PM2 process manager on production instances. The Bot is capable of manipulating images which sometimes may cause problems on native layers that cannot be caught by NodeJS.
+In order to reanimate the Bot's process automatically, launch the instance through PM2.
+
+- Install the PM2 package globally:
+```
+npm install pm2 -g
+```
+- Run instance using PM2:
+```
+pm2 start src/index.js
+```
+- See more info on how to list, monitor and delete running instances on the official PM2 page: https://www.npmjs.com/package/pm2
+
 ## Development roadmap
 
 - Short term: flexible moderation, private settings and commands, basic gamification
