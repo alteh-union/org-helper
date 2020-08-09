@@ -151,6 +151,28 @@ class ImageGenerator {
     let x = 0;
     let y = 0;
     if (itemConfig.margin) {
+      if (itemConfig.margin.left < 0) {
+        itemConfig.margin.left = 0;
+      }
+      if (itemConfig.margin.right < 0) {
+        itemConfig.margin.right = 0;
+      }
+      if (itemConfig.margin.left + itemConfig.margin.right >= 100) {
+        itemConfig.margin.left = 0;
+        itemConfig.margin.right = 0;
+      }
+
+      if (itemConfig.margin.top < 0) {
+        itemConfig.margin.top = 0;
+      }
+      if (itemConfig.margin.bottom < 0) {
+        itemConfig.margin.bottom = 0;
+      }
+      if (itemConfig.margin.top + itemConfig.margin.bottom >= 100) {
+        itemConfig.margin.top = 0;
+        itemConfig.margin.bottom = 0;
+      }
+
       x = baseImg.getWidth() / 100 * itemConfig.margin.left || 0;
       y = baseImg.getHeight() / 100 * itemConfig.margin.top || 0;
       const x2 = baseImg.getWidth() - baseImg.getWidth() / 100 * itemConfig.margin.right || 0;
