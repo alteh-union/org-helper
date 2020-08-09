@@ -14,6 +14,7 @@ db_name = <YOUR DB NAME>
 bypass_bot_permissions_for_discord_admins = true
 max_reminders_per_discord_org = 50
 max_image_templates_per_discord_org = 30
+max_image_template_fonts_per_discord_org = 20
 max_image_template_complexity = 200
 max_image_template_length = 10000
 max_image_template_font_size = 4194304

@@ -7,6 +7,7 @@
  */
 
 const fs = require('fs');
+const path = require('path');
 const request = require('request');
 const stringSimilarity = require('string-similarity');
 
@@ -441,6 +442,40 @@ class Utils {
         resolve(body);
       });
     });
+  }
+
+  /**
+   * Gets the count of files in a specific folder with specific prefix in the file names.
+   * @param  {string}          folder the path to the folder
+   * @param  {string}          prefix the prefix to be searched for
+   * @return {Promise<Number>}        the count of files
+   */
+  static async getFilesCountByPrefix(folder, prefix) {
+    return fs.readdirSync(folder, { withFileTypes: true })
+      .filter(fileEntity => fileEntity.name.startsWith(prefix) && !fileEntity.isDirectory()).length;
+  }
+
+  /**
+   * Deletes files in a specific folder with specific prefix in the file names.
+   * @param  {string}  folder the path to the folder
+   * @param  {string}  prefix the prefix to be searched for
+   * @param  {Log}     log    the Log manager to report errors, if any
+   * @return {Promise}        nothing
+   */
+  static async deleteFilesByPrefix(folder, prefix, log) {
+    const fileNames = fs.readdirSync(folder, { withFileTypes: true })
+      .filter(fileEntity => fileEntity.name.startsWith(prefix) && !fileEntity.isDirectory())
+      .map(fileEntity => fileEntity.name);
+
+    for (const fileName of fileNames) {
+      const filePath = path.join(folder, fileName);
+      await fs.unlink(filePath, (err) => {
+        if (err) {
+          log.e(`Bot Utils, deleteFilesByPrefix: Failed to delete file ${filePath}. Error: ${err}`);
+          throw err;
+        }
+      });
+    }
   }
 }
 

@@ -37,17 +37,21 @@ class ImageGenerator {
 
   /**
    * Main class method. Generates image based on provided template.
+   * Providing the source name and the org id is needed to register fonts with
+   * unique (non-conflicting) family names.
    * @param   {string}                   picUrl         the URL of the picture to make image from
    * @param   {Object}                   params         the addtional parameters to consider during the procedure
    * @param   {Object}                   templateConfig the template defined as a JSON
-   * @returns {Promise<DepreciatedJimp>}                          the result image
+   * @param   {string}                   source         the source name from which the request was called
+   * @param   {string}                   orgId          the organization id which member called the request
+   * @returns {Promise<DepreciatedJimp>}                the result image
    */
-  async generateImage(picUrl, params, templateConfig) {
+  async generateImage(picUrl, params, templateConfig, source, orgId) {
     const baseImg = await jimp.read(picUrl);
     await this.prepareBaseImage(baseImg, params, templateConfig);
-    await this.addFonts(templateConfig);
+    await this.addFonts(templateConfig, source, orgId);
     if (templateConfig.items) {
-      await this.composeImage(baseImg, templateConfig.items, params);
+      await this.composeImage(baseImg, templateConfig.items, params, source, orgId);
     }
     return baseImg;
   }
@@ -57,15 +61,23 @@ class ImageGenerator {
    * Tries to download and register declared fonts in the local system.
    * @private
    * @param   {Object}  templateConfig the image template defined as a JSON
+   * @param   {string}  source         the source name from which the request was called
+   * @param   {string}  orgId          the organization id which member called the request
    * @returns {Promise}                nothing
    */
-  async addFonts(templateConfig) {
+  async addFonts(templateConfig, source, orgId) {
     if (templateConfig.fonts && Array.isArray(templateConfig.fonts)) {
       if (!fs.existsSync(FILE_CACHE_FOLDER)) {
         fs.mkdirSync(FILE_CACHE_FOLDER);
       }
+
+      if (await OhUtils.getFilesCountByPrefix(FILE_CACHE_FOLDER, this.addOrgPrefix('', source, orgId))
+        > this.context.prefsManager.max_image_template_fonts_per_discord_org) {
+        await OhUtils.deleteFilesByPrefix(FILE_CACHE_FOLDER, this.addOrgPrefix('', source, orgId), this.context.log);
+      }
+
       for (const font of templateConfig.fonts) {
-        const fileName = crypto.createHash('md5').update(font.url).digest('hex') + '.ttf';
+        const fileName = this.addOrgPrefix(crypto.createHash('md5').update(font.url).digest('hex'), source, orgId);
         const filePath = path.join(FILE_CACHE_FOLDER, fileName);
 
         try {
@@ -73,11 +85,11 @@ class ImageGenerator {
             await OhUtils.downloadFileWithSizeLimit(font.url, filePath,
               this.context.prefsManager.max_image_template_font_size, this.context.log);
           }
-          Canvas._registerFont(filePath, { family: font.name });
+          Canvas._registerFont(filePath, { family: this.addOrgPrefix(font.name, source, orgId) });
 
         } catch (error) {
           this.context.log.e(`ImageGenerator: Failed to download and include font ${font.url} with
-          message: ${error}, stack: ${error.stack}`);
+            message: ${error}, stack: ${error.stack}`);
           throw error;
         }
       }
@@ -120,17 +132,19 @@ class ImageGenerator {
    * @param   {DepreciatedJimp} baseImg        the base image
    * @param   {Array}           itemConfigList the image template defined as a JSON
    * @param   {Object}          params         the parameters to be applied for the base image
+   * @param   {string}          source         the source name from which the request was called
+   * @param   {string}          orgId          the organization id which member called the request
    * @returns {Promise}                        nothing
    */
-  async composeImage(baseImg, itemConfigList, params) {
+  async composeImage(baseImg, itemConfigList, params, source, orgId) {
     for (const itemConfig of itemConfigList) {
       switch (itemConfig.type) {
         case 'image': {
-          await this.processImageTemplate(itemConfig, params, baseImg);
+          await this.processImageTemplate(itemConfig, baseImg, params);
           break;
         }
         case 'text': {
-          await this.processTextTemplate(itemConfig, baseImg, params);
+          await this.processTextTemplate(itemConfig, baseImg, params, source, orgId);
           break;
         }
         default:
@@ -145,9 +159,11 @@ class ImageGenerator {
    * @param   {Object}          itemConfig the part of the image template defined as a JSON
    * @param   {DepreciatedJimp} baseImg    the base image
    * @param   {Object}          params     the parameters to be applied for the base image
+   * @param   {string}          source     the source name from which the request was called
+   * @param   {string}          orgId      the organization id which member called the request
    * @returns {Promise}                    nothing
    */
-  async processTextTemplate(itemConfig, baseImg, params) {
+  async processTextTemplate(itemConfig, baseImg, params, source, orgId) {
     let x = 0;
     let y = 0;
     if (itemConfig.margin) {
@@ -185,6 +201,8 @@ class ImageGenerator {
       itemConfig.style.fontSize = params.fontSize;
       itemConfig.style.lineHeight = Math.round(params.fontSize * FONT_SIZE_TO_LINE_HEIGHT);
     }
+
+    itemConfig.style.fontFamily = this.addOrgPrefix(itemConfig.style.fontFamily, source, orgId);
     const picText = await textToImage.generate(params.text, itemConfig.style || {});
     const picTextBuffer = Buffer.from(picText.split(',')[1], 'base64');
     const jimpText = await jimp.read(picTextBuffer);
@@ -208,11 +226,11 @@ class ImageGenerator {
    * Processes an image item of the template by adding and merging an image layer onto the base image.
    * @private
    * @param   {Object}          itemConfig the part of the image template defined as a JSON
-   * @param   {Object}          params     the parameters to be applied for the base image
    * @param   {DepreciatedJimp} baseImg    the base image
+   * @param   {Object}          params     the parameters to be applied for the base image
    * @returns {Promise}                    nothing
    */
-  async processImageTemplate(itemConfig, params, baseImg) {
+  async processImageTemplate(itemConfig, baseImg, params) {
     const tmpPic = await jimp.read(itemConfig.url);
     // Recursive call for child items
     if (itemConfig.items !== undefined) {
@@ -349,6 +367,18 @@ class ImageGenerator {
         Math.pow(pix2Bytes[i], 2) * weight));
     }
     return new Uint32Array(resultArr.buffer)[0];
+  }
+
+  /**
+   * Adds source and organization prefix.
+   * @private
+   * @param   {string}   baseString   the string which needs to be prepended with prefix
+   * @param   {string}   source       the source name from which the request was called
+   * @param   {string}   orgId        the organization id which member called the request
+   * @returns {string}                the new prepended string
+   */
+  addOrgPrefix(baseString, source, orgId) {
+    return source + '_' + orgId + '_' + baseString;
   }
 }
 
