@@ -203,7 +203,8 @@ class ImageGenerator {
     }
 
     itemConfig.style.fontFamily = this.addOrgPrefix(itemConfig.style.fontFamily, source, orgId);
-    const picText = await textToImage.generate(params.text, itemConfig.style || {});
+    const linedText = params.text.replace(' \\n ', ' \n ');
+    const picText = await textToImage.generate(linedText, itemConfig.style || {});
     const picTextBuffer = Buffer.from(picText.split(',')[1], 'base64');
     const jimpText = await jimp.read(picTextBuffer);
 
@@ -298,10 +299,6 @@ class ImageGenerator {
    */
   shear(img, offset) {
     const source = img.cloneQuiet();
-    img.scanQuiet(0, 0, img.bitmap.width, img.bitmap.height,
-      (x, y, idx) => {
-        img.bitmap.data.writeUInt32BE(img._background, idx);
-      });
 
     // Resize to fit result
     img.resize(img.getWidth(), img.getHeight() + Math.abs(offset));
@@ -363,8 +360,7 @@ class ImageGenerator {
     const pix2Bytes = new Uint8Array(toBytesInt32(pix2));
     const resultArr = new Uint8Array(4);
     for (let i = 0; i < 4; i++) {
-      resultArr[i] = Math.round(Math.sqrt(Math.pow(pix1Bytes[i], 2) * (1 - weight) +
-        Math.pow(pix2Bytes[i], 2) * weight));
+      resultArr[i] = Math.round(pix1Bytes[i] * (1 - weight) + pix2Bytes[i] * weight);
     }
     return new Uint32Array(resultArr.buffer)[0];
   }
