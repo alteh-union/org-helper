@@ -30,7 +30,7 @@
   "setting_censoring": "цензура",
   "setting_moderLogsEnabled": "логи модерирования включены",
   "setting_moderLogsChannel": "канал для логов модерирования",
-  "setting_banForWarnings": "бан за предупреждения",
+  "setting_banOnWarnings": "бан за предупреждения",
 
   "moderator_censored_message": "Пользователь %s написал сообщение, но во имя благопристойности нам пришлость заменить его на следующее:\n%s",
 
