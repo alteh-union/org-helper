@@ -56,8 +56,8 @@ pm2 start src/index.js
 
 ## Development roadmap
 
-- Short term: flexible moderation, private settings and commands, basic gamification
-- Mid term: editing pictures by templates (a.k.a. making memes), advanced gamification, implementaion of liquid/hybrid democracy, tests (regular and end-to-end)
+- Short term: performance optimization for large guilds, private settings and commands, basic gamification
+- Mid term: advanced gamification, implementaion of liquid/hybrid democracy
 - Long term: adding new platform/sources (e.g. Slack, Telegram), ML-chat bot, speech-to-text for auto-logging meeting minutes etc.
 
 Wanna speed up the development and take one of the features on your own? Contact us at: alteh.union@gmail.com. This is not to restict you, but just to make sure several developers do not interfere with each other.
