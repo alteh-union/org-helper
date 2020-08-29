@@ -92,12 +92,8 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
 
     try {
       const message = BaseMessage.createFromDiscord(discordMessage, discordSource);
-      await c.dbManager.updateGuilds(client.guilds.cache);
-      await c.scheduler.syncTasks();
 
       if (message.originalMessage.guild !== undefined && message.originalMessage.guild !== null) {
-        await c.dbManager.updateGuild(message.originalMessage.guild);
-
         let processed = false;
         if (message.userId !== client.user.id) {
           processed = await c.commandsParser.processMessage(message);

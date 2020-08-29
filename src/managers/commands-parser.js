@@ -66,6 +66,9 @@ class CommandsParser {
     const commandLangManager = await this.getCommandLangManager(message);
     const command = this.parseMessage(message, currentPrefix, commandLangManager);
     if (command) {
+      await this.context.dbManager.updateGuilds(this.context.discordClient.guilds.cache);
+      await this.context.dbManager.updateGuild(message.originalMessage.guild);
+      await this.context.scheduler.syncTasks();
       await this.executeCommand(message, command, commandLangManager);
     }
     return command !== null;
@@ -171,6 +174,8 @@ class CommandsParser {
       if (commandName === commandLangManager.getString(command.getCommandInterfaceName())) {
         this.context.log.i('Found private command: ' + message.content);
         commandFound = true;
+        await this.context.dbManager.updateGuilds(this.context.discordClient.guilds.cache);
+        await this.context.scheduler.syncTasks();
         // False positive for ESLint, since we break the loop immediately.
         /* eslint-disable no-await-in-loop */
         await this.executePrivateDiscordCommand(message, command, commandLangManager);
