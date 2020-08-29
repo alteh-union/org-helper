@@ -203,7 +203,7 @@ class ImageGenerator {
     }
 
     itemConfig.style.fontFamily = this.addOrgPrefix(itemConfig.style.fontFamily, source, orgId);
-    const linedText = params.text.replace(' \\n ', ' \n ');
+    const linedText = params.text.replace('\\n', '\n');
     const picText = await textToImage.generate(linedText, itemConfig.style || {});
     const picTextBuffer = Buffer.from(picText.split(',')[1], 'base64');
     const jimpText = await jimp.read(picTextBuffer);
