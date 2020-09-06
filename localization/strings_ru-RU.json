@@ -498,7 +498,7 @@
   "command_warn_arg_reason_alias_r": "п",
   "command_warn_arg_reason_help": "Причина предупреждения (можно не указывать).",
 
-  "command_warn_success": "Предупрждено %s пользователей из %s запрошенных. Число ошибок: %s.",
+  "command_warn_success": "Предупреждено %s пользователей из %s запрошенных. Число ошибок: %s.",
   "command_warn_log": "Пользователь %s получил предупреждение от модератора %s по следующей причине: %s",
   "command_warn_banreason": "Получено слишком много предупреждений",
 
@@ -524,7 +524,7 @@
   "command_deletewarning_success": "Предупреждения удалены успешно.",
 
 
-  "command_deleteimagetemplate_name": "удалитьшаблонкартинки",
+  "command_deleteimagetemplate_name": "удалитьшаблонкартинок",
   "command_deleteimagetemplate_help": "Удаляет шаблоны картинок по их идентификаторам (именам). Используйте команду '%s', чтобы получить список идентификаторов.",
 
   "command_deleteimagetemplate_arg_ids_alias_ids": "ид",
