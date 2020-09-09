@@ -55,11 +55,11 @@ class Log {
     const date = new Date();
 
     if (level <= this.consoleLevel) {
-      console.log(date.toString() + ' ' + util.format(text));
+      console.log(date.toISOString() + ' ' + util.format(text));
     }
 
     if (level <= this.fileLevel) {
-      this.logFile.write(date.toString() + ' ' + util.format(text) + '\n');
+      this.logFile.write(date.toISOString() + ' ' + util.format(text) + '\n');
     }
   }
 
