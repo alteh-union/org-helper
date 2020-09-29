@@ -164,7 +164,7 @@ class MakeImageCommand extends DiscordCommand {
     try {
       const imageResult = await this.context.imageGenerator.generateImage(this.imgUrl, params, this.parsedJsonConfig,
         this.source, this.orgId);
-      const filePath = `images/ + ${uuidv4()}.jpg`;
+      const filePath = `images/${uuidv4()}.jpg`;
       imageResult.write(filePath);
       await message.originalMessage.channel.send(null, {
         files: [filePath]
