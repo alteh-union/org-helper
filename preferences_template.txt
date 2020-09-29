@@ -21,3 +21,4 @@ max_image_template_font_size = 4194304
 max_image_template_max_width = 1920
 max_image_template_max_height = 1920
 max_image_template_target_jpeg_quality = 95
+copy_org_structure_locally = false

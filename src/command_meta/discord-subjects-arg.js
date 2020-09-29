@@ -28,43 +28,31 @@ class DiscordSubjectsArg {
    * @return {Promise}          true if the validation passed
    */
   async validateDiscordSubjectsArg(context, orgId) {
-    const areMembersNotOk = await this.validateDiscordSubjectTypeArg(
-      context,
-      this.subjectIds,
-      context.dbManager.membersTable,
-      orgId
-    );
-    const areRolesNotOk = await this.validateDiscordSubjectTypeArg(
-      context,
-      this.subjectRoles,
-      context.dbManager.rolesTable,
-      orgId
-    );
+    const guild = context.discordClient.guilds.cache.get(orgId);
+    if (guild === undefined) {
+      return true;
+    }
+
+    let areMembersNotOk = false;
+    if (this.subjectIds.length > 0) {
+      const collection = await guild.members.fetch();
+
+      const filteredEntities = collection.filter(entity => this.subjectIds.includes(entity.id));
+
+      areMembersNotOk = filteredEntities.size !== this.subjectIds.length;
+    }
+
+    let areRolesNotOk = false;
+    if (this.subjectRoles.length > 0) {
+      const fetchedManager = await guild.roles.fetch();
+      const collection = fetchedManager.cache;
+
+      const filteredEntities = collection.filter(entity => this.subjectRoles.includes(entity.id));
+
+      areRolesNotOk = filteredEntities.size !== this.subjectRoles.length;
+    }
+
     return areMembersNotOk || areRolesNotOk;
-  }
-
-  /**
-   * Validates that all given subjects (members or roles) are existing in a DB table for the organization.
-   * @param  {Context}        context         the Bot's context
-   * @param  {Array<string>}  argTypeSubjects the array of subject identifiers (members or roles)
-   * @param  {BotTable}       table           the DB table to check the subject existence
-   * @param  {string}         orgId           the organization identifier
-   * @return {Promise}                        true if the validation passed
-   */
-  async validateDiscordSubjectTypeArg(context, argTypeSubjects, table, orgId) {
-    if (argTypeSubjects.length === 0) {
-      return false;
-    }
-
-    const orArray = [];
-    for (const subject of argTypeSubjects) {
-      orArray.push({ id: subject });
-    }
-
-    const query = { $or: orArray };
-    const subjectsRows = await context.dbManager.getDiscordRows(table, orgId, query);
-
-    return subjectsRows.length !== argTypeSubjects.length;
   }
 
   /**

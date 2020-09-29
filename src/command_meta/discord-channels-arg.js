@@ -35,19 +35,16 @@ class DiscordChannelsArg {
       return false;
     }
 
-    const orArray = [];
-    for (let i = 0; i < this.channels.length; i++) {
-      orArray.push({ id: this.channels[i] });
+    const guild = context.discordClient.guilds.cache.get(orgId);
+    if (guild === undefined) {
+      return false;
     }
 
-    const query = { $or: orArray };
-    if (channelType !== undefined) {
-      query.type = channelType;
-    }
+    const filteredChannels = guild.channels.cache.filter(
+      channel => this.channels.includes(channel.id) &&
+      (channelType !== undefined || channel.type === channelType));
 
-    const channelRows = await context.dbManager.getDiscordRows(context.dbManager.channelsTable, orgId, query);
-
-    return channelRows.length !== this.channels.length;
+    return filteredChannels.size !== this.channels.length;
   }
 
   /**

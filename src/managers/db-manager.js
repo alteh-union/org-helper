@@ -157,9 +157,11 @@ class DbManager {
    * @return {Promise}       nothing
    */
   async updateGuild(guild) {
-    await this.channelsTable.updateFromDiscord(guild.channels.cache, guild);
-    await this.membersTable.updateFromDiscord(guild.members.cache, guild);
-    await this.rolesTable.updateFromDiscord(guild.roles.cache, guild);
+    if (this.context.prefsManager.copy_org_structure_locally) {
+      await this.channelsTable.updateFromDiscord(guild.channels.cache, guild);
+      await this.membersTable.updateFromDiscord(guild.members.cache, guild);
+      await this.rolesTable.updateFromDiscord(guild.roles.cache, guild);
+    }
   }
 
   /**
