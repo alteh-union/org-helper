@@ -7,8 +7,10 @@
  */
 
 const OhUtils = require('../../utils/bot-utils');
+const DiscordUtils = require('../../utils/discord-utils');
 
 const DiscordCommand = require('../discord-command');
+const TimeArg = require('../../command_meta/time-arg');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 const CommandPermissionFilter = require('../../command_meta/command-permission-filter');
 const CommandPermissionFilterField = require('../../command_meta/command-permission-filter-field');
@@ -131,7 +133,6 @@ class RemindCommand extends DiscordCommand {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     let result = '';
-    let taskAdded = false;
 
     const tasks = await this.context.dbManager.getDiscordRows(this.context.dbManager.tasksTable, this.orgId, {
       type: OrgTask.TASK_TYPES.reminder
@@ -150,11 +151,14 @@ class RemindCommand extends DiscordCommand {
     let newId = maxIndex + 1;
 
     const insertTaskResults = [];
+    const insertedIds = [];
     for (let i = 0; i < this.channelIds.channels.length; i++) {
       const content = { channel: this.channelIds.channels[i], message: this.message };
 
+      insertedIds.push(newId);
+
       const reminderRow = {
-        id: newId++,
+        id: newId,
         source: this.source,
         orgId: this.orgId,
         type: OrgTask.TASK_TYPES.reminder,
@@ -162,22 +166,48 @@ class RemindCommand extends DiscordCommand {
         content
       };
 
-      insertTaskResults.push(
-        this.context.dbManager.insertOne(this.context.dbManager.tasksTable, reminderRow).then(rowResult => {
-          if (rowResult) {
-            result = result + this.langManager.getString('command_remind_success') + '\n';
-            taskAdded = true;
-          } else {
-            result = result + this.langManager.getString('command_remind_duplicate') + '\n';
-          }
-        })
+      result += this.langManager.getString(
+        'command_remind_to_setup',
+        newId,
+        TimeArg.toString(reminderRow.time.definitions, this.langManager),
+        DiscordUtils.makeChannelMention(reminderRow.content.channel),
+        reminderRow.content.message
       );
+
+      insertTaskResults.push(this.context.dbManager.insertOne(this.context.dbManager.tasksTable, reminderRow));
+
+      newId++;
     }
 
     await Promise.all(insertTaskResults);
 
-    if (taskAdded) {
-      await this.context.scheduler.syncTasks();
+    await this.context.scheduler.syncTasks();
+
+    const orArray = [];
+    for (const insertedId of insertedIds) {
+      orArray.push({ id: insertedId });
+    }
+    const query = { $or: orArray };
+
+    const newRows = await this.context.dbManager.getDiscordRows(this.context.dbManager.tasksTable, this.orgId, query);
+
+    if (newRows.length === 0) {
+      result += this.langManager.getString('command_remind_nothing_added');
+    } else {
+      if (newRows.length > 1) {
+        result += this.langManager.getString('command_remind_success_plural');
+      } else {
+        result += this.langManager.getString('command_remind_success_single');
+      }
+      for (const newRow of newRows) {
+        result += this.langManager.getString(
+          'command_remind_new_reminder',
+          newRow.id,
+          TimeArg.toString(newRow.time.definitions, this.langManager),
+          DiscordUtils.makeChannelMention(newRow.content.channel),
+          newRow.content.message
+        );
+      }
     }
 
     return result;

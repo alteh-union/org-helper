@@ -47,7 +47,8 @@ class RemindOtherChannelPermission extends TestCase {
     channel2.send('!remind 3s test');
     receivedMessage = await this.getReply(channel2);
     this.assertNotNull(receivedMessage);
-    this.assertEquals(receivedMessage.content, 'Successfully added and scheduled a reminder.');
+    this.assertTrue(receivedMessage.content
+      .indexOf('The following reminder was successfully added and scheduled:') >= 0);
 
     receivedMessage = await this.getReply(channel2, 5000);
     this.assertNotNull(receivedMessage);

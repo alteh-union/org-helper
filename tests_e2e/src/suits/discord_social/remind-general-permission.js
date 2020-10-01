@@ -40,7 +40,8 @@ class RemindGeneralPermission extends TestCase {
     channel1.send('!remind 3s test1');
     receivedMessage = await this.getReply(channel1);
     this.assertNotNull(receivedMessage);
-    this.assertEquals(receivedMessage.content, 'Successfully added and scheduled a reminder.');
+    this.assertTrue(receivedMessage.content
+      .indexOf('The following reminder was successfully added and scheduled:') >= 0);
 
     receivedMessage = await this.getReply(channel1, 5000);
     this.assertNotNull(receivedMessage);
@@ -49,7 +50,8 @@ class RemindGeneralPermission extends TestCase {
     channel2.send('!remind 3s test2');
     receivedMessage = await this.getReply(channel2);
     this.assertNotNull(receivedMessage);
-    this.assertEquals(receivedMessage.content, 'Successfully added and scheduled a reminder.');
+    this.assertTrue(receivedMessage.content
+      .indexOf('The following reminder was successfully added and scheduled:') >= 0);
 
     receivedMessage = await this.getReply(channel2, 5000);
     this.assertNotNull(receivedMessage);

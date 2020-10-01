@@ -48,9 +48,10 @@ class RemindInThreeSeconds extends TestCase {
     channel.send('!remind in 3s e2e test');
     receivedMessage = await this.getReply(channel);
     this.assertNotNull(receivedMessage);
-    this.assertEquals(receivedMessage.content, 'Successfully added and scheduled a reminder.');
+    this.assertTrue(receivedMessage.content
+      .indexOf('The following reminder was successfully added and scheduled:') >= 0);
 
-    receivedMessage = await this.getReply(channel, 3000);
+    receivedMessage = await this.getReply(channel, 4000);
     this.assertNotNull(receivedMessage);
     this.assertEquals(receivedMessage.content, 'e2e test');
 

@@ -48,7 +48,8 @@ class RemindEachHour extends TestCase {
     channel.send('!remind each ' + hours + ':' + minutes + ':' + seconds + ' e2e test');
     receivedMessage = await this.getReply(channel);
     this.assertNotNull(receivedMessage);
-    this.assertEquals(receivedMessage.content, 'Successfully added and scheduled a reminder.');
+    this.assertTrue(receivedMessage.content
+      .indexOf('The following reminder was successfully added and scheduled:') >= 0);
 
     receivedMessage = await this.getReply(channel, 6000);
     this.assertNotNull(receivedMessage);

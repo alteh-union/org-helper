@@ -67,7 +67,7 @@ class Scheduler {
                 util.inspect(fieldsToUpdate, { showHidden: true, depth: 6 })
             );
             clearTimeout(this.tasks[j].timeoutHandle);
-            this.scheduleTask(this.tasks[j]);
+            await this.scheduleTask(this.tasks[j]);
           }
 
           break;
@@ -78,7 +78,7 @@ class Scheduler {
         this.context.log.i('Scheduler syncTasks: dbTasks[i]: ' + dbTasks[i].id + '; new task detected, adding.');
         this.tasks.push(dbTasks[i]);
         foundIndices.push(this.tasks.length - 1);
-        this.scheduleTask(dbTasks[i]);
+        await this.scheduleTask(dbTasks[i]);
       }
     }
 
@@ -111,7 +111,7 @@ class Scheduler {
    * @param  {OrgTask} task the task to be scheduled
    * @return {Promise}      nothing
    */
-  scheduleTask(task) {
+  async scheduleTask(task) {
     this.context.log.i('Scheduler scheduleTask: ' + util.inspect(task, { showHidden: true, depth: 6 }));
     let timeDiff = this.getNextExecutionTimeDiff(task);
 
@@ -146,7 +146,7 @@ class Scheduler {
         'Scheduler scheduleTask: task.id: ' + task.id + '; timeDiff: ' + timeDiff + '; scheduled in the past, removing.'
       );
 
-      this.deleteTask(task);
+      await this.deleteTask(task);
     }
   }
 
@@ -177,13 +177,13 @@ class Scheduler {
    * @param  {OrgTask}  task the task to delete
    * @return {Promise}       nothing
    */
-  deleteTask(task) {
+  async deleteTask(task) {
     for (let i = 0; i < this.tasks.length; i++) {
       if (task.equalsByKey(this.tasks[i])) {
         this.context.log.v('Scheduler scheduleTask: task.id: ' + task.id + '; found in the list, removing.');
         this.tasks.splice(i, 1);
         const deleteQuery = { id: task.id };
-        this.context.dbManager.deleteDiscordRows(this.context.dbManager.tasksTable, task.orgId, deleteQuery);
+        await this.context.dbManager.deleteDiscordRows(this.context.dbManager.tasksTable, task.orgId, deleteQuery);
         break;
       }
     }

@@ -50,8 +50,8 @@ class RemindMultiChannelsByName extends TestCase {
     channel1.send('!remind -t in 3s -c <#' + channel1.id + '>, <#' + channel2.id + '> -m e2e test');
     receivedMessage = await this.getReply(channel1);
     this.assertNotNull(receivedMessage);
-    this.assertEquals(receivedMessage.content, 'Successfully added and scheduled a reminder.' +
-      '\nSuccessfully added and scheduled a reminder.');
+    this.assertTrue(receivedMessage.content
+      .indexOf('The following reminders were successfully added and scheduled:') >= 0);
 
     const resultPromises = [];
     resultPromises.push(this.getReply(channel1, 3000));

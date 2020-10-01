@@ -250,8 +250,11 @@
   "command_remind_arg_message_help": "The text of the reminder. You can use mentions here.",
 
   "command_remind_too_many_reminders": "Your server has reached the limit of reminders: %s. Please delete some others before adding a new reminder.",
-  "command_remind_success": "Successfully added and scheduled a reminder.",
-  "command_remind_duplicate": "Such reminder already exists. Skipped.",
+  "command_remind_to_setup": "The following reminder is going to be scheduled: id = %d; time: %s; channel: %s; message: %s\n",
+  "command_remind_success_single": "The following reminder was successfully added and scheduled:\n",
+  "command_remind_success_plural": "The following reminders were successfully added and scheduled:\n",
+  "command_remind_nothing_added": "No reminder was added. Check that did not schedule the reminder for the past and you did not set up reminders duplicate to already existing ones.",
+  "command_remind_new_reminder": "Reminder id = %d; time: %s; channel: %s; message: %s\n",
 
 
   "command_reminders_name": "reminders",
