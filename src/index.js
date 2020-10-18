@@ -7,6 +7,8 @@
 
 console.log('OrgHelper startup');
 
+const InitApiServer = require('./api/init-api').initApi;
+
 const path = require('path');
 const MongoClient = require('mongodb').MongoClient;
 const Discord = require('discord.js');
@@ -31,6 +33,9 @@ const discordSource = new DiscordSource(client);
 c.log.i('Context created.');
 
 let exceptionOccured = false;
+
+// Initialise api-server
+InitApiServer(c);
 
 const dbConnectionString = OhUtils.makeDbConnectionString(prefsManager);
 if (dbConnectionString === '') {
