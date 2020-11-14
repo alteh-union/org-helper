@@ -362,7 +362,8 @@ class ImageGenerator {
     for (let i = 0; i < 4; i++) {
       resultArr[i] = Math.round(pix1Bytes[i] * (1 - weight) + pix2Bytes[i] * weight);
     }
-    return new Uint32Array(resultArr.buffer)[0];
+    const dataview = new DataView(resultArr.buffer);
+    return dataview.getUint32(0);
   }
 
   /**
