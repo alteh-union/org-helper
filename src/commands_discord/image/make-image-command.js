@@ -7,6 +7,7 @@
  */
 
 const DiscordCommand = require('../discord-command');
+const ObjectArgScanner = require('../../arg_scanners/object-arg-scanner');
 const SimpleArgScanner = require('../../arg_scanners/simple-arg-scanner');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 const BotPublicError = require('../../utils/bot-public-error');
@@ -41,31 +42,13 @@ const MakeImageCommandArgDefs = Object.freeze({
     scanner: SimpleArgScanner,
     validationOptions: { nonNull: true }
   }),
-  fontSize: new CommandArgDef('fontSize', {
+  style: new CommandArgDef('style', {
     aliasIds: [
-      'command_makeimage_arg_fontSize_alias_fontSize',
-      'command_makeimage_arg_fontSize_alias_fs'
+      'command_makeimage_arg_style_alias_style',
+      'command_makeimage_arg_style_alias_s'
     ],
-    helpId: 'command_makeimage_arg_fontSize_help',
-    scanner: SimpleArgScanner,
-    validationOptions: { nonNull: false }
-  }),
-  xShift: new CommandArgDef('xShift', {
-    aliasIds: [
-      'command_makeimage_arg_xShift_alias_xShift',
-      'command_makeimage_arg_xShift_alias_x_shift'
-    ],
-    helpId: 'command_makeimage_arg_xShift_help',
-    scanner: SimpleArgScanner,
-    validationOptions: { nonNull: false }
-  }),
-  yShift: new CommandArgDef('yShift', {
-    aliasIds: [
-      'command_makeimage_arg_yShift_alias_yShift',
-      'command_makeimage_arg_yShift_alias_y_shift'
-    ],
-    helpId: 'command_makeimage_arg_yShift_help',
-    scanner: SimpleArgScanner,
+    helpId: 'command_makeimage_arg_style_help',
+    scanner: ObjectArgScanner,
     validationOptions: { nonNull: false }
   })
 });
@@ -156,9 +139,7 @@ class MakeImageCommand extends DiscordCommand {
 
     const params = {
       text: this.text ? this.text.replace(/^"(.*)"$/, '$1') : undefined,
-      fontSize: this.fontSize,
-      xShift: this.xShift,
-      yShift: this.yShift
+      style: this.style
     };
 
     try {

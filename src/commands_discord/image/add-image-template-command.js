@@ -157,17 +157,18 @@ class AddImageTemplateCommand extends DiscordCommand {
     }
 
     if (this.parsedJsonConfig.input === undefined || this.parsedJsonConfig.input.type === undefined ||
-      this.parsedJsonConfig.input.width === undefined || typeof this.parsedJsonConfig.input.width !== 'number' ||
-      this.parsedJsonConfig.input.height === undefined || typeof this.parsedJsonConfig.input.height !== 'number') {
+      this.parsedJsonConfig.input.width === undefined || this.parsedJsonConfig.input.height === undefined) {
       throw new BotPublicError(this.langManager.getString('command_addimagetemplate_no_input_parameters'));
     }
 
-    if (this.parsedJsonConfig.input.width > this.context.prefsManager.max_image_template_max_width) {
+    if (typeof this.parsedJsonConfig.input.width !== 'string' &&
+        this.parsedJsonConfig.input.width > this.context.prefsManager.max_image_template_max_width) {
       throw new BotPublicError(this.langManager.getString('command_addimagetemplate_too_large_width',
         this.parsedJsonConfig.input.width, this.context.prefsManager.max_image_template_max_width));
     }
 
-    if (this.parsedJsonConfig.input.height > this.context.prefsManager.max_image_template_max_height) {
+    if (typeof this.parsedJsonConfig.input.height !== 'string' &&
+        this.parsedJsonConfig.input.height > this.context.prefsManager.max_image_template_max_height) {
       throw new BotPublicError(this.langManager.getString('command_addimagetemplate_too_large_height',
         this.parsedJsonConfig.input.height, this.context.prefsManager.max_image_template_max_height));
     }

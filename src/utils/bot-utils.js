@@ -189,6 +189,23 @@ class Utils {
   }
 
   /**
+   * Gets the last index where the given substring exists and not quoted.
+   * @param  {string} text      the text to search in
+   * @param  {string} substring the text to find, results for the quotes themselves are undefined
+   * @return {number}           the index of the last non-quoted place with the string
+   */
+  static findLastNonQuotedIndex(text, substring) {
+    const indices = Utils.getIndices(text, substring);
+    for (let i = indices.length - 1; i >= 0; i--) {
+      if (!Utils.isPlaceQuoted(text, indices[i])) {
+        return indices[i];
+      }
+    }
+
+    return -1;
+  }
+
+  /**
    * Gets the array of indices where the given substring exists and not quoted.
    * @param  {string}        text    the text to search in
    * @param  {string}        subtext the text to find, results for the quotes themselves are undefined
