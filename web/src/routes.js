@@ -1,24 +1,27 @@
-import Signin from './pages/signin';
+import SignIn from './pages/sign-in';
 import Plugins from './pages/plugins';
+import DiscordAuth from './pages/discord-auth';
 
 
 const routes = [
     {
-        id: 'Signin',
+        id: 'SignIn',
         name: 'Home',
         path: '/',
         exact: true,
-        component: Signin
+        component: SignIn
     },
-    // {
-    //     id: 'Server',
-    //     path: '/server',
-    // },
     {
         id: 'Plugins',
         name: 'Plugins',
         path: '/plugins',
         component: Plugins
+    },
+    {
+        id: 'DiscordAuth',
+        path: '/discord-auth',
+        hiddenInHeader: true,
+        component: DiscordAuth
     },
 ];
 
