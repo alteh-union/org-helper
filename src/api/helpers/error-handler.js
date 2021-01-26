@@ -1,7 +1,7 @@
 module.exports = errorHandler;
 
 function errorHandler(err, req, res, next) {
-  if (err.name === 'UnauthorizedError') {
+  if (err.name === 'UnauthorizedError' || err.message === 'UnauthorizedError') {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 

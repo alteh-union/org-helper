@@ -6,12 +6,7 @@ export default class DiscordAuth extends React.Component {
     const code = new URLSearchParams(this.props.location.search).get('code');
     fetch(`http://localhost:4000/auth/discord/jwt?code=${code}`)
       .then(res => {
-        console.log('auth success');
-        res.json().then(body => console.log('your auth jwt: ' + body.token))
-        // window.close();
-      })
-      .catch(() => {
-        console.log('auth failed');
+        res.json().then(user => localStorage.setItem("jwt", user.token));
         // window.close();
       });
   }
