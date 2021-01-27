@@ -20,6 +20,7 @@ export default function Header(props) {
       </Nav>
       <Button variant='outline-info'
               className='mr-3'
+              // todo: create preferences.txt like file and put backend base url there
               onClick={() => window.open('http://localhost:4000/auth/discord/go-to-discord-auth',
                 '_blank',
                 'toolbar=0,location=0,menubar=0')}>

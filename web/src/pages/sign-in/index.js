@@ -25,6 +25,7 @@ export default class SignIn extends React.Component {
 
   // todo: remove this demo code
   checkAuthentication() {
+    // todo: create preferences.txt like file and put backend base url there
     fetch(`http://localhost:4000/auth/secured-endpoint`, {
       headers: getAuthHeader()
     })

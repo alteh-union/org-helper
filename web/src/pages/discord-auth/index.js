@@ -12,6 +12,7 @@ export default class DiscordAuth extends React.Component {
 
   authenticate() {
     const code = new URLSearchParams(this.props.location.search).get('code');
+    // todo: create preferences.txt like file and put backend base url there
     fetch(`http://localhost:4000/auth/discord/jwt?code=${code}`)
       .then(res => res.json().then(user => {
         if (res.status === 200) {
