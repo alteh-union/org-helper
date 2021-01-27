@@ -23,7 +23,7 @@ export default function Header(props) {
               onClick={() => window.open('http://localhost:4000/auth/discord/go-to-discord-auth',
                 '_blank',
                 'toolbar=0,location=0,menubar=0')}>
-        Log in
+        {props.username ? props.username : 'Log in'}
       </Button>
     </Navbar>
   </header>;

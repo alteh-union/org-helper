@@ -1,18 +1,22 @@
 const jwt = require('jsonwebtoken');
 const fetch = require('node-fetch');
 
-const makeRedirectToDiscordAuth = async (req, res) => {
-  const context = req.app.get('context');
-  const appId = context.prefsManager.app_id;
-  const redirectUrl = encodeURIComponent(context.prefsManager.oauth_redirect_url);
+const makeRedirectToDiscordAuth = async (req, res, next) => {
+  try {
+    const context = req.app.get('context');
+    const appId = context.prefsManager.app_id;
+    const redirectUrl = encodeURIComponent(context.prefsManager.frontend_url + 'discord-auth');
 
-  res.redirect(
-    `https://discord.com/api/oauth2/authorize` +
-      `?client_id=${appId}` +
-      `&redirect_uri=${redirectUrl}` +
-      `&response_type=code` +
-      `&scope=identify`
-  );
+    res.redirect(
+      `https://discord.com/api/oauth2/authorize` +
+        `?client_id=${appId}` +
+        `&redirect_uri=${redirectUrl}` +
+        `&response_type=code` +
+        `&scope=identify`
+    );
+  } catch (error) {
+    next(error);
+  }
 };
 
 const getJwtByDiscordAuthCode = async (req, res, next) => {
@@ -23,18 +27,18 @@ const getJwtByDiscordAuthCode = async (req, res, next) => {
     const authInfo = await requestDiscordToken(code, prefsManager);
 
     if (!authInfo.access_token) {
-      throw new Error('UnauthorizedError');
+      throw new Error('Unauthorized error');
     }
     const discordUser = await requestDiscordUser(authInfo.access_token);
 
     if (!discordUser.id) {
-      throw new Error('UnauthorizedError');
+      throw new Error('Unauthorized error');
     }
     const user = await createOrUpdateUser(discordUser, context);
     const token = jwt.sign({ sub: user._id }, prefsManager.jwt_secret, { expiresIn: '1d' });
-    res.status(200).send({ token, username: user.username });
-  } catch (e) {
-    next(e);
+    res.status(200).send({ id: user._id, username: user.username, token });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -43,7 +47,7 @@ async function requestDiscordToken(code, prefsManager) {
     client_id: prefsManager.app_id,
     client_secret: prefsManager.discord_secret,
     grant_type: 'authorization_code',
-    redirect_uri: prefsManager.oauth_redirect_url,
+    redirect_uri: prefsManager.frontend_url + 'discord-auth',
     code: code,
     scope: 'identify'
   };
@@ -78,11 +82,8 @@ async function createOrUpdateUser(discordUser, context) {
   };
   const user = await users.findOne(searchCriteria);
   if (user) {
-    // todo: update the user
-    console.log('update the user');
     await users.updateOne(searchCriteria, { $set: { discordInfo: newDiscordInfo } });
   } else {
-    console.log('create a new user');
     await users.insertOne({
       username: discordUser.username,
       discordInfo: newDiscordInfo
@@ -91,12 +92,13 @@ async function createOrUpdateUser(discordUser, context) {
   return await users.findOne(searchCriteria);
 }
 
-async function securedEndpoint(req, res) {
+// todo: remove this demo endpoint
+async function callSecuredEndpoint(req, res) {
   res.status(200).send();
 }
 
 module.exports = {
   makeRedirectToDiscordAuth,
   getJwtByDiscordAuthCode,
-  securedEndpoint
+  callSecuredEndpoint
 };
