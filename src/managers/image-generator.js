@@ -53,10 +53,11 @@ class ImageGenerator {
    */
   async generateImage(picUrl, params, templateConfig, source, orgId) {
     const baseImg = await jimp.read(picUrl);
-    await this.prepareBaseImage(baseImg, params, templateConfig);
+    const styleDefinition = this.readStyleVars(templateConfig);
+    await this.prepareBaseImage(baseImg, params, templateConfig, styleDefinition);
     await this.addFonts(templateConfig, source, orgId);
     if (templateConfig.items) {
-      await this.composeImage(baseImg, templateConfig.items, params, source, orgId);
+      await this.composeImage(baseImg, templateConfig.items, params, styleDefinition, source, orgId);
     }
     return baseImg;
   }
@@ -101,32 +102,66 @@ class ImageGenerator {
     }
   }
 
+  /**
+   * Prepares the list of style-related variable names. Style attributes not found in this list will be ignored.
+   * @private
+   * @param   {Object}          templateConfig the image template defined as a JSON
+   * @returns {Object}                         the list of style-related variable names
+   */
+  readStyleVars(templateConfig) {
+    if (typeof templateConfig.style === 'object' && templateConfig.style !== null) {
+      return templateConfig.style;
+    } else {
+      return {};
+    }
+  }
 
   /**
    * Prepares the base image according to the template requirements.
    * @private
-   * @param   {DepreciatedJimp} baseImg        the base image
-   * @param   {Object}          params         the parameters to be applied for the base image
-   * @param   {Object}          templateConfig the image template defined as a JSON
-   * @returns {Promise}                        nothing
+   * @param   {DepreciatedJimp} baseImg         the base image
+   * @param   {Object}          params          the parameters to be applied for the base image
+   * @param   {Object}          templateConfig  the image template defined as a JSON
+   * @param   {Object}          styleDefinition the list of style-related variables
+   * @returns {Promise}                         nothing
    */
-  async prepareBaseImage(baseImg, params, templateConfig) {
+  async prepareBaseImage(baseImg, params, templateConfig, styleDefinition) {
     await baseImg.quality(Number.parseInt(this.context.prefsManager.max_image_template_target_jpeg_quality, 10));
 
     if (templateConfig.input) {
       if (templateConfig.input.type === 'fixed') {
         const basePicRatio = baseImg.getWidth() / baseImg.getHeight();
-        const inputRatio = templateConfig.input.width / templateConfig.input.height;
-        if (basePicRatio <= inputRatio) {
-          await baseImg.resize(templateConfig.input.width, jimp.AUTO);
-        } else {
-          await baseImg.resize(jimp.AUTO, templateConfig.input.height);
+
+        let inputWidth = this.getStyledValue(templateConfig.input.width, params, styleDefinition);
+        if (inputWidth > this.context.prefsManager.max_image_template_max_width) {
+          inputWidth = this.context.prefsManager.max_image_template_max_width;
         }
-        let x = (baseImg.getWidth() - templateConfig.input.width) / 2 + params.xShift || 0;
-        let y = (baseImg.getHeight() - templateConfig.input.height) / 2 + params.yShift || 0;
+        if (inputWidth <= 0) {
+          inputWidth = 1;
+        }
+        let inputHeight = this.getStyledValue(templateConfig.input.height, params, styleDefinition);
+        if (inputHeight > this.context.prefsManager.max_image_template_max_height) {
+          inputHeight = this.context.prefsManager.max_image_template_max_height;
+        }
+        if (inputHeight <= 0) {
+          inputHeight = 1;
+        }
+
+        const inputRatio = inputWidth / inputHeight;
+        if (basePicRatio <= inputRatio) {
+          await baseImg.resize(inputWidth, jimp.AUTO);
+        } else {
+          await baseImg.resize(jimp.AUTO, inputHeight);
+        }
+
+        const xShift = this.getStyledValue(templateConfig.input.xShift, params, styleDefinition, 'xShift');
+        const yShift = this.getStyledValue(templateConfig.input.yShift, params, styleDefinition, 'yShift');
+
+        let x = (baseImg.getWidth() - inputWidth) / 2 + xShift || 0;
+        let y = (baseImg.getHeight() - inputHeight) / 2 + yShift || 0;
         x = x < 0 ? 0 : x;
         y = y < 0 ? 0 : y;
-        await baseImg.crop(x, y, templateConfig.input.width, templateConfig.input.height);
+        await baseImg.crop(x, y, inputWidth, inputHeight);
       }
     }
   }
@@ -134,22 +169,23 @@ class ImageGenerator {
   /**
    * Composes the resuot image from the base image using the template rules.
    * @private
-   * @param   {DepreciatedJimp} baseImg        the base image
-   * @param   {Array}           itemConfigList the image template defined as a JSON
-   * @param   {Object}          params         the parameters to be applied for the base image
-   * @param   {string}          source         the source name from which the request was called
-   * @param   {string}          orgId          the organization id which member called the request
-   * @returns {Promise}                        nothing
+   * @param   {DepreciatedJimp} baseImg         the base image
+   * @param   {Array}           itemConfigList  the image template defined as a JSON
+   * @param   {Object}          params          the parameters to be applied for the base image
+   * @param   {Object}          styleDefinition the list of style-related variables
+   * @param   {string}          source          the source name from which the request was called
+   * @param   {string}          orgId           the organization id which member called the request
+   * @returns {Promise}                         nothing
    */
-  async composeImage(baseImg, itemConfigList, params, source, orgId) {
+  async composeImage(baseImg, itemConfigList, params, styleDefinition, source, orgId) {
     for (const itemConfig of itemConfigList) {
       switch (itemConfig.type) {
         case 'image': {
-          await this.processImageTemplate(itemConfig, baseImg, params);
+          await this.processImageTemplate(itemConfig, baseImg, params, styleDefinition);
           break;
         }
         case 'text': {
-          await this.processTextTemplate(itemConfig, baseImg, params, source, orgId);
+          await this.processTextTemplate(itemConfig, baseImg, params, styleDefinition, source, orgId);
           break;
         }
         default:
@@ -161,68 +197,95 @@ class ImageGenerator {
   /**
    * Processes a text item of the template by adding and merging a text layer onto the base image.
    * @private
-   * @param   {Object}          itemConfig the part of the image template defined as a JSON
-   * @param   {DepreciatedJimp} baseImg    the base image
-   * @param   {Object}          params     the parameters to be applied for the base image
-   * @param   {string}          source     the source name from which the request was called
-   * @param   {string}          orgId      the organization id which member called the request
-   * @returns {Promise}                    nothing
+   * @param   {Object}          itemConfig      the part of the image template defined as a JSON
+   * @param   {DepreciatedJimp} baseImg         the base image
+   * @param   {Object}          params          the parameters to be applied for the base image
+   * @param   {Object}          styleDefinition the list of style-related variables
+   * @param   {string}          source          the source name from which the request was called
+   * @param   {string}          orgId           the organization id which member called the request
+   * @returns {Promise}                         nothing
    */
-  async processTextTemplate(itemConfig, baseImg, params, source, orgId) {
+  async processTextTemplate(itemConfig, baseImg, params, styleDefinition, source, orgId) {
     let x = 0;
     let y = 0;
     if (itemConfig.margin) {
-      if (itemConfig.margin.left < 0) {
-        itemConfig.margin.left = 0;
-      }
-      if (itemConfig.margin.right < 0) {
-        itemConfig.margin.right = 0;
-      }
-      if (itemConfig.margin.left + itemConfig.margin.right >= 100) {
-        itemConfig.margin.left = 0;
-        itemConfig.margin.right = 0;
+      let marginLeft = this.getStyledValue(itemConfig.margin.left, params, styleDefinition);
+      if (marginLeft < 0) {
+        marginLeft = 0;
       }
 
-      if (itemConfig.margin.top < 0) {
-        itemConfig.margin.top = 0;
-      }
-      if (itemConfig.margin.bottom < 0) {
-        itemConfig.margin.bottom = 0;
-      }
-      if (itemConfig.margin.top + itemConfig.margin.bottom >= 100) {
-        itemConfig.margin.top = 0;
-        itemConfig.margin.bottom = 0;
+      let marginRight = this.getStyledValue(itemConfig.margin.right, params, styleDefinition);
+      if (marginRight < 0) {
+        marginRight = 0;
       }
 
-      x = baseImg.getWidth() / 100 * itemConfig.margin.left || 0;
-      y = baseImg.getHeight() / 100 * itemConfig.margin.top || 0;
-      const x2 = baseImg.getWidth() - baseImg.getWidth() / 100 * itemConfig.margin.right || 0;
-      const y2 = baseImg.getHeight() - baseImg.getHeight() / 100 * itemConfig.margin.bottom || 0;
+      if (marginLeft + marginRight >= 100) {
+        marginLeft = 0;
+        marginRight = 0;
+      }
+
+      let marginTop = this.getStyledValue(itemConfig.margin.top, params, styleDefinition);
+      if (marginTop < 0) {
+        marginTop = 0;
+      }
+
+      let marginBottom = this.getStyledValue(itemConfig.margin.bottom, params, styleDefinition);
+      if (marginBottom < 0) {
+        marginBottom = 0;
+      }
+
+      if (marginTop + marginBottom >= 100) {
+        marginTop = 0;
+        marginBottom = 0;
+      }
+
+      x = baseImg.getWidth() / 100 * marginLeft || 0;
+      y = baseImg.getHeight() / 100 * marginTop || 0;
+      const x2 = baseImg.getWidth() - baseImg.getWidth() / 100 * marginRight || 0;
+      const y2 = baseImg.getHeight() - baseImg.getHeight() / 100 * marginBottom || 0;
       itemConfig.style.customHeight = y2 - y;
       itemConfig.style.maxWidth = x2 - x;
     }
     // Override font size
-    if (params.fontSize) {
-      itemConfig.style.fontSize = params.fontSize;
-      itemConfig.style.lineHeight = Math.round(params.fontSize * FONT_SIZE_TO_LINE_HEIGHT);
+    let fontSize = this.getStyledValue(itemConfig.style.fontSize, params, styleDefinition);
+    if (!fontSize) {
+      fontSize = params.fontSize;
+    }
+    if (fontSize) {
+      itemConfig.style.fontSize = fontSize;
+      itemConfig.style.lineHeight = Math.round(fontSize * FONT_SIZE_TO_LINE_HEIGHT);
     }
 
-    itemConfig.style.fontFamily = this.addOrgPrefix(itemConfig.style.fontFamily, source, orgId);
-    const linedText = params.text.replace('\\n', '\n');
+    const fontFamily = this.getStyledValue(itemConfig.style.fontFamily, params, styleDefinition);
+    itemConfig.style.fontFamily = this.addOrgPrefix(fontFamily, source, orgId);
+
+    const textColor = this.getStyledValue(itemConfig.style.textColor, params, styleDefinition);
+    if (textColor) {
+      itemConfig.style.textColor = textColor;
+    }
+
+    let itemText = this.getStyledValue(itemConfig.text, params, styleDefinition);
+    if (!itemText) {
+      itemText = params.text;
+    }
+    const linedText = itemText.replace('\\n', '\n');
     const picText = await textToImage.generate(linedText, itemConfig.style || {});
     const picTextBuffer = Buffer.from(picText.split(',')[1], 'base64');
     const jimpText = await jimp.read(picTextBuffer);
 
-    if (itemConfig.rotate) {
-      await jimpText.rotate(itemConfig.rotate);
+    const rotate = this.getStyledValue(itemConfig.rotate, params, styleDefinition);
+    if (rotate) {
+      await jimpText.rotate(rotate);
     }
 
-    if (itemConfig.shear) {
-      this.shear(jimpText, itemConfig.shear);
+    const shear = this.getStyledValue(itemConfig.shear, params, styleDefinition);
+    if (shear) {
+      this.shear(jimpText, shear);
     }
 
-    if (itemConfig.blur) {
-      await jimpText.blur(itemConfig.blur);
+    const blur = this.getStyledValue(itemConfig.blur, params, styleDefinition);
+    if (blur) {
+      await jimpText.blur(blur);
     }
 
     baseImg.composite(jimpText, x, y);
@@ -231,19 +294,20 @@ class ImageGenerator {
   /**
    * Processes an image item of the template by adding and merging an image layer onto the base image.
    * @private
-   * @param   {Object}          itemConfig the part of the image template defined as a JSON
-   * @param   {DepreciatedJimp} baseImg    the base image
-   * @param   {Object}          params     the parameters to be applied for the base image
-   * @returns {Promise}                    nothing
+   * @param   {Object}          itemConfig      the part of the image template defined as a JSON
+   * @param   {DepreciatedJimp} baseImg         the base image
+   * @param   {Object}          params          the parameters to be applied for the base image
+   * @param   {Object}          styleDefinition the list of style-related variables
+   * @returns {Promise}                         nothing
    */
-  async processImageTemplate(itemConfig, baseImg, params) {
+  async processImageTemplate(itemConfig, baseImg, params, styleDefinition) {
     const tmpPic = await jimp.read(itemConfig.url);
     // Recursive call for child items
     if (itemConfig.items !== undefined) {
       await this.composeImage(tmpPic, itemConfig.items, params);
     }
 
-    const blendMode = itemConfig.blend || {};
+    const blendMode = this.getStyledValue(itemConfig.blend, params, styleDefinition) || {};
 
     let composeX = 0;
     let composeY = 0;
@@ -281,19 +345,52 @@ class ImageGenerator {
         }
     }
 
-    if (itemConfig.rotate) {
-      await tmpPic.rotate(itemConfig.rotate);
+    const rotate = this.getStyledValue(itemConfig.rotate, params, styleDefinition);
+    if (rotate) {
+      await tmpPic.rotate(rotate);
     }
 
-    if (itemConfig.shear) {
-      this.shear(tmpPic, itemConfig.shear);
+    const shear = this.getStyledValue(itemConfig.shear, params, styleDefinition);
+    if (shear) {
+      this.shear(tmpPic, shear);
     }
 
-    if (itemConfig.blur) {
-      await tmpPic.blur(itemConfig.blur);
+    const blur = this.getStyledValue(itemConfig.blur, params, styleDefinition);
+    if (blur) {
+      await tmpPic.blur(blur);
     }
 
     baseImg.composite(tmpPic, composeX, composeY, blendMode);
+  }
+
+  /**
+   * Reads a value from JSON object. If the value is not a string or not found in the style parameter names,
+   * then reads it as a raw value. If it's a string and found in parameter names, then tries to read it
+   * from the parameter. If the style parameter is not set for the command, then reads the default
+   * value from the style definition.
+   * If the JSON value is not defined, but some default variable name is provided, then tries to find
+   * variable with such name directly in the style parameter.
+   * If not found anywhere in the mentioned locations - returns undefined.
+   * @private
+   * @param   {Object} rawValue        the value from JSON object, either raw or pointing to a style attribute
+   * @param   {Object} params          the parameters to be applied for the base image
+   * @param   {Object} styleDefinition the list of style-related variables
+   * @param   {string} defaultName     the default parametername, if missing from the template
+   * @returns {Object}                 the result value, raw or styled
+   */
+  getStyledValue(rawValue, params, styleDefinition, defaultName) {
+    if (rawValue === undefined && defaultName !== undefined &&
+        params.style !== undefined && params.style !== null && params.style[defaultName] !== undefined) {
+      return params.style[defaultName];
+    }
+    if (typeof rawValue === 'string' && styleDefinition[rawValue] !== undefined) {
+      if (params.style !== undefined && params.style !== null && params.style[rawValue] !== undefined) {
+        return params.style[rawValue];
+      } else {
+        return styleDefinition[rawValue];
+      }
+    }
+    return rawValue;
   }
 
   /**

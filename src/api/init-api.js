@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const auth = require('./routes/auth');
-const roles = require('./routes/roles');
+// const roles = require('./routes/roles');
 const cors = require('cors');
 
 function initApi(c) {
@@ -13,7 +13,7 @@ function initApi(c) {
   app.set('context', c);
 
   app.use('/auth', auth);
-  app.use('/roles', roles);
+  // app.use('/roles', roles);
 }
 
 module.exports = {
