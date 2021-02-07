@@ -6,7 +6,7 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
-const BotPublicError = require('../utils/bot-public-error');
+const BotArgumentError = require('../utils/bot-argument-error');
 const OhUtils = require('../utils/bot-utils');
 
 const DiscordSubjectsArg = require('../command_meta/discord-subjects-arg');
@@ -33,44 +33,50 @@ class ArgValidationTree {
         impliers: {
           nonNull: {
             validationFunc: this.isNonNull,
+            errorCode: 100,
             impliers: {
               isSubjects: {
                 validationFunc: this.isSubjects,
+                errorCode: 200,
                 impliers: {
-                  subjectsNonEmpty: { validationFunc: this.areSubjectsNonEmpty },
-                  validSubjects: { validationFunc: this.areValidSubjects },
-                  subjectRolesOnly: { validationFunc: this.areSubjectRolesOnly },
-                  subjectIdsOnly: { validationFunc: this.areSubjectIdsOnly }
+                  subjectsNonEmpty: { errorCode: 201, validationFunc: this.areSubjectsNonEmpty },
+                  validSubjects: { errorCode: 202, validationFunc: this.areValidSubjects },
+                  subjectRolesOnly: { errorCode: 203, validationFunc: this.areSubjectRolesOnly },
+                  subjectIdsOnly: { errorCode: 204, validationFunc: this.areSubjectIdsOnly }
                 }
               },
               isChannels: {
                 validationFunc: this.isChannels,
+                errorCode: 300,
                 impliers: {
-                  channelsNonEmpty: { validationFunc: this.areChannelsNonEmpty },
-                  validChannels: { validationFunc: this.areValidChannels },
-                  validTextChannels: { validationFunc: this.areValidTextChannels },
-                  validVoiceChannels: { validationFunc: this.areValidVoiceChannels }
+                  channelsNonEmpty: { errorCode: 301, validationFunc: this.areChannelsNonEmpty },
+                  validChannels: { errorCode: 302, validationFunc: this.areValidChannels },
+                  validTextChannels: { errorCode: 303, validationFunc: this.areValidTextChannels },
+                  validVoiceChannels: { errorCode: 304, validationFunc: this.areValidVoiceChannels }
                 }
               },
               isTime: {
                 validationFunc: this.isTime,
+                errorCode: 400,
                 impliers: {
-                  timeDistanceOnly: { validationFunc: this.isTimeDistanceOnly },
-                  timeScheduleOnly: { validationFunc: this.isTimeScheduleOnly },
-                  nonZeroShift: { validationFunc: this.isNonZeroShift }
+                  timeDistanceOnly: { errorCode: 401, validationFunc: this.isTimeDistanceOnly },
+                  timeScheduleOnly: { errorCode: 402, validationFunc: this.isTimeScheduleOnly },
+                  nonZeroShift: { errorCode: 403, validationFunc: this.isNonZeroShift }
                 }
               },
               isArray: {
                 validationFunc: this.isArray,
+                errorCode: 500,
                 impliers: {
-                  isIdsArray: { validationFunc: this.isIdsArray }
+                  isIdsArray: { errorCode: 501, validationFunc: this.isIdsArray }
                 }
               },
-              isOnOff: { validationFunc: this.isOnOff },
+              isOnOff: { errorCode: 600, validationFunc: this.isOnOff },
               isInteger: {
                 validationFunc: this.isInteger,
+                errorCode: 700,
                 impliers: {
-                  isNonNegativeInteger: { validationFunc: this.isNonNegativeInteger }
+                  isNonNegativeInteger: { errorCode: 701, validationFunc: this.isNonNegativeInteger }
                 }
               }
             }
@@ -130,7 +136,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value according to it's definition and validation options.
-   * @throws BotPublicError
+   * @throws BotArgumentError
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {Command}       command     the command having the argument
@@ -141,7 +147,11 @@ class ArgValidationTree {
       // Check each option only once during the traversal, but before its children.
       if (argDef.validationOptions[currentElement.name] === true) {
         if (currentElement.func !== undefined) {
-          await currentElement.func(argDef, argValue, command);
+          try {
+            await currentElement.func(argDef, argValue, command);
+          } catch (error) {
+            throw new BotArgumentError(error.message, argDef.name, currentElement.errorCode);
+          }
         }
       }
     }
@@ -152,7 +162,7 @@ class ArgValidationTree {
   /**
    * Traverses the validation tree and performs actions at specific points (if such actions are defined).
    * Can throw errors (for example, if validation is not passed).
-   * @throws BotPublicError
+   * @throws BotArgumentError
    * @param  {CommandArgDef}    argDef          the argument definition
    * @param  {Object<Function>} traverseActions the set of functions to be called during the traversal
    * @param  {Object}           argDef          the argument value (can be undefined, if not running for a command)
@@ -160,7 +170,7 @@ class ArgValidationTree {
    */
   static async traverseTreeWithActions(argDef, traverseActions, argValue, command) {
     const traversalStack = [];
-    traversalStack.push({ children: this.VALIDATION_TREE.impliers, name: null, childIndex: 0 });
+    traversalStack.push({ children: this.VALIDATION_TREE.impliers, name: null, childIndex: 0, errorCode: 0 });
 
     while (traversalStack.length > 0) {
       const currentElement = traversalStack[traversalStack.length - 1];
@@ -192,7 +202,8 @@ class ArgValidationTree {
           children: currentElement.children[childrenKeys[currentIndex]].impliers,
           name: childrenKeys[currentIndex],
           childIndex: 0,
-          func: currentElement.children[childrenKeys[currentIndex]].validationFunc
+          func: currentElement.children[childrenKeys[currentIndex]].validationFunc,
+          errorCode: currentElement.children[childrenKeys[currentIndex]].errorCode
         });
       }
       /* eslint-enable no-await-in-loop */
@@ -201,7 +212,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the nonNull condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {Command}       command     the command having the argument
@@ -215,7 +226,7 @@ class ArgValidationTree {
   /**
    * Validates a command's argument value against the isSubjects condition.
    * If singleEntity option is true, then also checks the count of subjects (should be 1).
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {Command}       command     the command having the argument
@@ -237,7 +248,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the subjectsNonEmpty condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {Command}       command     the command having the argument
@@ -250,7 +261,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the validSubjects condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -270,7 +281,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the subjectRolesOnly condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -290,7 +301,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the subjectIdsOnly condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -311,7 +322,7 @@ class ArgValidationTree {
   /**
    * Validates a command's argument value against the isChannels condition.
    * If singleEntity option is true, then also checks the count of channels (should be 1).
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -333,7 +344,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the channelsNonEmpty condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -346,7 +357,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the validChannels condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -366,7 +377,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the validTextChannels condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -386,7 +397,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the validVoiceChannels condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -406,7 +417,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the isTime condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -419,7 +430,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the timeDistanceOnly condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -437,7 +448,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the timeScheduleOnly condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -455,7 +466,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the nonZeroShift condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -469,7 +480,7 @@ class ArgValidationTree {
   /**
    * Validates a command's argument value against the isArray condition.
    * If singleEntity option is true, then also checks the count of elements (should be 1).
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -486,7 +497,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the isIdsArray condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -506,7 +517,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the isOnOff condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {Command}       command     the command having the argument
@@ -527,7 +538,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the isInteger condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -545,7 +556,7 @@ class ArgValidationTree {
 
   /**
    * Validates a command's argument value against the isNonNegativeInteger condition.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef      the argument definition
    * @param  {Object}        argValue    the argument value
    * @param  {string}        commandName the command name
@@ -563,7 +574,7 @@ class ArgValidationTree {
 
   /**
    * Creates and throws a public error as a result of validation violation for an argument.
-   * @throws BotPublicError
+   * @throws Error
    * @param  {CommandArgDef} argDef              the argument definition
    * @param  {Command}       command             the command having the argument
    * @param  {string}        logText             the string to be logged internally
@@ -579,7 +590,7 @@ class ArgValidationTree {
     }
 
     command.context.log.e(commandName + ' validateArgs: ' + logText + ' ' + mainAlias);
-    throw new BotPublicError(command.langManager.getString(publicTextId, publicTextsArray));
+    throw new Error(command.langManager.getString(publicTextId, publicTextsArray));
   }
 }
 

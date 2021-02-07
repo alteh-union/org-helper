@@ -314,7 +314,8 @@ class CommandsParser {
           '"; Error message: ' +
           error +
           '; stack: ' +
-          error.stack
+          error.stack +
+          (error.errorCode ? (';\nerrorCode: ' + error.errorCode) : '')
       );
       message.reply(
         commandLangManager.getString(
