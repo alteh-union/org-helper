@@ -232,6 +232,13 @@
   "command_poll_name": "опрос",
   "command_poll_help": "Запускает опрос. Первая фраза в кавычках будет вопросом. Остальные фразы в кавычках - ответами. Если варианты не предоставлены - считает опрос типом да/нет.",
 
+  "command_poll_arg_question_alias_question": "вопрос",
+  "command_poll_arg_question_alias_q": "в",
+  "command_poll_arg_question_help": "Вопрос для пользователей.",
+  "command_poll_arg_answers_alias_answers": "ответы",
+  "command_poll_arg_answers_alias_a": "о",
+  "command_poll_arg_answers_help": "Варианты ответа. Если варианты не предоставлены, то тип вопроса считается как да/нет.",
+
   "command_poll_too_many_answers": "Слмшком много ответов предоставлено: %d. Максимум: %d.",
 
 

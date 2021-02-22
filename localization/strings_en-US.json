@@ -233,6 +233,13 @@
   "command_poll_name": "poll",
   "command_poll_help": "Starts a poll. The first string in quotes will be the question. The following strings will be considered as answer variants. If no variants are provided, then the poll is considered as a yes/no poll.",
 
+  "command_poll_arg_question_alias_question": "question",
+  "command_poll_arg_question_alias_q": "q",
+  "command_poll_arg_question_help": "The question for the users.",
+  "command_poll_arg_answers_alias_answers": "answers",
+  "command_poll_arg_answers_alias_a": "a",
+  "command_poll_arg_answers_help": "The answer variants. If no answer is provided, then the question will be considered as yes/no.",
+
   "command_poll_too_many_answers": "Too many answers provided: %d. The max is: %d.",
 
 
