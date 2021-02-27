@@ -12,7 +12,7 @@ const BotPublicError = require('../../utils/bot-public-error');
 
 const DiscordCommand = require('../discord-command');
 const CommandArgDef = require('../../command_meta/command-arg-def');
-const SpaceBasedArrayArgScanner = require('../../arg_scanners/space-based-array-arg-scanner');
+const QuotedSpaceArrayArgScanner = require('../../arg_scanners/quoted-space-array-arg-scanner');
 
 const PollCommandArgDefs = Object.freeze({
   question: new CommandArgDef('question', {
@@ -23,7 +23,7 @@ const PollCommandArgDefs = Object.freeze({
   answers: new CommandArgDef('answers', {
     aliasIds: ['command_poll_arg_answers_alias_answers', 'command_poll_arg_answers_alias_a'],
     helpId: 'command_poll_arg_answers_help',
-    scanner: SpaceBasedArrayArgScanner
+    scanner: QuotedSpaceArrayArgScanner
   })
 });
 

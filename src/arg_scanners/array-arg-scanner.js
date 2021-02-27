@@ -13,7 +13,7 @@ const SimpleArgScanner = require('./simple-arg-scanner');
 const ARRAY_SEPARATOR = ',';
 
 /**
- * Scans arguments as a comma-seperated array.
+ * Scans arguments as a comma-separated array.
  * @alias ArrayArgScanner
  * @extends SimpleArgScanner
  */
