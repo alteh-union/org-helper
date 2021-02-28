@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const auth = require('./routes/auth');
+const servers = require('./routes/servers');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('./helpers/jwt');
@@ -30,6 +31,7 @@ function initApi(c) {
     app.set('context', c);
 
     app.use('/auth', auth);
+    app.use('/servers', servers);
 
     app.use(errorHandler);
 

@@ -1,13 +1,15 @@
 import * as React from 'react';
+import Servers from '../../layout/servers';
 import { getAuthHeader } from '../../helpers/auth-header';
 
 
-export default class SignIn extends React.Component {
+export default class Main extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      authenticated: false
+      authenticated: false,
+      selectedServer: null
     };
   }
 
@@ -20,6 +22,7 @@ export default class SignIn extends React.Component {
       <p>Main page</p>
       <button onClick={() => this.checkAuthentication()}>Check authentication</button>
       <p>{this.state.authenticated ? 'Authenticated' : 'Not authenticated'}</p>
+      { this.state.authenticated ? <Servers/> : null }
     </div>;
   }
 

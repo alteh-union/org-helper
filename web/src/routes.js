@@ -1,15 +1,15 @@
-import SignIn from './pages/sign-in';
+import Main from './pages/main';
 import Plugins from './pages/plugins';
 import DiscordAuth from './pages/discord-auth';
 
 
 const routes = [
     {
-        id: 'SignIn',
+        id: 'Main',
         name: 'Home',
         path: '/',
         exact: true,
-        component: SignIn
+        component: Main
     },
     {
         id: 'Plugins',
@@ -22,7 +22,7 @@ const routes = [
         path: '/discord-auth',
         hiddenInHeader: true,
         component: DiscordAuth
-    },
+    }
 ];
 
 export default routes;
