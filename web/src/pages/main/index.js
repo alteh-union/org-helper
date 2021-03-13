@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Servers from '../../layout/servers';
+import CommandModules from '../../layout/command-modules';
 import { getAuthHeader } from '../../helpers/auth-header';
 
 
@@ -9,7 +10,8 @@ export default class Main extends React.Component {
     super(props);
     this.state = {
       authenticated: false,
-      selectedServer: null
+      selectedServer: null,
+      selectedModule: null,
     };
   }
 
@@ -17,12 +19,21 @@ export default class Main extends React.Component {
     this.checkAuthentication();
   }
 
+  handleServer = (server) => {
+    this.setState({selectedServer: server});
+  }
+
+  handleModule = (module) => {
+    this.setState({selectedModule: module});
+  }
+
   render() {
     return <div>
       <p>Main page</p>
       <button onClick={() => this.checkAuthentication()}>Check authentication</button>
       <p>{this.state.authenticated ? 'Authenticated' : 'Not authenticated'}</p>
-      { this.state.authenticated ? <Servers/> : null }
+      { this.state.authenticated ? <Servers onSelectServer={this.handleServer}/> : null }
+      { this.state.selectedServer ? <CommandModules onSelectModule={this.handleModule}/> : null }
     </div>;
   }
 

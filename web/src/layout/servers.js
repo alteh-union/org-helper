@@ -3,7 +3,7 @@ import { getAuthHeader } from '../helpers/auth-header';
 
 /**
  * Servers component for Application.
- * Servers list should be available once the user gets logeed in.
+ * Servers list should be available once the user gets logged in.
  * Most of the action related to the Bot should be related to a particular server only where the Bot is present.
  * So selecting a server should be the next steps after signing in.
  * @param {React.Props} props
@@ -20,12 +20,17 @@ export default class Servers extends React.Component {
     this.getUserServers();
   }
 
+  handleClick(id) {
+    const selectedServer = this.state.servers.find(el => el.id === id);
+    this.props.onSelectServer(selectedServer);
+  }
+
   render() {
     return (
       <div>
         <ul>
           {this.state.servers.map(server =>
-            <li key={server.id} onClick={this.handleClick}>
+            <li key={server.id} onClick={() => this.handleClick(server.id)}>
               {server.name}
             </li>
           )}
