@@ -21,8 +21,7 @@ function initApi(c) {
     if (err) {
       throw err;
     }
-
-    await c.dbManager.setDbo(db.db(c.prefsManager.db_name));
+    
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
     app.use(cors());

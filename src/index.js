@@ -34,9 +34,6 @@ c.log.i('Context created.');
 
 let exceptionOccured = false;
 
-// Initialise api-server
-InitApiServer(c);
-
 const dbConnectionString = OhUtils.makeDbConnectionString(prefsManager);
 if (dbConnectionString === '') {
   const exitText = 'dbConnectionString is empty. Looks like DB preferences are missing. Aborting.';
@@ -50,6 +47,9 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
   }
 
   await c.dbManager.setDbo(db.db(c.prefsManager.db_name));
+
+  // Initialise api-server for the web interface
+  InitApiServer(c);
 
   process.on('uncaughtException', err => {
     const exitText = 'Uncaught exception: ' + err + '; stack:' + err.stack;
