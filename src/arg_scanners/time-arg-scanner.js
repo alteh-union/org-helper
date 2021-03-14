@@ -9,6 +9,7 @@
 const OhUtils = require('../utils/bot-utils');
 
 const SimpleArgScanner = require('./simple-arg-scanner');
+const ScannerWebUiType = require('./scanner-web-ui-type');
 
 const TimeArg = require('../command_meta/time-arg');
 
@@ -19,6 +20,14 @@ const TimeArg = require('../command_meta/time-arg');
  * @extends SimpleArgScanner
  */
 class TimeArgScanner extends SimpleArgScanner {
+  /**
+   * Returns the input type which should be used for corresponding arguments in the Web interface.
+   * @return {string} the type identifier
+   */
+  static getWebUiType() {
+    return ScannerWebUiType.timeType;
+  }
+
   /**
    * Parses the given text to make an argument object for a command.
    * @param  {Context}      context     Bot's context

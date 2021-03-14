@@ -38,6 +38,15 @@
   "execute_command_error": "Извините, не смог выполнить команду. Причина: %s.",
   "internal_server_error": "Внутрення ошибка бота. Свяжитесь с разработчиком бота",
 
+
+  "web_command_module_permissions" : "Разрешения",
+  "web_command_module_moderation" : "Модерация",
+  "web_command_module_social" : "Команды для общения",
+  "web_command_module_settings" : "Настройки сервера",
+  "web_command_module_mysettings" : "Мои настройки",
+  "web_command_module_images" : "Обработка изображений",
+
+
   "arg_validation_no_arg": "Вы не предоставили никакого значения для аргумента: %s",
   "arg_validation_wrong_on_off": "Не смог распознать как вкл/выкл следующий аргумент: %s. Допустимые значения: %s",
   "arg_validation_wrong_array": "Не смог распознать как список следующий аргумент: %s",
@@ -125,6 +134,7 @@
 
 
   "command_addrole_name": "добавитьроль",
+  "command_addrole_displayname": "Добавить роли",
   "command_addrole_help": "Добавляет роль(роли) для указанных участников.",
 
   "command_addrole_arg_subjectIds_alias_subjectIds": "идУчастнков",
@@ -139,6 +149,7 @@
 
 
   "command_addrolemanager_name": "добавитьменеджераролей",
+  "command_addrolemanager_displayname": "Разрешить управление ролями",
   "command_addrolemanager_help": "Даёт разрешение участникам или ролям добавлять или убирать указанную роль с участников.",
 
   "command_addrolemanager_arg_subjectIds_alias_subjectIds": "идСубъектов",
@@ -153,6 +164,7 @@
 
 
   "command_clean_name": "очистить",
+  "command_clean_displayname": "Очистить последние сообщения",
   "command_clean_help": "Очищает сообщения в указанном текстовом канале за указанное время.",
 
   "command_clean_arg_time_alias_time": "время",
@@ -172,6 +184,7 @@
 
 
   "command_denyremind_name": "запретитьнапоминания",
+  "command_denyremind_displayname": "Запретить пользователям создавать напоминания",
   "command_denyremind_help": "Убирает разрешение участника или роли на настройку напоминаний в указанном канале (или в любом канале, если таковой не указан).",
 
   "command_denyremind_arg_subjectIds_alias_subjectIds": "идСубъектов",
@@ -186,6 +199,7 @@
 
 
   "command_help_name": "помощь",
+  "command_help_displayname": "Показать помощь по командам",
   "command_help_help": "Показывает помощь по боту. Если вы - не админ, то по умолчанию печатает только не админские команды. Напишите '%s' как аргумент, чтобы получить помощь по всем командам.",
 
   "command_help_arg_command_alias_command": "команда",
@@ -198,6 +212,7 @@
 
 
   "command_permissions_name": "разрешения",
+  "command_permissions_displayname": "Показать разрешения",
   "command_permissions_help": "Показывает список разрешений, связанных с ботом, данные участникам и ролям.",
 
   "command_permissions_arg_permType_alias_type": "тип",
@@ -210,6 +225,7 @@
   "command_permissions_filter_condition": ", со следующими условиями: %s",
 
   "command_permitremind_name": "разрешитьнапоминания",
+  "command_permitremind_displayname": "Разрешить создавать напоминания",
   "command_permitremind_help": "Добавляет разрешение указанным ролям и/или участникам на управление напоминаниями в указанном канале (или в любом канале, если таковой не указан).",
 
   "command_permitremind_arg_subjectIds_alias_subjectIds": "идСубъектов",
@@ -224,12 +240,14 @@
 
 
   "command_ping_name": "пинг",
+  "command_ping_displayname": "Пингануть бота",
   "command_ping_help": "Отвечает \"понг!\". Можно использовать, чтобы проверить, отвечает ли бот в принципе.",
 
   "command_ping_success": "понг!",
 
 
   "command_poll_name": "опрос",
+  "command_poll_displayname": "Запустить опрос",
   "command_poll_help": "Запускает опрос. Первая фраза в кавычках будет вопросом. Остальные фразы в кавычках - ответами. Если варианты не предоставлены - считает опрос типом да/нет.",
 
   "command_poll_arg_question_alias_question": "вопрос",
@@ -243,6 +261,7 @@
 
 
   "command_remind_name": "напомнить",
+  "command_remind_displayname": "Создать напоминание",
   "command_remind_help": "Добавляет напоминание в указанный текстовый канал с указанным расписанием. Когда придёт время, бот отправит указанный текст в канал. Если канал не указан, будет использоваться текущий канал. Одноразовые упоминания автоматически удаляются после первого выполнения.",
 
   "command_remind_arg_time_alias_time": "время",
@@ -264,6 +283,7 @@
 
 
   "command_reminders_name": "напоминания",
+  "command_reminders_displayname": "Показать напоминания",
   "command_reminders_help": "Показывает список напоминаний. Для всех каналов или только для указанных.",
 
   "command_reminders_arg_channelIds_alias_channelIds": "идКаналов",
@@ -275,6 +295,7 @@
 
 
   "command_removerole_name": "убратьроль",
+  "command_removerole_displayname": "Убрать роли у пользователей",
   "command_removerole_help": "Убирает роль(роли) с участника(ов).",
 
   "command_removerole_arg_subjectIds_alias_subjectIds": "идУчастников",
@@ -289,6 +310,7 @@
 
 
   "command_removerolemanager_name": "убратьменеджераролей",
+  "command_removerolemanager_displayname": "Убрать разрешение на управление ролями",
   "command_removerolemanager_help": "Убирает разрешение с участников/ролей на добавление/снятие указанных ролей.",
 
   "command_removerolemanager_arg_subjectIds_alias_subjectIds": "идСубъектов",
@@ -303,6 +325,7 @@
 
 
   "command_setlocale_name": "задатьязык",
+  "command_setlocale_displayname": "Задать язык общения с ботом на сервере",
   "command_setlocale_help": "Устанавливает язык (точнее говоря, локаль) для вашего сервера.",
 
   "command_setlocale_arg_locale_alias_locale": "язык",
@@ -313,6 +336,7 @@
 
 
   "command_setmylocale_name": "задатьмойязык",
+  "command_setmylocale_displayname": "Задать мой язык общения с ботом на сервере",
   "command_setmylocale_help": "Устанавливает язык (точнее говоря, локаль) для вас на сервере. Не влияет на настройку самого сервера.",
 
   "command_setmylocale_arg_locale_alias_locale": "язык",
@@ -324,6 +348,7 @@
 
 
   "command_setprefix_name": "задатьпрефикс",
+  "command_setprefix_displayname": "Задать префикс для команд на сервере",
   "command_setprefix_help": "Устанавливает префикс для команд бота. Бот будет ожидать команды именно с этим префиксом.",
 
   "command_setprefix_arg_prefix_alias_prefix": "префикс",
@@ -334,6 +359,7 @@
 
 
   "command_settimezone_name": "задатьчасовойпояс",
+  "command_settimezone_displayname": "Задать часовой пояс на сервере для бота",
   "command_settimezone_help": "Задаёт часовой пояс (точнее, временную зону) вашего сервера с точки зрения бота. Бот будет подстраивать значения всех аргументов времени, расписаний и т.д. согласно смещению часового пояса.",
 
   "command_settimezone_arg_timezone_alias_timezone": "пояс",
@@ -345,6 +371,7 @@
 
 
   "command_setmytimezone_name": "задатьмойчасовойпояс",
+  "command_setmytimezone_displayname": "Задать мой часовой пояс на сервере для бота",
   "command_setmytimezone_help": "Задаёт часовой пояс (точнее, временную зону) для вас с точки зрения бота на сервере. Бот будет подстраивать значения всех аргументов времени, расписаний и т.д. согласно смещению часового пояса. Бот также будет вычислять ваши рабочие и ночные часы на основе этой настройки.",
 
   "command_setmytimezone_arg_timezone_alias_timezone": "пояс",
@@ -357,6 +384,7 @@
 
 
   "command_settings_name": "настройки",
+  "command_settings_displayname": "Показать настройки",
   "command_settings_help": "Показывает настройки сервера с точки зрения бота. Если указано имя конкретной настройки, то показывает только её значение.",
 
   "command_settings_arg_setting_alias_setting": "настройка",
@@ -367,6 +395,7 @@
 
 
   "command_mysettings_name": "моинастройки",
+  "command_mysettings_displayname": "Показать мои настройки",
   "command_mysettings_help": "Показывает ваши настройки. Если указано имя конкретной настройки, то показывает только её значение.",
 
   "command_mysettings_empty_setting": "Такой настройки для вас не задано на сервере.",
@@ -374,6 +403,7 @@
 
 
   "command_mypermissions_name": "моиразрешения",
+  "command_mypermissions_displayname": "Показать мои разрешения",
   "command_mypermissions_help": "Показывает список ваших разрешений, связанных с ботом.",
 
   "command_mypermissions_no_permissions": "У вас нет особых разрешений, связанных с ботом.",
@@ -381,6 +411,7 @@
 
 
   "command_deletereminder_name": "удалитьнапоминание",
+  "command_deletereminder_displayname": "Удалить напоминания",
   "command_deletereminder_help": "Удаляет напоминание по номеру. Используйте команду '%s', чтобы получить список напоминаний",
 
   "command_deletereminder_arg_ids_alias_ids": "ид",
@@ -391,6 +422,7 @@
 
 
   "command_addbadwords_name": "добавитьплохиеслова",
+  "command_addbadwords_displayname": "Добавить слова в список плохих",
   "command_addbadwords_help": "Добавляет слова в список 'плохих', которые будут заменены цензурой.",
 
   "command_addbadwords_arg_words_alias_words": "слова",
@@ -400,6 +432,7 @@
 
 
   "command_removebadwords_name": "удалитьплохиеслова",
+  "command_removebadwords_displayname": "Убрать слова из списка плохих",
   "command_removebadwords_help": "Убирает слова из списка 'плохих', чтобы их не заменяла цензура.",
 
   "command_removebadwords_arg_words_alias_words": "слова",
@@ -409,6 +442,7 @@
 
 
   "command_badwords_name": "плохиеслова",
+  "command_badwords_displayname": "Показать список плохих слов",
   "command_badwords_help": "показывает список 'плохих слов', которые будут заменяться цензурой.",
 
   "command_badwords_success": "Я вымою рот с мылом после этого: %s.",
@@ -416,6 +450,7 @@
 
 
   "command_setcensoring_name": "задатьцензуру",
+  "command_setcensoring_displayname": "Включить цензуру",
   "command_setcensoring_help": "Включает или выключает (пре-модерацию) поступающих сообщений. Заменяет 'плохие слова' спец. символами. Список плохих слов для сервера может быть настроен.",
 
   "command_setcensoring_arg_enable_alias_enable": "включить",
@@ -426,10 +461,12 @@
 
 
   "command_mydata_name": "mydata",
+  "command_mydata_displayname": "Показать данные, связанные со мной, которые хранит бот",
   "command_mydata_help": "Выводит данные, которые мы храним о вас согласно нашей политике конфиденциальности.",
 
 
   "command_deletepermission_name": "удалитьразрешение",
+  "command_deletepermission_displayname": "Удалить разрешения",
   "command_deletepermission_help": "Удаляет разрешение по номеру. Используйте команду '%s', чтобы получить список разрешений",
 
   "command_deletepermission_arg_ids_alias_ids": "ид",
@@ -439,6 +476,7 @@
 
 
   "command_setmoderlogschannel_name": "задатьканаллоговмодерации",
+  "command_setmoderlogschannel_displayname": "Задать канал для записи логов модерации",
   "command_setmoderlogschannel_help": "Задаёт канал, куда будут записываться логи модерации (если она включена). Если эта команда не была использована, но кто-то использовал команды модерации, то по умолчанию логи будут записаны в канал %s.",
 
   "command_setmoderlogschannel_arg_channelId_alias_channelName": "имяКанала",
@@ -448,6 +486,7 @@
 
 
   "command_setmoderlogs_name": "задатьлогимодерации",
+  "command_setmoderlogs_displayname": "Включить логи модерации",
   "command_setmoderlogs_help": "Включает или выключает логирование для модерации (то есть, когда модераторы используют команды типа пнуть, бан и т.д.). Испоьзуйте команду '%s', чтобы задать канал, в который будут записываться логи.",
 
   "command_setmoderlogs_arg_enable_alias_enable": "включить",
@@ -457,6 +496,7 @@
 
 
   "command_kick_name": "пнуть",
+  "command_kick_displayname": "Удалить пользователя с сервера",
   "command_kick_help": "Убирает указанного пользователя с сервера и опционально записывает причину этого в логи. Используйте команду '%s', чтобы включить/выключить модераторские логи.",
 
   "command_kick_arg_subjectIds_alias_subjectIds": "идУчастников",
@@ -471,6 +511,7 @@
 
 
   "command_ban_name": "бан",
+  "command_ban_displayname": "Забанить пользователя",
   "command_ban_help": "Банит указанного пользователя с сервера и опционально записывает причину этого в логи. Используйте команду '%s', чтобы включить/выключить модераторские логи. Дополнительно удаляет сообщения от пользователя за указанное кол-во последних дней, если аргумент '%s' был задан по имени.",
 
   "command_ban_arg_subjectIds_alias_subjectIds": "идУчастников",
@@ -488,6 +529,7 @@
 
 
   "command_setbanonwarnings_name": "задатьбаннапредупреждения",
+  "command_setbanonwarnings_displayname": "Включить авто-бан за предупреждения",
   "command_setbanonwarnings_help": "Задаёт число предупреждений, после получения которых пользователь автоматически банится на сервере. Используйте 0, чтобы отключить автоматический бан. Используйте команду '%s', чтобы делать замечания.",
 
   "command_setbanonwarnings_arg_count_alias_count": "число",
@@ -499,6 +541,7 @@
 
 
   "command_warn_name": "предупредить",
+  "command_warn_displayname": "Предупредить пользователя",
   "command_warn_help": "Предупреждает указанного пользователя и опционально записывает причину этого в логи. Используйте команду '%s', чтобы включить/выключить модераторские логи. Также, банит пользователя, если тот получил достаточно предупреждений и авто-бан был включен на сервере.",
 
   "command_warn_arg_subjectIds_alias_subjectIds": "идУчастников",
@@ -514,6 +557,7 @@
 
 
   "command_warnings_name": "предупреждения",
+  "command_warnings_displayname": "Показать предупреждения",
   "command_warnings_help": "Показывает предупреждения, выданные на сервере.",
 
   "command_warnings_arg_subjectIds_alias_subjectIds": "идУчастников",
@@ -525,6 +569,7 @@
 
 
   "command_deletewarning_name": "удалитьпредупреждение",
+  "command_deletewarning_displayname": "Удалить предупреждения",
   "command_deletewarning_help": "Удаляет предупреждение по номеру. Используйте команду '%s', чтобы получить список предупреждений",
 
   "command_deletewarning_arg_ids_alias_ids": "ид",
@@ -535,6 +580,7 @@
 
 
   "command_deleteimagetemplate_name": "удалитьшаблонкартинок",
+  "command_deleteimagetemplate_displayname": "Удалить шаблоны картинок",
   "command_deleteimagetemplate_help": "Удаляет шаблоны картинок по их идентификаторам (именам). Используйте команду '%s', чтобы получить список идентификаторов.",
 
   "command_deleteimagetemplate_arg_ids_alias_ids": "ид",
@@ -545,6 +591,7 @@
 
 
   "command_denyimagetemplate_name": "запретитьшаблоныкартинок",
+  "command_denyimagetemplate_displayname": "Запретить управление шаблонами картинок",
   "command_denyimagetemplate_help": "Убирает разрешение участника или роли на управление шаблонами картинок.",
 
   "command_denyimagetemplate_arg_subjectIds_alias_subjectIds": "идСубъектов",
@@ -556,6 +603,7 @@
 
 
   "command_permitimagetemplate_name": "разрешитьшаблоныкартинок",
+  "command_permitimagetemplate_displayname": "Разрешить управление шаблонами картинок",
   "command_permitimagetemplate_help": "Добавляет разрешение указанным ролям и/или участникам на управление шаблонами картинок.",
 
   "command_permitimagetemplate_arg_subjectIds_alias_subjectIds": "идСубъектов",
@@ -567,6 +615,7 @@
 
 
   "command_makeimage_name": "создатькартинку",
+  "command_makeimage_displayname": "Создать картинку",
   "command_makeimage_help": "Создать картинку, используя существующий шаблон, например: !создатькартинку tmp1 https:// upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png (удалите пробел после ://)",
 
   "command_makeimage_arg_templateName_alias_templateName": "имяШаблона",
@@ -587,6 +636,7 @@
 
 
   "command_addimagetemplate_name": "создатьшаблонкартинок",
+  "command_addimagetemplate_displayname": "Добавить шаблон для картинок",
   "command_addimagetemplate_help": "Создать новый шаблон для картинок, например !создатьшаблон tmp1 {\"input\": { \"type\": \"fixed\", \"width\": 1576, \"height\": 1080} }. Смотрите полный гайд по боту, чтобы узнать возможности шаблонов.",
 
   "command_addimagetemplate_arg_templateName_alias_templateName": "имяШаблона",
@@ -608,6 +658,7 @@
 
 
   "command_listimagetemplates_name": "списокшаблоновкартинок",
+  "command_listimagetemplates_displayname": "Показать шаблоны для картинок",
   "command_listimagetemplates_help": "Список всех доступных шаблонов для изображений",
 
   "command_listimagetemplates_success": "Доступные шаблоны: %s"

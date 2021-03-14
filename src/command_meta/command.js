@@ -32,6 +32,14 @@ class Command {
   }
 
   /**
+   * Gets the user-friendly name of the command to display to the user (typically used in the Web interface).
+   * @return {string} the user-friendly name
+   */
+  static get DISPLAY_NAME() {
+    throw new Error('DISPLAY_NAME: ' + this.name + ' is an abstract class');
+  }
+
+  /**
    * Creates an instance for an organization from a source and assigns a given language manager to it.
    * @param  {Context}     context            the Bot's context
    * @param  {string}      source             the source name (like Discord etc.)

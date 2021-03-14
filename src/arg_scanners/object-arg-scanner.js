@@ -9,6 +9,7 @@
 const OhUtils = require('../utils/bot-utils');
 
 const SimpleArgScanner = require('./simple-arg-scanner');
+const ScannerWebUiType = require('./scanner-web-ui-type');
 
 const PROPERTIES_SEPARATOR = ';';
 const PROPERTY_NAME_SEPARATOR = ':';
@@ -19,6 +20,14 @@ const PROPERTY_NAME_SEPARATOR = ':';
  * @extends SimpleArgScanner
  */
 class ObjectArgScanner extends SimpleArgScanner {
+  /**
+   * Returns the input type which should be used for corresponding arguments in the Web interface.
+   * @return {string} the type identifier
+   */
+  static getWebUiType() {
+    return ScannerWebUiType.objectType;
+  }
+
   /**
    * Separator of the object's properties in the argument
    * @type {string}

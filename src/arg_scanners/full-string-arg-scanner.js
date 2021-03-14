@@ -7,6 +7,7 @@
  */
 
 const SimpleArgScanner = require('./simple-arg-scanner');
+const ScannerWebUiType = require('./scanner-web-ui-type');
 
 /**
  * Scans argument as a string. Consumes the full length of the given text string.
@@ -14,6 +15,14 @@ const SimpleArgScanner = require('./simple-arg-scanner');
  * @extends SimpleArgScanner
  */
 class FullStringArgScanner extends SimpleArgScanner {
+  /**
+   * Returns the input type which should be used for corresponding arguments in the Web interface.
+   * @return {string} the type identifier
+   */
+  static getWebUiType() {
+    return ScannerWebUiType.stringType;
+  }
+
   /**
    * Parses the given text to make an argument object for a command.
    * @param  {Context}      context     Bot's context

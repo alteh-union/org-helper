@@ -38,6 +38,15 @@
   "execute_command_error": "Sorry, could not execute the command. Reason: %s.",
   "internal_server_error": "Internal bot's problem. Contact developers of the bot",
 
+
+  "web_command_module_permissions" : "Permissions",
+  "web_command_module_moderation" : "Moderation",
+  "web_command_module_social" : "Social commands",
+  "web_command_module_settings" : "Server settings",
+  "web_command_module_mysettings" : "My settings",
+  "web_command_module_images" : "Image composing",
+
+
   "arg_validation_no_arg": "You did not specify any value for argument: %s",
   "arg_validation_wrong_on_off": "Could not parse as on/off the following argument: %s. Acceptable values: %s",
   "arg_validation_wrong_array": "Could not parse as array the following arg: %s",
@@ -125,6 +134,7 @@
 
 
   "command_addrole_name": "addrole",
+  "command_addrole_displayname": "Add roles",
   "command_addrole_help": "Adds role(s) to specified member(s).",
 
   "command_addrole_arg_subjectIds_alias_subjectIds": "subjectIds",
@@ -139,6 +149,7 @@
 
 
   "command_addrolemanager_name": "addrolemanager",
+  "command_addrolemanager_displayname": "Add permissions to manage roles",
   "command_addrolemanager_help": "Grants a permission to specific subjects (members or roles) to add/remove specific roles to/from members.",
 
   "command_addrolemanager_arg_subjectIds_alias_subjectIds": "subjectIds",
@@ -153,6 +164,7 @@
 
 
   "command_clean_name": "clean",
+  "command_clean_displayname": "Clean recent messages",
   "command_clean_help": "Cleans messages in the specified text channel for the specified period of time.",
 
   "command_clean_arg_time_alias_time": "time",
@@ -172,6 +184,7 @@
 
 
   "command_denyremind_name": "denyremind",
+  "command_denyremind_displayname": "Deny users managing reminders",
   "command_denyremind_help": "Removes permission to the specified role or user to make reminders in the specified channel (or any channel, if nothing specified).",
 
   "command_denyremind_arg_subjectIds_alias_subjectIds": "subjectIds",
@@ -186,6 +199,7 @@
 
 
   "command_help_name": "help",
+  "command_help_displayname": "Display commands help",
   "command_help_help": "Prints the bot's help. If you are not an admin, then by default prints only non-admin commands. Type '%s' as the argument to get help on all commands.",
 
   "command_help_arg_command_alias_command": "command",
@@ -198,6 +212,7 @@
 
 
   "command_permissions_name": "permissions",
+  "command_permissions_displayname": "List permissions",
   "command_permissions_help": "Lists bot-specific permissions granted to members and/or roles.",
 
   "command_permissions_arg_permType_alias_type": "type",
@@ -211,6 +226,7 @@
 
 
   "command_permitremind_name": "permitremind",
+  "command_permitremind_displayname": "Permit users to manage reminders",
   "command_permitremind_help": "Adds permission to the specified role or user to make reminders in the specified channel (or any channel, if nothing specified).",
 
   "command_permitremind_arg_subjectIds_alias_subjectIds": "subjectIds",
@@ -225,12 +241,14 @@
 
 
   "command_ping_name": "ping",
+  "command_ping_displayname": "Pings the Bot",
   "command_ping_help": "Replies with \"pong!\". Can be used to check if the bot is responding at all.",
 
   "command_ping_success": "pong!",
 
 
   "command_poll_name": "poll",
+  "command_poll_displayname": "Start a poll",
   "command_poll_help": "Starts a poll. The first string in quotes will be the question. The following strings will be considered as answer variants. If no variants are provided, then the poll is considered as a yes/no poll.",
 
   "command_poll_arg_question_alias_question": "question",
@@ -244,6 +262,7 @@
 
 
   "command_remind_name": "remind",
+  "command_remind_displayname": "Setup reminders",
   "command_remind_help": "Adds a reminder for the specified text channel with the specified schedule. When the time comes, the bot will send the message to the channel accordingly. If the channel is not specified, then uses the current channel. One-shot reminders get automatically deleted after the first execution.",
 
   "command_remind_arg_time_alias_time": "time",
@@ -265,6 +284,7 @@
 
 
   "command_reminders_name": "reminders",
+  "command_reminders_displayname": "List reminders",
   "command_reminders_help": "Gets the reminders which are currently set up in the server.",
 
   "command_reminders_arg_channelIds_alias_channelIds": "channelIds",
@@ -276,6 +296,7 @@
 
 
   "command_removerole_name": "removerole",
+  "command_removerole_displayname": "Remove roles",
   "command_removerole_help": "Removes role(s) from specified member(s).",
 
   "command_removerole_arg_subjectIds_alias_subjectIds": "subjectIds",
@@ -290,6 +311,7 @@
 
 
   "command_removerolemanager_name": "removerolemanager",
+  "command_removerolemanager_displayname": "Deny users managing roles",
   "command_removerolemanager_help": "Removes permission from specified subjects to add/remove specified role to members.",
 
   "command_removerolemanager_arg_subjectIds_alias_subjectIds": "subjectIds",
@@ -304,6 +326,7 @@
 
 
   "command_setlocale_name": "setlocale",
+  "command_setlocale_displayname": "Set server's locale for the Bot",
   "command_setlocale_help": "Sets the bot's language for the server.",
 
   "command_setlocale_arg_locale_alias_locale": "locale",
@@ -314,6 +337,7 @@
 
 
   "command_setmylocale_name": "setmylocale",
+  "command_setmylocale_displayname": "Set your locale on the server for the Bot",
   "command_setmylocale_help": "Sets the language which the bot will use in conversations with you. Does not affect the server setting.",
 
   "command_setmylocale_arg_locale_alias_locale": "locale",
@@ -325,6 +349,7 @@
 
 
   "command_setprefix_name": "setprefix",
+  "command_setprefix_displayname": "Set commands prefix for the Bot",
   "command_setprefix_help": "Sets the prefix for bot commands, which the bot will consider as a valid command start.",
 
   "command_setprefix_arg_prefix_alias_prefix": "prefix",
@@ -335,6 +360,7 @@
 
 
   "command_settimezone_name": "settimezone",
+  "command_settimezone_displayname": "Set server time zone for the Bot",
   "command_settimezone_help": "Sets the timezone of the server. The bot will adjust all time arguments etc. according to the timezone offset.",
 
   "command_settimezone_arg_timezone_alias_timezone": "timezone",
@@ -346,6 +372,7 @@
 
 
   "command_setmytimezone_name": "setmytimezone",
+  "command_setmytimezone_displayname": "Set your time zone on the server for the Bot",
   "command_setmytimezone_help": "Makes the bot consider the timezone as yours. The bot will adjust all time commands/arguments from you etc. according to the timezone offset. It may also consider your sleep/working hours based on this setting.",
 
   "command_setmytimezone_arg_timezone_alias_timezone": "timezone",
@@ -358,6 +385,7 @@
 
 
   "command_settings_name": "settings",
+  "command_settings_displayname": "List server settings",
   "command_settings_help": "Lists the settings set up for the server. If a setting name is provided, then shows only that setting's value",
 
   "command_settings_arg_setting_alias_setting": "setting",
@@ -368,6 +396,7 @@
 
 
   "command_mysettings_name": "mysettings",
+  "command_mysettings_displayname": "List your settings on the server",
   "command_mysettings_help": "Lists your personal settings in the server. If a setting name is provided, then shows only that setting's value",
 
   "command_mysettings_empty_setting": "Such setting is not set for you in the server.",
@@ -375,6 +404,7 @@
 
 
   "command_mypermissions_name": "mypermissions",
+  "command_mypermissions_displayname": "List your permissions on the server",
   "command_mypermissions_help": "Lists bots-specific permissions granted to you.",
 
   "command_mypermissions_no_permissions": "No bot-specific permissions are set up for you.",
@@ -382,6 +412,7 @@
 
 
   "command_deletereminder_name": "deletereminder",
+  "command_deletereminder_displayname": "Delete reminders",
   "command_deletereminder_help": "Deletes reminders by their ids. Use '%s' command to get ids of the reminders",
 
   "command_deletereminder_arg_ids_alias_ids": "ids",
@@ -392,6 +423,7 @@
 
 
   "command_addbadwords_name": "addbadwords",
+  "command_addbadwords_displayname": "Add words to the bad list",
   "command_addbadwords_help": "Adds words to the list of 'bad words' to be filtered out during censoring.",
 
   "command_addbadwords_arg_words_alias_words": "words",
@@ -401,6 +433,7 @@
 
 
   "command_removebadwords_name": "removebadwords",
+  "command_removebadwords_displayname": "Remove words from the bad list",
   "command_removebadwords_help": "Removes words from the list of 'bad words' to be filtered out during censoring.",
 
   "command_removebadwords_arg_words_alias_words": "words",
@@ -410,6 +443,7 @@
 
 
   "command_badwords_name": "badwords",
+  "command_badwords_displayname": "List bad words",
   "command_badwords_help": "Lists the 'bad words' to be filtered out during censoring.",
 
   "command_badwords_success": "I will wash my mouth with soap after saying that: %s.",
@@ -417,6 +451,7 @@
 
 
   "command_setcensoring_name": "setcensoring",
+  "command_setcensoring_displayname": "Set censoring",
   "command_setcensoring_help": "Enables or disables censoring (pre-moderation) of incoming messages. Replaces bad words by special characters. Bad words can be configured for the server.",
 
   "command_setcensoring_arg_enable_alias_enable": "enable",
@@ -427,10 +462,12 @@
 
 
   "command_mydata_name": "mydata",
+  "command_mydata_displayname": "Display data related to me stored by the Bot",
   "command_mydata_help": "Prints the data we have on you according to our privacy policy.",
 
 
   "command_deletepermission_name": "deletepermission",
+  "command_deletepermission_displayname": "Delete permissions",
   "command_deletepermission_help": "Deletes permissions by their ids. Use '%s' command to get ids of the permissions",
 
   "command_deletepermission_arg_ids_alias_ids": "ids",
@@ -440,6 +477,7 @@
 
 
   "command_setmoderlogschannel_name": "setmoderlogschannel",
+  "command_setmoderlogschannel_displayname": "Set channel for moderation logs",
   "command_setmoderlogschannel_help": "Sets the channel where the moderation logs will be placed (if enabled). If this command has not been used but someone used one of the moderation commands, then the logs will be placed to %s channel.",
 
   "command_setmoderlogschannel_arg_channelId_alias_channelName": "channelName",
@@ -449,6 +487,7 @@
 
 
   "command_setmoderlogs_name": "setmoderlogs",
+  "command_setmoderlogs_displayname": "Enable moderation logs",
   "command_setmoderlogs_help": "Enables or disables moderation logging (e.g. after using commands like kick, ban etc.). Use '%s' command to set the channel where the logs will be placed.",
 
   "command_setmoderlogs_arg_enable_alias_enable": "enable",
@@ -458,6 +497,7 @@
 
 
   "command_kick_name": "kick",
+  "command_kick_displayname": "Kick users",
   "command_kick_help": "Kicks a user from the server and optionally writes the reason to the moderation logs. Use '%s' command to enable/disable moderation logging.",
 
   "command_kick_arg_subjectIds_alias_subjectIds": "subjectId",
@@ -472,6 +512,7 @@
 
 
   "command_ban_name": "ban",
+  "command_ban_displayname": "Ban users",
   "command_ban_help": "Bans a user from the server and optionally writes the reason to the moderation logs. Use '%s' command to enable/disable moderation logging. Additionally cleans up the user's messages for mentioned last days, if '%s' parameter was set by name.",
 
   "command_ban_arg_subjectIds_alias_subjectIds": "subjectId",
@@ -489,7 +530,8 @@
 
 
   "command_setbanonwarnings_name": "setbanonwarnings",
-  "command_setbanonwarnings_help": "Sets the limit on warnings which a user should get in order to be automatically banned from the server. Use 0 to disable the auto-ban. Use '%s' command to give warnings.",
+  "command_setbanonwarnings_displayname": "Enable auto-ban on warnings",
+  "command_setbanonwarnings_help": "Sets the limit of warnings which a user should get in order to be automatically banned from the server. Use 0 to disable the auto-ban. Use '%s' command to give warnings.",
 
   "command_setbanonwarnings_arg_count_alias_count": "count",
   "command_setbanonwarnings_arg_count_alias_c": "c",
@@ -500,6 +542,7 @@
 
 
   "command_warn_name": "warn",
+  "command_warn_displayname": "Warn users",
   "command_warn_help": "Warns a user and optionally writes the reason to the moderation logs. Use '%s' command to enable/disable moderation logging. Additionally bans the user if he got enough warnings and the auto-ban was enabled.",
 
   "command_warn_arg_subjectIds_alias_subjectIds": "subjectId",
@@ -515,6 +558,7 @@
 
 
   "command_warnings_name": "warnings",
+  "command_warnings_displayname": "List warnings",
   "command_warnings_help": "Gets the warnings issued in the server.",
 
   "command_warnings_arg_subjectIds_alias_subjectIds": "subjectIds",
@@ -526,6 +570,7 @@
 
 
   "command_deletewarning_name": "deletewarning",
+  "command_deletewarning_displayname": "Remove warnings",
   "command_deletewarning_help": "Deletes warnings by their ids. Use '%s' command to get ids of the warnings",
 
   "command_deletewarning_arg_ids_alias_ids": "ids",
@@ -536,6 +581,7 @@
 
 
   "command_deleteimagetemplate_name": "deleteimagetemplate",
+  "command_deleteimagetemplate_displayname": "Remove image templates",
   "command_deleteimagetemplate_help": "Deletes image templates by their ids (names). Use '%s' command to get ids of the templates.",
 
   "command_deleteimagetemplate_arg_ids_alias_ids": "ids",
@@ -546,6 +592,7 @@
 
 
   "command_denyimagetemplate_name": "denyimagetemplate",
+  "command_denyimagetemplate_displayname": "Deny users managing image templates",
   "command_denyimagetemplate_help": "Removes permission to the specified role or user to manage image templates.",
 
   "command_denyimagetemplate_arg_subjectIds_alias_subjectIds": "subjectIds",
@@ -557,6 +604,7 @@
 
 
   "command_permitimagetemplate_name": "permitimagetemplate",
+  "command_permitimagetemplate_displayname": "Permit users to manage image templates",
   "command_permitimagetemplate_help": "Adds permission to the specified role or user to manage image templates.",
 
   "command_permitimagetemplate_arg_subjectIds_alias_subjectIds": "subjectIds",
@@ -568,6 +616,7 @@
 
 
   "command_makeimage_name": "makeimage",
+  "command_makeimage_displayname": "Make image",
   "command_makeimage_help": "Make new image using existing template, e.g. !makeimage tmp1 https:// upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png (remove the space after ://)",
 
   "command_makeimage_arg_templateName_alias_templateName": "templateName",
@@ -588,6 +637,7 @@
 
 
   "command_addimagetemplate_name": "addimagetemplate",
+  "command_addimagetemplate_displayname": "Add an image template",
   "command_addimagetemplate_help": "Create new template, e.g. !addtemplate tmp1 {\"input\": { \"type\": \"fixed\", \"width\": 1576, \"height\": 1080} }. See the full guide in the Internet on the possibilities of the templates.",
 
   "command_addimagetemplate_arg_templateName_alias_templateName": "templateName",
@@ -609,6 +659,7 @@
 
 
   "command_listimagetemplates_name": "listimagetemplates",
+  "command_listimagetemplates_displayname": "List image templates",
   "command_listimagetemplates_help": "List all available image templates to make pictures from.",
 
   "command_listimagetemplates_success": "List of available templates: %s"

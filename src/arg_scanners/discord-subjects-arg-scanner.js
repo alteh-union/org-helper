@@ -11,6 +11,7 @@ const DiscordCommand = require('../commands_discord/discord-command');
 const DiscordUtils = require('../utils/discord-utils');
 const DiscordMentionsArgScanner = require('./discord-mentions-arg-scanner');
 const DiscordSubjectsArg = require('../command_meta/discord-subjects-arg');
+const ScannerWebUiType = require('./scanner-web-ui-type');
 
 /**
  * Scans arguments as a an array of subject ids (memebers or roles) from a comma separated list of Discord mentions.
@@ -18,6 +19,14 @@ const DiscordSubjectsArg = require('../command_meta/discord-subjects-arg');
  * @extends DiscordMentionsArgScanner
  */
 class DiscordSubjectsArgScanner extends DiscordMentionsArgScanner {
+  /**
+   * Returns the input type which should be used for corresponding arguments in the Web interface.
+   * @return {string} the type identifier
+   */
+  static getWebUiType() {
+    return ScannerWebUiType.subjectsType;
+  }
+
   /**
    * Parses the given text to make an argument object for a command.
    * @param  {Context}      context     Bot's context

@@ -9,6 +9,7 @@
 const OhUtils = require('../utils/bot-utils');
 
 const SimpleArgScanner = require('./simple-arg-scanner');
+const ScannerWebUiType = require('./scanner-web-ui-type');
 
 /**
  * Scans arguments as a space-separated array, where each part can be a multi-word phrase in quotes.
@@ -18,6 +19,13 @@ const SimpleArgScanner = require('./simple-arg-scanner');
  * @extends SimpleArgScanner
  */
 class QuotedSpaceArrayArgScanner extends SimpleArgScanner {
+  /**
+   * Returns the input type which should be used for corresponding arguments in the Web interface.
+   * @return {string} the type identifier
+   */
+  static getWebUiType() {
+    return ScannerWebUiType.arrayType;
+  }
 
   /**
    * Parses the given text to make an argument object for a command.

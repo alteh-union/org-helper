@@ -55,6 +55,14 @@ class DeleteReminderCommand extends DiscordCommand {
   }
 
   /**
+   * Gets the user-friendly name of the command to display to the user (typically used in the Web interface).
+   * @return {string} the user-friendly name
+   */
+  static get DISPLAY_NAME() {
+    return 'command_deletereminder_displayname';
+  }
+
+  /**
    * Gets the array of all arguments definitions of the command.
    * @return {Array<CommandArgDef>} the array of definitions
    */

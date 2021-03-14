@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Servers from '../../layout/servers';
 import CommandModules from '../../layout/command-modules';
+import ModulePane from '../../layout/module-pane';
 import { getAuthHeader } from '../../helpers/auth-header';
 
 
@@ -20,11 +21,14 @@ export default class Main extends React.Component {
   }
 
   handleServer = (server) => {
-    this.setState({selectedServer: server});
+    if (!this.state.selectedServer || this.state.selectedServer.id !== server.id) {
+      this.setState({selectedServer: server});
+      this.setState({selectedModule: null});
+    }
   }
 
-  handleModule = (module) => {
-    this.setState({selectedModule: module});
+  handleModule = (commandModule) => {
+    this.setState({selectedModule: commandModule});
   }
 
   render() {
@@ -32,8 +36,15 @@ export default class Main extends React.Component {
       <p>Main page</p>
       <button onClick={() => this.checkAuthentication()}>Check authentication</button>
       <p>{this.state.authenticated ? 'Authenticated' : 'Not authenticated'}</p>
-      { this.state.authenticated ? <Servers onSelectServer={this.handleServer}/> : null }
-      { this.state.selectedServer ? <CommandModules onSelectModule={this.handleModule}/> : null }
+      { (this.state.authenticated)
+        ? <Servers onSelectServer={this.handleServer}/> : null }
+      { (this.state.selectedServer && !this.state.selectedModule) ?
+        <CommandModules onSelectModule={this.handleModule} serverId={this.state.selectedServer.id} /> : null }
+      { (this.state.selectedServer && this.state.selectedModule) ?
+        <ModulePane onDeselectModule={this.handleModule}
+          serverId={this.state.selectedServer.id}
+          moduleId={this.state.selectedModule.id} />
+        : null }
     </div>;
   }
 
