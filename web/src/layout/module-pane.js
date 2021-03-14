@@ -37,7 +37,7 @@ export default class ModulePane extends React.Component {
           <ul>
             {this.state.moduleDefinition.commands.map(command =>
               <li key={command.name}>
-                <CommandPane commandDefinition={command} />
+                <CommandPane serverId={this.props.serverId} commandDefinition={command} />
                 <hr />
               </li>
             )}

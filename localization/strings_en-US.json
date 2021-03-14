@@ -35,6 +35,7 @@
   "moderator_censored_message": "User %s wrote a message, but for the sake of decency we had to replace it with the following text:\n%s",
 
   "validate_command_error": "Sorry, could not understand the command. Reason: %s. Try %s",
+  "validate_command_web_error": "Sorry, could not understand the command. Reason: %s. Contact developers of the bot",
   "execute_command_error": "Sorry, could not execute the command. Reason: %s.",
   "internal_server_error": "Internal bot's problem. Contact developers of the bot",
 

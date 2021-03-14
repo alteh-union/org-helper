@@ -101,9 +101,10 @@ class HelpCommand extends DiscordCommand {
 
     if (this.command === null || this.langManager.getString(AllArgId) === this.command) {
       let commands = message.source.commandManager.definedCommands;
+      const isAuthorAdmin = await this.context.permManager.isAuthorAdmin(message);
       if (
         this.langManager.getString(AllArgId) !== this.command &&
-        !this.context.permManager.isAuthorAdmin(message)
+        !isAuthorAdmin
       ) {
         commands = commands.filter((value, index, array) => {
           return !value.getRequiredDiscordPermissions().includes(PermissionsManager.DISCORD_PERMISSIONS.ADMINISTRATOR);

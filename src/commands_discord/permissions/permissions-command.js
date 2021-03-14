@@ -140,7 +140,7 @@ class PermissionsCommand extends DiscordCommand {
    * @param  {BaseMessage} message  the Discord message
    * @return {Object}               the filter
    */
-  getFilter(message) {
+  async getFilter(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
     let typeFilter = {};
@@ -159,7 +159,7 @@ class PermissionsCommand extends DiscordCommand {
    * @return {Promise<string>}                the result string to be replier the the caller
    */
   async getPermissionsDescription(message, emptyTextId, resultTextId) {
-    const filter = this.getFilter(message);
+    const filter = await this.getFilter(message);
 
     const permissions = await this.context.dbManager.getDiscordRows(
       this.context.dbManager.permissionsTable,

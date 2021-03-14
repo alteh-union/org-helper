@@ -359,13 +359,13 @@ class PermissionsManager {
    * @return {Promise}                 nothing
    */
   async checkDiscordCommandPermissions(message, command) {
-    const roleIds = message.originalMessage.member.roles.cache.array().map(r => r.id);
+    const membersManager = await message.source.client.guilds.cache.get(message.orgId).members;
+    const member = await membersManager.fetch(message.userId);
+    const roleIds = member.roles.cache.array().map(r => r.id);
 
     if (
       this.context.prefsManager.bypass_bot_permissions_for_discord_admins !== 'true' ||
-      !message.originalMessage.member
-        .permissionsIn(message.originalMessage.channel)
-        .has(DiscordPermissions.ADMINISTRATOR)
+      !member.hasPermission(DiscordPermissions.ADMINISTRATOR)
     ) {
       await this.checkBotPermissions(message.userId, roleIds, command, message.source.name);
     }
@@ -378,10 +378,11 @@ class PermissionsManager {
    * @param  {BaseMessage}  message the message
    * @return {Boolean}              true if admin, false otherwise
    */
-  isAuthorAdmin(message) {
-    return message.originalMessage.member
-      .permissionsIn(message.originalMessage.channel)
-      .has(DiscordPermissions.ADMINISTRATOR);
+  async isAuthorAdmin(message) {
+    const membersManager = await message.source.client.guilds.cache.get(message.orgId).members;
+    const member = await membersManager.fetch(message.userId);
+
+    return member.hasPermission(DiscordPermissions.ADMINISTRATOR);
   }
 }
 

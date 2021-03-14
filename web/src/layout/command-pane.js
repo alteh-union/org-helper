@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { getAuthHeader } from '../helpers/auth-header';
 
 import StringArg from './arguments/string-arg';
@@ -23,37 +23,38 @@ export default class CommandPane extends React.Component {
     this.state = {
       commandResult: null
     };
+    this.handleExecutionClick = this.handleExecutionClick.bind(this);
   }
 
   getArgComponent(arg) {
     let component;
     switch (arg.scannerType) {
       case 'string':
-        component = <StringArg arg={arg}/>;
+        component = <StringArg key={arg.name} arg={arg} />;
         break;
       case 'array':
-        component = <ArrayArg arg={arg}/>;
+        component = <ArrayArg key={arg.name} arg={arg} />;
         break;
       case 'boolean':
-        component = <BooleanArg arg={arg}/>;
+        component = <BooleanArg key={arg.name} arg={arg} />;
         break;
       case 'time':
-        component = <TimeArg arg={arg}/>;
+        component = <TimeArg key={arg.name} arg={arg} />;
         break;
       case 'object':
-        component = <ObjectArg arg={arg}/>;
+        component = <ObjectArg key={arg.name} arg={arg} />;
         break;
       case 'mentions':
-        component = <MentionsArg arg={arg}/>;
+        component = <MentionsArg key={arg.name} arg={arg} />;
         break;
       case 'subjects':
-        component = <SubjectsArg arg={arg}/>;
+        component = <SubjectsArg key={arg.name} arg={arg} />;
         break;
       case 'channels':
-        component = <ChannelsArg arg={arg}/>;
+        component = <ChannelsArg key={arg.name} arg={arg} />;
         break;
       default:
-        component = <StringArg arg={arg}/>;
+        component = <StringArg key={arg.name} arg={arg} />;
         break;
     }
     return component;
@@ -68,37 +69,44 @@ export default class CommandPane extends React.Component {
         <div>
           { this.props.commandDefinition.help }
         </div>
-        <ul>
-          {this.props.commandDefinition.args.map(arg =>
-            <li key={arg.name} >
-              {this.getArgComponent(arg)}
-              <hr />
-            </li>
-          )}
-        </ul>
-        <Button onClick={() => this.handleExecutionClick()}>
-          Execute
-        </Button>
+        <Form onSubmit={this.handleExecutionClick}>
+          {this.props.commandDefinition.args.map(arg => this.getArgComponent(arg))}
+          <Button type='submit'>
+            Execute
+          </Button>
+        </Form>
         <div>
-          { (this.state.commandResult) ? this.state.commandResult.text : null }
+          { (this.state.commandResult) ? this.state.commandResult.text : '' }
         </div>
       </div>
     );
   }
 
-  handleExecutionClick() {
+  async handleExecutionClick(event) {
+    event.preventDefault();
+
+    const data = new FormData();
+    data.append('command', this.props.commandDefinition.name);
+    data.append('serverId', this.props.serverId);
+
+    const payload = {};
+    for (const arg of this.props.commandDefinition.args) {
+      payload[arg.name] = event.target.elements[arg.name].value;
+    }
+    data.append('payload', JSON.stringify(payload));
+
     // todo: create preferences.txt like file and put backend base url there
-    fetch(`http://localhost:4000/modules/discord/execute-command`, {
+    const res = await fetch(`http://localhost:4000/commands/discord/execute-command`, {
       method: 'POST',
-      headers: getAuthHeader()
-    })
-      .then(res => res.status === 200 ? res.json() : null).then(jsonResponse => {
-        if (jsonResponse) {
-          this.setState({ commandResult: jsonResponse.commandResult});
-        } else {
-          this.setState({ commandResult: null});
-        }
-      })
-      .catch(() => this.setState({ commandResult: null }));
+      headers: getAuthHeader(),
+      body: data
+    });
+    if (res.status === 200) {
+      const parsedJson = await res.json();
+      this.setState({ commandResult: parsedJson.commandResult });
+    } else {
+      const errorText = await res.text();
+      this.setState({ commandResult: { text: errorText } });
+    }
   }
 }

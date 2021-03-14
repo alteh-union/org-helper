@@ -90,8 +90,10 @@ class MyPermissionsCommand extends PermissionsCommand {
    * @param  {BaseMessage} message  the Discord message
    * @return {Object}               the filter
    */
-  getFilter(message) {
-    const rolesArray = message.originalMessage.member.roles.cache.array();
+  async getFilter(message) {
+    const membersManager = await message.source.client.guilds.cache.get(message.orgId).members;
+    const member = await membersManager.fetch(message.userId);
+    const rolesArray = member.roles.cache.array();
     const orArray = [];
     for (const role of rolesArray) {
       orArray.push({

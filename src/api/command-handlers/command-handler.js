@@ -19,6 +19,24 @@ class CommandHandler {
   get definedModules() {
     throw new Error(`${this.constructor.name} is an abstract class`);
   }
+
+  /**
+   * Gets the command class by its interface name. Searches only in the defined command modules.
+   * If the command is not found in the modules, then returns null.
+   * @param  {string}  name the name of command's interface
+   * @return {Command}      the defined command, null if not found
+   */
+  getCommandByName(name) {
+    const modules = this.definedModules;
+    for (const commandModule of modules) {
+      for (const command of commandModule.commands) {
+        if (command.getCommandInterfaceName() === name) {
+          return command;
+        }
+      }
+    }
+    return null;
+  }
 }
 
 /**

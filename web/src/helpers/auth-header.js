@@ -1,6 +1,6 @@
 export function getAuthHeader() {
   const user = getCurrentUser();
-    return user ? { Authorization: `Bearer ${user.token}` } : {};
+  return user ? { Authorization: `Bearer ${user.token}` } : {};
 }
 
 export function getCurrentUser() {

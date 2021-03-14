@@ -89,7 +89,7 @@ class MySettingsCommand extends SettingsCommand {
     if (this.setting !== null) {
       const availableSettings = Object.values(UserSettingsTable.USER_SETTINGS);
       const localizedSettings = availableSettings.map(a => this.langManager.getString(a.textId));
-      if (!localizedSettings.includes(this.setting)) {
+      if (!localizedSettings.find(ls => ls === this.setting)) {
         throw new BotPublicError(
           this.langManager.getString(
             'command_mysettings_error_wrong_setting',

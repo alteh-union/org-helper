@@ -33,7 +33,9 @@ class DiscordSource extends BaseSource {
    * @returns {Promise}               nothing
    */
   async replyToMessage(message, replyText) {
-    DiscordUtils.sendToTextChannel(message.originalMessage.channel, replyText);
+    if (message.originalMessage) {
+      DiscordUtils.sendToTextChannel(message.originalMessage.channel, replyText);
+    }
   }
 
   /**

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Form } from 'react-bootstrap';
 
 /**
  * Component of channels argument for Application.
@@ -8,10 +9,10 @@ import * as React from 'react';
 export default class ChannelsArg extends React.Component {
   render() {
     return (
-      <div>
-        <div><b>{this.props.arg.displayName}</b></div>
-        <input type="text"/>
-      </div>
+      <Form.Group controlId={this.props.arg.name}>
+        <Form.Label>{this.props.arg.displayName}</Form.Label>
+        <Form.Control type="text" />
+      </Form.Group>
     );
   }
 }

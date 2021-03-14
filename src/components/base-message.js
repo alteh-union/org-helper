@@ -27,6 +27,7 @@ class BaseMessage {
     this.content = content;
     this.originalMessage = originalMessage;
     this.source = source;
+    this.replyBuffer = '';
   }
 
   /**
@@ -71,7 +72,11 @@ class BaseMessage {
    * @returns {Promise}      nothing
    */
   async reply(text) {
-    this.source.replyToMessage(this, text);
+    if (this.originalMessage) {
+      this.source.replyToMessage(this, text);
+    } else {
+      this.replyBuffer += text;
+    }
   }
 }
 

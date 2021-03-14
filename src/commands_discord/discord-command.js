@@ -128,17 +128,18 @@ class DiscordCommand extends Command {
    * In any case, all defined arguments will have at least null value after executing this function.
    * @see DiscordCommand#findArgValue
    * @see Command.getDefinedArgs
-   * @param  {BaseMessage}  message the Discord message with the command
-   * @return {Promise}              nothing
+   * @param  {BaseMessage}  message     the Discord message with the command
+   * @param  {Object}       commandArgs the pre-parsed arguments, can be null
+   * @return {Promise}                  nothing
    */
-  async parseFromDiscordByNames(message) {
+  async parseFromDiscordByNames(message, commandArgs) {
     const definedArgs = this.constructor.getDefinedArgs();
     const argsKeys = Object.keys(definedArgs);
     const thiz = this;
 
     const results = [];
     for (const argKey of argsKeys) {
-      const argText = this.findArgValue(message.content, definedArgs[argKey]);
+      const argText = commandArgs ? commandArgs[argKey] : this.findArgValue(message.content, definedArgs[argKey]);
       results.push(
         definedArgs[argKey].scanner.scan(this.context, this.langManager, message, argText).then(async scanResult => {
           let argValue = scanResult.value;
@@ -282,6 +283,20 @@ class DiscordCommand extends Command {
       this.context.log.d('Arg scan by name');
       await this.parseFromDiscordByNames(message);
     }
+
+    await this.validateFromDiscord(message);
+  }
+
+  /**
+   * Sets arguments for the command using the pre-parsed object received from frontend.
+   * @see Command.getDefinedArgs
+   * @param  {BaseMessage}  message     the Discord message with the command
+   * @param  {Object}       commandArgs the pre-parsed arguments
+   * @return {Promise}                  nothing
+   */
+  async parseFromDiscordWithArgs(message, commandArgs) {
+    this.context.log.d('Arg set from web');
+    await this.parseFromDiscordByNames(message, commandArgs);
 
     await this.validateFromDiscord(message);
   }

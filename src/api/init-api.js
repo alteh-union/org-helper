@@ -3,6 +3,7 @@ const app = express();
 const auth = require('./routes/auth');
 const servers = require('./routes/servers');
 const modules = require('./routes/modules');
+const executeCommand = require('./routes/execute-command');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('./helpers/jwt');
@@ -23,7 +24,7 @@ function initApi(c) {
       throw err;
     }
 
-    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
     app.use(cors());
     app.use(jwt(c));
@@ -33,6 +34,7 @@ function initApi(c) {
     app.use('/auth', auth);
     app.use('/servers', servers);
     app.use('/modules', modules);
+    app.use('/commands', executeCommand);
 
     app.use(errorHandler);
 
