@@ -12,9 +12,17 @@ const BotPublicError = require('../../utils/bot-public-error');
 
 const DiscordCommand = require('../discord-command');
 const CommandArgDef = require('../../command_meta/command-arg-def');
+const DiscordChannelsArgScanner = require('../../arg_scanners/discord-channels-arg-scanner');
 const QuotedSpaceArrayArgScanner = require('../../arg_scanners/quoted-space-array-arg-scanner');
 
 const PollCommandArgDefs = Object.freeze({
+  channelIds: new CommandArgDef('channelIds', {
+    aliasIds: ['command_poll_arg_channelIds_alias_channelIds', 'command_poll_arg_channelIds_alias_c'],
+    helpId: 'command_poll_arg_channelIds_help',
+    skipInSequentialRead: true,
+    scanner: DiscordChannelsArgScanner,
+    validationOptions: { validTextChannels: true }
+  }),
   question: new CommandArgDef('question', {
     aliasIds: ['command_poll_arg_question_alias_question', 'command_poll_arg_question_alias_q'],
     helpId: 'command_poll_arg_question_help',
@@ -99,6 +107,22 @@ class PollCommand extends DiscordCommand {
   }
 
   /**
+   * Gets the default value for a given argument definition.
+   * Used when unable to scan the argument from the command's text.
+   * @param  {BaseMessage}    message the command's message
+   * @param  {CommandArgDef}  arg     the argument definition
+   * @return {Promise}                the default value
+   */
+  async getDefaultDiscordArgValue(message, arg) {
+    switch (arg) {
+      case PollCommandArgDefs.channelIds:
+        return message.channelId;
+      default:
+        return null;
+    }
+  }
+
+  /**
    * Validates each of the arguments according to validation types set in their definition.
    * Throws BotPublicError if any of the validations was violated.
    * @see CommandArgDef
@@ -137,21 +161,26 @@ class PollCommand extends DiscordCommand {
       pollEmbed.setDescription(description);
     }
 
-    const pollMessage = await message.originalMessage.channel.send(pollEmbed);
+    for (let c = 0; c < this.channelIds.channels.length; c++) {
+      const pollMessage = await this.channelIds.channels[c].send(pollEmbed);
 
-    if (this.answers !== null && this.answers.length > 0) {
-      for (let i = 0; i < this.answers.length; i++) {
-        // Must preserve the order of reactions, so ignoring the warning about parallel processing.
-        /* eslint-disable no-await-in-loop */
-        await pollMessage.react(NumericReactions[i]);
-        /* eslint-enable no-await-in-loop */
+      if (this.answers !== null && this.answers.length > 0) {
+        for (let i = 0; i < this.answers.length; i++) {
+          // Must preserve the order of reactions, so ignoring the warning about parallel processing.
+          /* eslint-disable no-await-in-loop */
+          await pollMessage.react(NumericReactions[i]);
+          /* eslint-enable no-await-in-loop */
+        }
+      } else {
+        await pollMessage.react('👍');
+        await pollMessage.react('👎');
       }
-    } else {
-      await pollMessage.react('👍');
-      await pollMessage.react('👎');
     }
 
-    await message.originalMessage.delete();
+    if (message.originalMessage) {
+      await message.originalMessage.delete();
+    }
+
     return '';
   }
 }

@@ -338,7 +338,9 @@ class PermissionsManager {
     const requiredDiscordPermissions = command.constructor.getRequiredDiscordPermissions();
 
     for (const permission of requiredDiscordPermissions) {
-      if (!message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(permission)) {
+      if ((message.originalMessage.channel &&
+          !message.originalMessage.member.permissionsIn(message.originalMessage.channel).has(permission)) ||
+          (!message.originalMessage.channel && !message.originalMessage.member.permissions.has(permission))) {
         this.context.log.w(
           'Attempt to use command ' + command.constructor.getCommandInterfaceName() + ' by user ' + message.userId
         );

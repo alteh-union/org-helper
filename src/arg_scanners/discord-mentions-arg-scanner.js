@@ -9,7 +9,7 @@
 const DiscordUtils = require('../utils/discord-utils');
 
 const ArrayArgScanner = require('./array-arg-scanner');
-const ScannerWebUiType = require('./scanner-web-ui-type');
+const ScannerUiType = require('./scanner-ui-type');
 
 /**
  * Scans arguments as a an array of ids from a comma separated list of Discord mentions.
@@ -20,11 +20,11 @@ const ScannerWebUiType = require('./scanner-web-ui-type');
  */
 class DiscordMentionsArgScanner extends ArrayArgScanner {
   /**
-   * Returns the input type which should be used for corresponding arguments in the Web interface.
+   * Returns the input type which should be used for corresponding arguments in UI.
    * @return {string} the type identifier
    */
-  static getWebUiType() {
-    return ScannerWebUiType.mentionsType;
+  static getUiType() {
+    return ScannerUiType.TYPES.mentionsType;
   }
 
   /**

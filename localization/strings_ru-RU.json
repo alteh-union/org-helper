@@ -251,6 +251,9 @@
   "command_poll_displayname": "Запустить опрос",
   "command_poll_help": "Запускает опрос. Первая фраза в кавычках будет вопросом. Остальные фразы в кавычках - ответами. Если варианты не предоставлены - считает опрос типом да/нет.",
 
+  "command_poll_arg_channelIds_alias_channelIds": "идКаналов",
+  "command_poll_arg_channelIds_alias_c": "к",
+  "command_poll_arg_channelIds_help": "Каналы, где нужно разместить опрос. Используйте упоминания, типа @pollsChan.",
   "command_poll_arg_question_alias_question": "вопрос",
   "command_poll_arg_question_alias_q": "в",
   "command_poll_arg_question_help": "Вопрос для пользователей.",
@@ -408,7 +411,7 @@
   "command_mypermissions_help": "Показывает список ваших разрешений, связанных с ботом.",
 
   "command_mypermissions_no_permissions": "У вас нет особых разрешений, связанных с ботом.",
-  "command_mypermissions_permission": "Разрешение номер: %s с типом \"%s\" дано субъекту типа %s по имени %s, со следующими условиями: %s",
+  "command_mypermissions_permission": "Разрешение номер: %s с типом \"%s\" дано субъекту типа %s по имени %s%s",
 
 
   "command_deletereminder_name": "удалитьнапоминание",

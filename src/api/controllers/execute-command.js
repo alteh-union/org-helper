@@ -1,3 +1,11 @@
+'use strict';
+
+/**
+ * @module execute-command
+ * @author Alteh Union (alteh.union@gmail.com)
+ * @license MIT (see the root LICENSE file for details)
+ */
+
 const jwt = require('jsonwebtoken');
 const ObjectId = require('mongodb').ObjectId;
 
@@ -13,16 +21,25 @@ const BotTable = require('../../mongo_classes/bot-table');
 const ServerSettingsTable = require('../../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../../mongo_classes/user-settings-table');
 
-const getCommandLangManager = async (context, serverId, userId) => {
+/**
+ * Gets the most suitable language manager based on the organization and user preferences.
+ * The process is mostly copied from the corresponding process of the standard Bot interface.
+ * @see CommandsParser
+ * @param  {Context}              context the Bot's context
+ * @param  {string}               orgId   the identifier of the organization
+ * @param  {string}               userId  the identifier of the user
+ * @return {Promise<LangManager>}         the most suitable language manager
+ */
+const getCommandLangManager = async (context, orgId, userId) => {
   const currentLocale = await context.dbManager.getSetting(
     BotTable.DISCORD_SOURCE,
-    serverId,
+    orgId,
     ServerSettingsTable.SERVER_SETTINGS.localeName.name
   );
 
   const currentUserLocale = await context.dbManager.getUserSetting(
     BotTable.DISCORD_SOURCE,
-    serverId,
+    orgId,
     userId,
     UserSettingsTable.USER_SETTINGS.localeName.name
   );
@@ -33,6 +50,17 @@ const getCommandLangManager = async (context, serverId, userId) => {
   );
 };
 
+/**
+ * Parses a Discord command, including the arguments.
+ * The process is mostly copied from the corresponding process of the standard Bot interface.
+ * @see CommandsParser
+ * @param  {Context}                     context            the Bot's context
+ * @param  {BaseMessage}                 message            the command's message
+ * @param  {constructor<DiscordCommand>} commandClass       the class of the command to be executed
+ * @param  {Object}                      commandArgs        the arguments map
+ * @param  {LangManager}                 commandLangManager the language manager
+ * @return {Promise<DiscordCommand>}                        the Discord command instance or null if failed
+ */
 const tryParseDiscordCommand = async (context, message, commandClass, commandArgs, commandLangManager) => {
   const command = commandClass.createForOrg(context, message.source.name, commandLangManager, message.orgId);
 
@@ -62,6 +90,18 @@ const tryParseDiscordCommand = async (context, message, commandClass, commandArg
   return command;
 };
 
+/**
+ * Executes a Discord command after parsing the arguments and checking the user permissions according
+ * to the supplied arguments.
+ * The process is mostly copied from the corresponding process of the standard Bot interface.
+ * @see CommandsParser
+ * @param  {Context}                     context            the Bot's context
+ * @param  {BaseMessage}                 message            the command's message
+ * @param  {constructor<DiscordCommand>} commandClass       the class of the command to be executed
+ * @param  {Object}                      commandArgs        the arguments map
+ * @param  {LangManager}                 commandLangManager the language manager
+ * @return {Promise}                                        nothing
+ */
 const executeDiscordCommand = async (context, message, commandClass, commandArgs, commandLangManager) => {
   const command = await tryParseDiscordCommand(context, message, commandClass, commandArgs, commandLangManager);
   if (command === null) {
@@ -118,6 +158,18 @@ const executeDiscordCommand = async (context, message, commandClass, commandArgs
   }
 };
 
+/**
+ * Executes a command issued by the user. Performs all necessary validations before that:
+ * checks the JWT token of the user, checks if the user, the corresponsing organization and command exist,
+ * launch the standard argument validation.
+ * The result maybe complex, and include not only the standard text response, but also attachment files
+ * and suggestions for argument inputs.
+ * The process is mostly copied from the corresponding process of the standard Bot interface.
+ * @see CommandsParser
+ * @param  {Request}  req  the express object representing the web-request to this endpoint
+ * @param  {Response} res  the express object representing the web-response from this endpoint
+ * @param  {Function} next the callback function to the next middleware in the express stack
+ */
 const executeCommand = async (req, res, next) => {
   try {
     if (req.headers && req.headers.authorization) {
@@ -139,14 +191,14 @@ const executeCommand = async (req, res, next) => {
         return res.status(401).send('Unauthorized');
       }
 
-      const serverId = req.body.serverId;
-      if (!serverId) {
-        return res.status(400).send('Missing server id');
+      const orgId = req.body.orgId;
+      if (!orgId) {
+        return res.status(400).send('Missing org id');
       }
-      const serversArray = context.discordClient.guilds.cache.array();
-      const selectedServer = serversArray.find(s => s.id === serverId);
-      if (!selectedServer) {
-        return res.status(400).send('Wrong server id provided');
+      const orgsArray = context.discordClient.guilds.cache.array();
+      const selectedOrg = orgsArray.find(s => s.id === orgId);
+      if (!selectedOrg) {
+        return res.status(400).send('Wrong org id provided');
       }
 
       const commandName = req.body.command;
@@ -159,24 +211,40 @@ const executeCommand = async (req, res, next) => {
         return res.status(400).send('Wrong command name');
       }
 
-      const commandArgs = JSON.parse(req.body.payload);
+      let commandArgs = null;
+
+      try {
+        commandArgs = JSON.parse(req.body.payload);
+      } catch (e) {
+        commandArgs = req.body.payload;
+      }
 
       const discordUserId = user.discordInfo.id;
-      const commandLangManager = await getCommandLangManager(context, serverId, discordUserId);
+      const commandLangManager = await getCommandLangManager(context, orgId, discordUserId);
+
+      const member = await selectedOrg.members.fetch(discordUserId);
 
       const source = new DiscordSource(context.discordClient);
-      const message = new BaseMessage(serverId, null, discordUserId, '', null, source);
+      const fakeOriginalMessage = {
+        guild: selectedOrg,
+        member: member
+      };
+      const message = new BaseMessage(orgId, null, discordUserId, '', fakeOriginalMessage, source);
 
       context.scheduler.syncTasks();
       await executeDiscordCommand(context, message, commandDefinition, commandArgs, commandLangManager);
 
-      res.status(200).send({ commandResult: { text: message.replyBuffer } });
+      res.status(200).send({ commandResult: { text: message.replyResult.text,
+        attachments: message.replyResult.attachments, suggestions: message.replyResult.suggestions } });
     }
   } catch (error) {
     next(error);
   }
 };
 
+/**
+ * Exports the functions to handle command-related web-endpoints for UI clients.
+ */
 module.exports = {
   executeCommand
 };

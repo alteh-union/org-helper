@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2021 Alteh Union (alteh.union@gmail.com)
+  ~
+  ~ Licensed under the MIT License (see the root LICENSE file for details)
+  -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/discord_background"
+        android:layout_width="@dimen/source_item_background_size"
+        android:layout_height="@dimen/source_item_background_size"
+        android:gravity="center_horizontal"
+        android:src="@drawable/background_circle"
+        android:contentDescription="@string/source_background_description"
+        app:tint="?attr/colorPrimaryDark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/discord_login_image"
+        android:layout_width="@dimen/source_item_image_size"
+        android:layout_height="@dimen/source_item_image_size"
+        android:src="@drawable/ic_discord"
+        android:contentDescription="@string/discord_source_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/discord_login_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/discord"
+        android:textSize="@dimen/source_selection_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/discord_background" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -87,7 +87,7 @@ export default class CommandPane extends React.Component {
 
     const data = new FormData();
     data.append('command', this.props.commandDefinition.name);
-    data.append('serverId', this.props.serverId);
+    data.append('orgId', this.props.orgId);
 
     const payload = {};
     for (const arg of this.props.commandDefinition.args) {

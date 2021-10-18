@@ -7,13 +7,13 @@
  */
 
 /**
- * Abstract class for handling web commands. Inheritors should manage commands from specific sources.
+ * Abstract class for handling UI commands. Inheritors should manage commands from specific sources.
  * @alias CommandHandler
  * @abstract
  */
 class CommandHandler {
   /**
-   * Gets the array of modules which group available web-commands for the Bot, defined for specific source.
+   * Gets the array of modules which group available UI commands for the Bot, defined for specific source.
    * @return {Array<constructor>} the defined commands
    */
   get definedModules() {

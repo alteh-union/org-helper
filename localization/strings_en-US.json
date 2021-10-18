@@ -252,6 +252,9 @@
   "command_poll_displayname": "Start a poll",
   "command_poll_help": "Starts a poll. The first string in quotes will be the question. The following strings will be considered as answer variants. If no variants are provided, then the poll is considered as a yes/no poll.",
 
+  "command_poll_arg_channelIds_alias_channelIds": "channelIds",
+  "command_poll_arg_channelIds_alias_c": "c",
+  "command_poll_arg_channelIds_help": "The channels to post the poll in. Use mentions, like @pollsChan.",
   "command_poll_arg_question_alias_question": "question",
   "command_poll_arg_question_alias_q": "q",
   "command_poll_arg_question_help": "The question for the users.",
@@ -409,7 +412,7 @@
   "command_mypermissions_help": "Lists bots-specific permissions granted to you.",
 
   "command_mypermissions_no_permissions": "No bot-specific permissions are set up for you.",
-  "command_mypermissions_permission": "Permission id: %s of type \"%s\" is granted for %s with name %s, with the following conditions: %s",
+  "command_mypermissions_permission": "Permission id: %s of type \"%s\" is granted for %s with name %s%s",
 
 
   "command_deletereminder_name": "deletereminder",

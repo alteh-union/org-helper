@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2021 Alteh Union (alteh.union@gmail.com)
+  ~
+  ~ Licensed under the MIT License (see the root LICENSE file for details)
+  -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/aboutApplicationName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/about_application_name"
+        android:textSize="@dimen/about_text_size"
+        android:paddingTop="@dimen/about_padding"
+        android:paddingLeft="@dimen/about_padding"
+        android:paddingRight="@dimen/about_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/aboutBuildVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/about_build_version"
+        android:textSize="@dimen/about_text_size"
+        android:paddingTop="@dimen/about_padding"
+        android:paddingLeft="@dimen/about_padding"
+        android:paddingRight="@dimen/about_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/aboutApplicationName" />
+
+    <TextView
+        android:id="@+id/aboutBuildTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/about_build_time"
+        android:textSize="@dimen/about_text_size"
+        android:paddingTop="@dimen/about_padding"
+        android:paddingLeft="@dimen/about_padding"
+        android:paddingRight="@dimen/about_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/aboutBuildVersion" />
+
+    <TextView
+        android:id="@+id/aboutWebsite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/about_website"
+        android:textSize="@dimen/about_text_size"
+        android:paddingTop="@dimen/about_padding"
+        android:paddingLeft="@dimen/about_padding"
+        android:paddingRight="@dimen/about_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/aboutBuildTime"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

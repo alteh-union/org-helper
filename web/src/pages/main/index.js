@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Servers from '../../layout/servers';
+import Orgs from '../../layout/orgs';
 import CommandModules from '../../layout/command-modules';
 import ModulePane from '../../layout/module-pane';
 import { getAuthHeader } from '../../helpers/auth-header';
@@ -11,7 +11,7 @@ export default class Main extends React.Component {
     super(props);
     this.state = {
       authenticated: false,
-      selectedServer: null,
+      selectedOrg: null,
       selectedModule: null,
     };
   }
@@ -20,9 +20,9 @@ export default class Main extends React.Component {
     this.checkAuthentication();
   }
 
-  handleServer = (server) => {
-    if (!this.state.selectedServer || this.state.selectedServer.id !== server.id) {
-      this.setState({selectedServer: server});
+  handleOrg = (org) => {
+    if (!this.state.selectedOrg || this.state.selectedOrg.id !== org.id) {
+      this.setState({selectedOrg: org});
       this.setState({selectedModule: null});
     }
   }
@@ -37,12 +37,12 @@ export default class Main extends React.Component {
       <button onClick={() => this.checkAuthentication()}>Check authentication</button>
       <p>{this.state.authenticated ? 'Authenticated' : 'Not authenticated'}</p>
       { (this.state.authenticated)
-        ? <Servers onSelectServer={this.handleServer}/> : null }
-      { (this.state.selectedServer && !this.state.selectedModule) ?
-        <CommandModules onSelectModule={this.handleModule} serverId={this.state.selectedServer.id} /> : null }
-      { (this.state.selectedServer && this.state.selectedModule) ?
+        ? <Orgs onSelectOrg={this.handleOrg}/> : null }
+      { (this.state.selectedOrg && !this.state.selectedModule) ?
+        <CommandModules onSelectModule={this.handleModule} orgId={this.state.selectedOrg.id} /> : null }
+      { (this.state.selectedOrg && this.state.selectedModule) ?
         <ModulePane onDeselectModule={this.handleModule}
-          serverId={this.state.selectedServer.id}
+          orgId={this.state.selectedOrg.id}
           moduleId={this.state.selectedModule.id} />
         : null }
     </div>;

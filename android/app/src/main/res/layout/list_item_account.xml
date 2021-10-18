@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2021 Alteh Union (alteh.union@gmail.com)
+  ~
+  ~ Licensed under the MIT License (see the root LICENSE file for details)
+  -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/accountCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/account_card_margin"
+        app:cardElevation="@dimen/account_item_elevation"
+        app:cardCornerRadius="@dimen/account_card_corner_radius"
+        app:cardPreventCornerOverlap="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/accountAvatarCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/account_list_avatar_margin"
+                android:layout_marginTop="@dimen/account_list_avatar_margin"
+                android:layout_marginBottom="@dimen/account_list_avatar_margin"
+                app:cardCornerRadius="@dimen/account_card_corner_radius"
+                app:cardPreventCornerOverlap="false"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageView
+                    android:id="@+id/accountAvatarImage"
+                    android:layout_width="@dimen/account_list_avatar_height"
+                    android:layout_height="@dimen/account_list_avatar_height"
+                    android:src="@drawable/ic_discord"
+                    android:contentDescription="@string/account_avatar_description"
+                    app:tint="@color/black"
+                    />
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/accountName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/accounts_line_margin"
+                android:layout_marginStart="@dimen/accounts_title_margin"
+                android:layout_marginEnd="@dimen/accounts_title_margin"
+                android:text="@string/no_user_name"
+                android:textSize="@dimen/account_name_text_size"
+                android:clickable="true"
+                android:focusable="true"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/accountAvatarCard"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/accountSourceImage"
+                android:layout_width="@dimen/account_list_line_height"
+                android:layout_height="@dimen/account_list_line_height"
+                android:layout_marginStart="@dimen/accounts_title_margin"
+                android:layout_marginBottom="@dimen/accounts_line_margin"
+                android:src="@drawable/ic_discord"
+                android:contentDescription="@string/account_source_image_description"
+                app:tint="@color/black"
+                app:layout_constraintStart_toEndOf="@id/accountAvatarCard"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageView
+                android:id="@+id/accountActive"
+                android:layout_width="@dimen/account_list_line_height"
+                android:layout_height="@dimen/account_list_line_height"
+                android:layout_marginBottom="@dimen/accounts_line_margin"
+                android:src="@drawable/ic_checkmark"
+                android:contentDescription="@string/active_account"
+                android:padding="@dimen/accounts_item_padding"
+                app:tint="?attr/colorAccent"
+                app:layout_constraintEnd_toStartOf="@id/accountActiveLabel"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/accountActiveLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/accounts_line_margin"
+                android:layout_marginEnd="@dimen/accounts_active_margin"
+                android:text="@string/active"
+                android:textSize="@dimen/account_active_label_text_size"
+                android:clickable="true"
+                android:focusable="true"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toStartOf="@id/accountDelete"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/accountNotLoggedLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/accounts_line_margin"
+                android:layout_marginEnd="@dimen/accounts_active_margin"
+                android:text="@string/logged_out_status"
+                android:textSize="@dimen/logged_out_label_size"
+                android:clickable="true"
+                android:focusable="true"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/accountDelete"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageView
+                android:id="@+id/accountDelete"
+                android:layout_width="@dimen/account_list_line_height"
+                android:layout_height="@dimen/account_list_line_height"
+                android:layout_marginEnd="@dimen/accounts_line_margin"
+                android:layout_marginBottom="@dimen/accounts_line_margin"
+                android:src="@drawable/ic_delete"
+                android:contentDescription="@string/delete_account"
+                android:padding="@dimen/accounts_item_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>

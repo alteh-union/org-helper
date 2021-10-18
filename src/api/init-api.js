@@ -1,7 +1,15 @@
+'use strict';
+
+/**
+ * @module init-api
+ * @author Alteh Union (alteh.union@gmail.com)
+ * @license MIT (see the root LICENSE file for details)
+ */
+
 const express = require('express');
 const app = express();
 const auth = require('./routes/auth');
-const servers = require('./routes/servers');
+const orgs = require('./routes/orgs');
 const modules = require('./routes/modules');
 const executeCommand = require('./routes/execute-command');
 const bodyParser = require('body-parser');
@@ -11,6 +19,11 @@ const errorHandler = require('./helpers/error-handler');
 const OhUtils = require('../utils/bot-utils');
 const MongoClient = require('mongodb');
 
+/**
+ * Initializes the Web API to be used by UI clients.
+ * Uses the DB as the main part of the Bot. Adds the stack of necessary express middleware.
+ * @param {Context} c the Bot's context
+ */
 function initApi(c) {
   const dbConnectionString = OhUtils.makeDbConnectionString(c.prefsManager);
   if (dbConnectionString === '') {
@@ -32,18 +45,21 @@ function initApi(c) {
     app.set('context', c);
 
     app.use('/auth', auth);
-    app.use('/servers', servers);
+    app.use('/orgs', orgs);
     app.use('/modules', modules);
     app.use('/commands', executeCommand);
 
     app.use(errorHandler);
 
     app.listen(c.prefsManager.server_port, function () {
-      console.log('Api-Server is running on port: ' + c.prefsManager.server_port);
+      c.log.i('Api-Server is running on port: ' + c.prefsManager.server_port);
     });
   });
 }
 
+/**
+ * Exports the API initialization function.
+ */
 module.exports = {
   initApi
 };

@@ -7,7 +7,7 @@
  */
 
 const TimeArgScanner = require('./time-arg-scanner');
-const ScannerWebUiType = require('./scanner-web-ui-type');
+const ScannerUiType = require('./scanner-ui-type');
 
 const TimeArg = require('../command_meta/time-arg');
 
@@ -24,11 +24,11 @@ const DefaultTimeZone = 'Etc/UTC';
  */
 class DiscordTimeArgScanner extends TimeArgScanner {
   /**
-   * Returns the input type which should be used for corresponding arguments in the Web interface.
+   * Returns the input type which should be used for corresponding arguments in UI.
    * @return {string} the type identifier
    */
-  static getWebUiType() {
-    return ScannerWebUiType.timeType;
+  static getUiType() {
+    return ScannerUiType.TYPES.timeType;
   }
 
   /**

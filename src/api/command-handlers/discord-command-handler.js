@@ -87,14 +87,14 @@ const Modules = Object.freeze([
 ]);
 
 /**
- * Handles web commands for the Discord client.
+ * Handles UI commands for the Discord client.
  * @alias DiscordCommandHandler
  * @extends CommandHandler
  * @abstract
  */
 class DiscordCommandHandler extends CommandHandler {
   /**
-   * Gets the array of modules which group available web-commands for the Bot, defined for specific source.
+   * Gets the array of modules which group available UI commands for the Bot, defined for specific source.
    * @return {Array<constructor>} the defined commands
    */
   get definedModules() {

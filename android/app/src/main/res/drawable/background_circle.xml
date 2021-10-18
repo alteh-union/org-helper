@@ -1,0 +1,17 @@
+<!--
+  ~ Copyright (c) 2021 Alteh Union (alteh.union@gmail.com)
+  ~
+  ~ Licensed under the MIT License (see the root LICENSE file for details)
+  -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:innerRadius="0dp"
+    android:shape="ring"
+    android:thicknessRatio="2.0"
+    android:useLevel="false" >
+    <solid android:color="@android:color/black" />
+
+    <stroke
+        android:width="10dp"
+        android:color="@android:color/black" />
+</shape>

@@ -1,0 +1,130 @@
+/*
+ * Copyright (c) 2021 Alteh Union (alteh.union@gmail.com)
+ *
+ * Licensed under the MIT License (see the root LICENSE file for details)
+ */
+
+import java.text.SimpleDateFormat
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
+
+def forkPropertiesFile = rootProject.file("fork.properties")
+def forkProperties = new Properties()
+forkProperties.load(new FileInputStream(forkPropertiesFile))
+
+def getCurrentTimestamp()
+{
+    Date today = new Date()
+    SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy_hh-mm")
+    return df.format(today)
+}
+
+android {
+    buildTypes {
+        release {
+            buildConfigField("String", "BUILD_TIME", "\"${getCurrentTimestamp()}\"")
+            resValue("string", "build_time", "${getCurrentTimestamp()}")
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField("String", "BUILD_TIME", "\"0\"")
+            resValue("string", "build_time", "0")
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file(forkProperties['keyStoreFileLocationDebug'])
+            storePassword forkProperties['keyStorePasswordDebug']
+            keyAlias forkProperties['keyStoreKeyAliasDebug']
+            keyPassword forkProperties['keyStoreKeyPasswordDebug']
+        }
+        release {
+            storeFile file(forkProperties['keyStoreFileLocationRelease'])
+            storePassword forkProperties['keyStorePasswordRelease']
+            keyAlias forkProperties['keyStoreKeyAliasRelease']
+            keyPassword forkProperties['keyStoreKeyPasswordRelease']
+        }
+    }
+
+    compileSdk 31
+
+    defaultConfig {
+        applicationId forkProperties['appId']
+        minSdk 23
+        targetSdk 31
+        versionCode (forkProperties['versionCode'] as int)
+        versionName forkProperties['versionName']
+
+        buildConfigField("String", "BUILD_VERSION", "\"${forkProperties['versionName']}\"")
+        resValue("string", "build_version", "${forkProperties['versionName']}")
+
+        buildConfigField("String", "APP_NAME_UNTRANSLATED", "\"${forkProperties['appName']}\"")
+        resValue("string", "app_name_untranslated", "${forkProperties['appName']}")
+
+        buildConfigField("String", "WEBSITE_ADDRESS", "\"${forkProperties['website']}\"")
+        resValue("string", "website_address", "${forkProperties['website']}")
+
+        buildConfigField("String", "DISCORD_CLIENT_ID", "\"${forkProperties['discordClientId']}\"")
+
+        buildConfigField("String", "SERVER_ADDRESS", "\"${forkProperties['serverAddress']}\"")
+
+        buildConfigField("String", "SERVER_PORT", "\"${forkProperties['serverPort']}\"")
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    dataBinding {
+        enabled true
+    }
+}
+
+dependencies {
+
+    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation 'androidx.activity:activity-ktx:1.3.1'
+    implementation 'androidx.fragment:fragment-ktx:1.3.6'
+
+    implementation 'androidx.room:room-runtime:2.3.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    kapt 'androidx.room:room-compiler:2.3.0'
+    implementation 'androidx.room:room-ktx:2.3.0'
+    implementation 'com.google.dagger:dagger:2.38.1'
+    kapt 'com.google.dagger:dagger-compiler:2.38.1'
+    implementation 'com.google.dagger:hilt-android:2.38.1'
+    kapt 'com.google.dagger:hilt-android-compiler:2.38.1'
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+
+    testImplementation 'junit:junit:4.+'
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
+}

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2021 Alteh Union (alteh.union@gmail.com)
+  ~
+  ~ Licensed under the MIT License (see the root LICENSE file for details)
+  -->
+<resources>
+    <dimen name="toolbar_height">30dp</dimen>
+    <dimen name="source_selection_text_size">24sp</dimen>
+    <dimen name="module_selection_background_size">96dp</dimen>
+    <dimen name="module_selection_image_size">64dp</dimen>
+    <dimen name="org_selection_image_size">96dp</dimen>
+    <dimen name="org_selection_acronym_size">32sp</dimen>
+    <dimen name="recycler_padding_top">16dp</dimen>
+    <dimen name="command_margin_side">16dp</dimen>
+    <dimen name="command_margin_top">16dp</dimen>
+    <dimen name="about_text_size">24sp</dimen>
+    <dimen name="about_padding">24dp</dimen>
+    <dimen name="progress_track_thickness">4dp</dimen>
+    <dimen name="progress_track_padding">4dp</dimen>
+    <dimen name="text_size_button_large">32sp</dimen>
+    <dimen name="large_button_stroke_width">4dp</dimen>
+    <dimen name="accounts_item_padding">2dp</dimen>
+    <dimen name="command_title_size">24sp</dimen>
+    <dimen name="argument_title_size">20sp</dimen>
+    <dimen name="argument_padding">16dp</dimen>
+    <dimen name="execute_button_margin_top">16dp</dimen>
+    <dimen name="divider_width">1dp</dimen>
+    <dimen name="command_result_padding_top">8dp</dimen>
+    <dimen name="navigator_padding">8dp</dimen>
+    <dimen name="toolbar_elevation">6dp</dimen>
+    <dimen name="navigation_elevation">4dp</dimen>
+    <dimen name="half_org_selection_image_size">48dp</dimen>
+    <dimen name="grid_item_elevation">8dp</dimen>
+    <dimen name="button_elevation">8dp</dimen>
+    <dimen name="argument_input_padding_top">8dp</dimen>
+    <dimen name="grid_item_margin_top">16dp</dimen>
+    <dimen name="half_module_selection_image_size">48dp</dimen>
+    <dimen name="account_list_line_height">32dp</dimen>
+    <dimen name="account_item_elevation">16dp</dimen>
+    <dimen name="account_card_margin">16dp</dimen>
+    <dimen name="account_card_corner_radius">16dp</dimen>
+    <dimen name="account_list_avatar_height">80dp</dimen>
+    <dimen name="accounts_line_margin">4dp</dimen>
+    <dimen name="accounts_title_margin">8dp</dimen>
+    <dimen name="accounts_active_margin">64dp</dimen>
+    <dimen name="account_list_avatar_margin">4dp</dimen>
+    <dimen name="empty_list_padding">32dp</dimen>
+    <dimen name="fab_margin_bottom">48dp</dimen>
+    <dimen name="fab_custom_size">56dp</dimen>
+    <dimen name="source_item_background_size">130dp</dimen>
+    <dimen name="source_item_image_size">100dp</dimen>
+    <dimen name="account_name_text_size">24sp</dimen>
+    <dimen name="account_active_label_text_size">24sp</dimen>
+    <dimen name="logged_out_label_size">20sp</dimen>
+</resources>

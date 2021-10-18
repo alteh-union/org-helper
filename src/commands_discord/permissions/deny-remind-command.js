@@ -23,7 +23,7 @@ const DenyRemindCommandArgDefs = Object.freeze({
     validationOptions: { validSubjects: true }
   }),
   channelIds: new CommandArgDef('channelIds', {
-    aliasIds: ['command_denyremind_arg_channelIds_alias_channelName', 'command_denyremind_arg_channelIds_alias_c'],
+    aliasIds: ['command_denyremind_arg_channelIds_alias_channelIds', 'command_denyremind_arg_channelIds_alias_c'],
     helpId: 'command_denyremind_arg_channelIds_help',
     scanner: DiscordChannelsArgScanner,
     validationOptions: { validTextChannels: true, anyValueAllowed: true }

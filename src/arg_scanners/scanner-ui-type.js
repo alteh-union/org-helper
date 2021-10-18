@@ -6,8 +6,9 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
-const WebUiTypes = Object.freeze({
+const UiTypes = Object.freeze({
   stringType: 'string',
+  fullStringType: 'fullString',
   arrayType: 'array',
   booleanType: 'boolean',
   timeType: 'time',
@@ -18,22 +19,22 @@ const WebUiTypes = Object.freeze({
 });
 
 /**
- * Provides the list of possible Web UI types for scanner.
+ * Provides the list of possible UI (Wen, Android etc.) types for scanner.
  * Web representation of command arguments depends on the this.
- * @alias ScannerWebUiType
+ * @alias ScannerUiType
  */
-class ScannerWebUiType {
+class ScannerUiType {
   /**
-   * Gets the array of possible Web UI types
+   * Gets the array of possible UI types
    * @type {string}
    */
   static get TYPES() {
-    return WebUiTypes;
+    return UiTypes;
   }
 }
 
 /**
- * Exports the ScannerWebUiType class
- * @type {ScannerWebUiType}
+ * Exports the ScannerUiType class
+ * @type {ScannerUiType}
  */
-module.exports = ScannerWebUiType;
+module.exports = ScannerUiType;

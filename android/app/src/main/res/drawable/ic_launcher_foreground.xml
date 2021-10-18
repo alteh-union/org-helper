@@ -1,0 +1,17 @@
+<!--
+  ~ Copyright (c) 2021 Alteh Union (alteh.union@gmail.com)
+  ~
+  ~ Licensed under the MIT License (see the root LICENSE file for details)
+  -->
+<vector android:height="108dp" android:viewportHeight="250"
+    android:viewportWidth="250" android:width="108dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillAlpha="0.998" android:fillColor="#ffffff"
+        android:pathData="m87.114,103.936q-7.579,0 -12.058,5.65 -4.444,5.65 -4.444,15.4 0,9.715 4.444,15.365 4.479,5.65 12.058,5.65 7.579,0 11.989,-5.65 4.444,-5.65 4.444,-15.365 0,-9.75 -4.444,-15.4 -4.41,-5.65 -11.989,-5.65zM87.114,98.286q10.818,0 17.294,7.269 6.477,7.235 6.477,19.43 0,12.161 -6.477,19.43 -6.477,7.235 -17.294,7.235 -10.852,0 -17.363,-7.235 -6.477,-7.235 -6.477,-19.43 0,-12.196 6.477,-19.43 6.511,-7.269 17.363,-7.269z"
+        android:strokeAlpha="0.998" android:strokeColor="#ffffff" android:strokeWidth="0.264583"/>
+    <path android:fillAlpha="0.998" android:fillColor="#ffffff"
+        android:pathData="m121.771,99.216h6.959v21.084h25.287L154.018,99.216h6.959v51.435h-6.959v-24.495h-25.287v24.495h-6.959z"
+        android:strokeAlpha="0.998" android:strokeColor="#ffffff" android:strokeWidth="0.264583"/>
+    <path android:fillAlpha="0.998" android:fillColor="#ffffff"
+        android:pathData="m178.547,141.901h6.994v8.751h-6.994zM178.547,99.216h6.994v22.565l-0.689,12.299h-5.581l-0.723,-12.299z"
+        android:strokeAlpha="0.998" android:strokeColor="#ffffff" android:strokeWidth="0.264583"/>
+</vector>

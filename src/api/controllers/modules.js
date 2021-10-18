@@ -1,3 +1,11 @@
+'use strict';
+
+/**
+ * @module modules
+ * @author Alteh Union (alteh.union@gmail.com)
+ * @license MIT (see the root LICENSE file for details)
+ */
+
 const jwt = require('jsonwebtoken');
 const ObjectId = require('mongodb').ObjectId;
 
@@ -9,16 +17,25 @@ const BotTable = require('../../mongo_classes/bot-table');
 const ServerSettingsTable = require('../../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../../mongo_classes/user-settings-table');
 
-const getCommandLangManager = async (context, serverId, userId) => {
+/**
+ * Gets the most suitable language manager based on the organization and user preferences.
+ * The process is mostly copied from the corresponding process of the standard Bot interface.
+ * @see CommandsParser
+ * @param  {Context}              context the Bot's context
+ * @param  {string}               orgId   the identifier of the organization
+ * @param  {string}               userId  the identifier of the user
+ * @return {Promise<LangManager>}         the most suitable language manager
+ */
+const getCommandLangManager = async (context, orgId, userId) => {
   const currentLocale = await context.dbManager.getSetting(
     BotTable.DISCORD_SOURCE,
-    serverId,
+    orgId,
     ServerSettingsTable.SERVER_SETTINGS.localeName.name
   );
 
   const currentUserLocale = await context.dbManager.getUserSetting(
     BotTable.DISCORD_SOURCE,
-    serverId,
+    orgId,
     userId,
     UserSettingsTable.USER_SETTINGS.localeName.name
   );
@@ -29,6 +46,12 @@ const getCommandLangManager = async (context, serverId, userId) => {
   );
 };
 
+/**
+ * Gets the list of command modules (groups) available for the user in the given organization.
+ * @param  {Request}  req  the express object representing the web-request to this endpoint
+ * @param  {Response} res  the express object representing the web-response from this endpoint
+ * @param  {Function} next the callback function to the next middleware in the express stack
+ */
 const getUserModules = async (req, res, next) => {
   try {
     if (req.headers && req.headers.authorization) {
@@ -50,13 +73,13 @@ const getUserModules = async (req, res, next) => {
         return res.status(401).send('Unauthorized');
       }
 
-      const serverId = req.query.serverId;
-      if (!serverId) {
-        return res.status(400).send('Missing server id');
+      const orgId = req.query.orgId;
+      if (!orgId) {
+        return res.status(400).send('Missing org id');
       }
 
       const discordUserId = user.discordInfo.id;
-      const langManager = await getCommandLangManager(context, serverId, discordUserId);
+      const langManager = await getCommandLangManager(context, orgId, discordUserId);
 
       const completeModules = new DiscordCommandHandler().definedModules;
 
@@ -76,6 +99,13 @@ const getUserModules = async (req, res, next) => {
   }
 };
 
+/**
+ * Gets the detailed module definition for the given organization.
+ * This includes all the commands in the module as well as argument details.
+ * @param  {Request}  req  the express object representing the web-request to this endpoint
+ * @param  {Response} res  the express object representing the web-response from this endpoint
+ * @param  {Function} next the callback function to the next middleware in the express stack
+ */
 const getModuleDefinition = async (req, res, next) => {
   try {
     if (req.headers && req.headers.authorization) {
@@ -97,9 +127,9 @@ const getModuleDefinition = async (req, res, next) => {
         return res.status(401).send('Unauthorized');
       }
 
-      const serverId = req.query.serverId;
-      if (!serverId) {
-        return res.status(400).send('Missing server id');
+      const orgId = req.query.orgId;
+      if (!orgId) {
+        return res.status(400).send('Missing org id');
       }
 
       const moduleId = req.query.moduleId;
@@ -116,7 +146,7 @@ const getModuleDefinition = async (req, res, next) => {
       }
 
       const discordUserId = user.discordInfo.id;
-      const langManager = await getCommandLangManager(context, serverId, discordUserId);
+      const langManager = await getCommandLangManager(context, orgId, discordUserId);
 
       const moduleDefinition = {};
       moduleDefinition.id = selectedModule.name;
@@ -135,7 +165,7 @@ const getModuleDefinition = async (req, res, next) => {
           if (Object.prototype.hasOwnProperty.call(definedArgs, argName)) {
             const arg = definedArgs[argName];
             const argDefinition = {};
-            argDefinition.scannerType = arg.scanner.getWebUiType();
+            argDefinition.scannerType = arg.scanner.getUiType();
             argDefinition.name = arg.name;
             argDefinition.displayName = langManager.getString(arg.aliasIds[0]);
             argDefinition.help = langManager.getString(arg.helpId);
@@ -155,6 +185,9 @@ const getModuleDefinition = async (req, res, next) => {
   }
 };
 
+/**
+ * Exports the functions to handle module-related web-endpoints for UI clients.
+ */
 module.exports = {
   getUserModules,
   getModuleDefinition

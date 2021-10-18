@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2021 Alteh Union (alteh.union@gmail.com)
+  ~
+  ~ Licensed under the MIT License (see the root LICENSE file for details)
+  -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/argumentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/argument_padding"
+    android:paddingEnd="@dimen/argument_padding"
+    android:paddingTop="@dimen/argument_padding">
+
+    <TextView
+        android:id="@+id/argumentName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/argument_title"
+        android:textStyle="bold"
+        android:textSize="@dimen/argument_title_size"
+        android:labelFor="@id/argumentInput"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/argumentHelp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/argument_help"
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/argumentName" />
+
+    <EditText
+        android:id="@+id/argumentInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/argument_input_padding_top"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:background="@drawable/argument_edittext"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/argumentHelp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

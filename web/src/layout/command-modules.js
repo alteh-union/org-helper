@@ -5,7 +5,7 @@ import { getAuthHeader } from '../helpers/auth-header';
  * Command modules component for Application.
  * Each command module is a set of available commands, typically grouped by theme or functionality
  * (like social commands, moderator commands etc.).
- * The list of command modules should be available once the server is selected which the user is going to manipulate.
+ * The list of command modules should be available once the org is selected which the user is going to manipulate.
  * @param {React.Props} props
  */
 export default class CommandModules extends React.Component {
@@ -41,7 +41,7 @@ export default class CommandModules extends React.Component {
 
   getCommandModules() {
     // todo: create preferences.txt like file and put backend base url there
-    fetch(`http://localhost:4000/modules/discord/get-modules?serverId=${this.props.serverId}`, {
+    fetch(`http://localhost:4000/modules/discord/get-modules?orgId=${this.props.orgId}`, {
       headers: getAuthHeader()
     })
       .then(res => res.status === 200 ? res.json() : null).then(jsonResponse => {

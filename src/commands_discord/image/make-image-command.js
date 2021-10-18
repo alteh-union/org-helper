@@ -7,10 +7,13 @@
  */
 
 const DiscordCommand = require('../discord-command');
+const BaseMessageAttachment = require('../../components/base-message-attachment');
 const ObjectArgScanner = require('../../arg_scanners/object-arg-scanner');
 const SimpleArgScanner = require('../../arg_scanners/simple-arg-scanner');
+const FullStringArgScanner = require('../../arg_scanners/full-string-arg-scanner');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 const BotPublicError = require('../../utils/bot-public-error');
+const jimp = require('jimp');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 
@@ -33,23 +36,24 @@ const MakeImageCommandArgDefs = Object.freeze({
     scanner: SimpleArgScanner,
     validationOptions: { nonNull: true }
   }),
-  text: new CommandArgDef('text', {
-    aliasIds: [
-      'command_makeimage_arg_text_alias_text',
-      'command_makeimage_arg_text_alias_t'
-    ],
-    helpId: 'command_makeimage_arg_text_help',
-    scanner: SimpleArgScanner,
-    validationOptions: { nonNull: true }
-  }),
   style: new CommandArgDef('style', {
     aliasIds: [
       'command_makeimage_arg_style_alias_style',
       'command_makeimage_arg_style_alias_s'
     ],
     helpId: 'command_makeimage_arg_style_help',
+    skipInSequentialRead: true,
     scanner: ObjectArgScanner,
     validationOptions: { nonNull: false }
+  }),
+  text: new CommandArgDef('text', {
+    aliasIds: [
+      'command_makeimage_arg_text_alias_text',
+      'command_makeimage_arg_text_alias_t'
+    ],
+    helpId: 'command_makeimage_arg_text_help',
+    scanner: FullStringArgScanner,
+    validationOptions: { nonNull: true }
   })
 });
 
@@ -153,18 +157,24 @@ class MakeImageCommand extends DiscordCommand {
     try {
       const imageResult = await this.context.imageGenerator.generateImage(this.imgUrl, params, this.parsedJsonConfig,
         this.source, this.orgId);
-      const filePath = `images/${uuidv4()}.jpg`;
-      imageResult.write(filePath);
-      await message.originalMessage.channel.send(null, {
-        files: [filePath]
-      });
 
-      await fs.unlink(filePath, (err) => {
-        if (err) {
-          this.context.log.e(`Failed to delete file ${filePath}. Error: ${err}`);
-        }
-      });
+      if (message.originalMessage.channel != null) {
+        const filePath = `images/${uuidv4()}.jpg`;
+        imageResult.write(filePath);
+        await message.originalMessage.channel.send(null, {
+          files: [filePath]
+        });
 
+        await fs.unlink(filePath, (err) => {
+          if (err) {
+            this.context.log.e(`Failed to delete file ${filePath}. Error: ${err}`);
+          }
+        });
+      } else {
+        const base64Image = await imageResult.getBase64Async(jimp.MIME_JPEG);
+        message.replyResult.attachments.push(new BaseMessageAttachment(base64Image,
+          BaseMessageAttachment.MIME_TYPES.BASE64));
+      }
     } catch (e) {
       this.context.log.e(this.name + ': Cannot make image: ' + e.stack);
       return this.langManager.getString('command_makeimage_error_broken_template', this.templateName, e.message);

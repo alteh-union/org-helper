@@ -8,6 +8,7 @@
 
 /**
  * Definition for module containing several commands.
+ * Useful for grouping, otherwise the user would get too many commands at once.
  * @alias CommandModule
  */
 class CommandModule {

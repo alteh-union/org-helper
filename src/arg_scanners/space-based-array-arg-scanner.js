@@ -8,7 +8,7 @@
 
 const ArrayArgScanner = require('./array-arg-scanner');
 
-const ScannerWebUiType = require('./scanner-web-ui-type');
+const ScannerUiType = require('./scanner-ui-type');
 
 const SPACE_SEPARATOR = ' ';
 
@@ -19,11 +19,11 @@ const SPACE_SEPARATOR = ' ';
  */
 class SpaceBasedArrayArgScanner extends ArrayArgScanner {
   /**
-   * Returns the input type which should be used for corresponding arguments in the Web interface.
+   * Returns the input type which should be used for corresponding arguments in UI.
    * @return {string} the type identifier
    */
-  static getWebUiType() {
-    return ScannerWebUiType.arrayType;
+  static getUiType() {
+    return ScannerUiType.TYPES.arrayType;
   }
 
   /**

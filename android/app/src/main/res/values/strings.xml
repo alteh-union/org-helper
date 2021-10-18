@@ -1,0 +1,51 @@
+<!--
+  ~ Copyright (c) 2021 Alteh Union (alteh.union@gmail.com)
+  ~
+  ~ Licensed under the MIT License (see the root LICENSE file for details)
+  -->
+<resources>
+    <string name="app_name">OrgHelper</string>
+    <string name="accounts">Accounts</string>
+    <string name="no_user_name">No user name</string>
+    <string name="discord">Discord</string>
+    <string name="no_org_name">No org name</string>
+    <string name="org_icon_description">Org icon</string>
+    <string name="module_icon_description">Module icon</string>
+    <string name="no_module_name">No module name</string>
+    <string name="org_acronym_description">Org acronym</string>
+    <string name="org_default_acronym">ORG</string>
+    <string name="source_background_description">Source</string>
+    <string name="discord_source_description">Discord source</string>
+    <string name="account_source_image_description">Image of account\'s source</string>
+    <string name="account_avatar_description">Account\'s avatar</string>
+    <string name="delete_account">Delete account</string>
+    <string name="active_account">Active account</string>
+    <string name="command_title">Command title</string>
+    <string name="execute">Execute</string>
+    <string name="command_help">Command help</string>
+    <string name="logged_out">You were logged out by the server</string>
+    <string name="command_result">Command result</string>
+    <string name="argument_title">Argument name</string>
+    <string name="argument_help">Argument help</string>
+    <string name="about_application_name">Application name: %1$s</string>
+    <string name="about_build_version">Version: %1$s</string>
+    <string name="about_build_time">Build timestamp: %1$s</string>
+    <string name="about_website">For more information visit: %1$s</string>
+    <string name="about">About</string>
+    <string name="progress_bar_description">Progress bar</string>
+    <string name="navigator">Navigator</string>
+    <string name="navigation_divider"><![CDATA[" -> "]]></string>
+    <string name="navigation_accounts">Accounts</string>
+    <string name="navigation_about">About</string>
+    <string name="add">Add</string>
+    <string name="add_account">Add an account</string>
+    <string name="account_delete_confirmation_title">Remove account?</string>
+    <string name="account_delete_confirmation_message">Are you sure you want to remove this account from the app? You will be able to login to it later, if you want.</string>
+    <string name="active">Active</string>
+    <string name="downloaded_image_not_saved">Could not save the downloaded image.</string>
+    <string name="downloaded_image_saved">Downloaded image saved: %1$s</string>
+    <string name="request_permission_title">Permission request</string>
+    <string name="request_write_storage_permission_message">Please grant the permission to write to the external storage, so the app can save the file for you.</string>
+    <string name="no_items_to_display">There are no items here to display. Perhaps you don\'t belong to any org where the Bot is present, or you don\'t have permissions to view the items.</string>
+    <string name="logged_out_status">Logged out</string>
+</resources>

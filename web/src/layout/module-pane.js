@@ -37,7 +37,7 @@ export default class ModulePane extends React.Component {
           <ul>
             {this.state.moduleDefinition.commands.map(command =>
               <li key={command.name}>
-                <CommandPane serverId={this.props.serverId} commandDefinition={command} />
+                <CommandPane orgId={this.props.orgId} commandDefinition={command} />
                 <hr />
               </li>
             )}
@@ -49,7 +49,7 @@ export default class ModulePane extends React.Component {
 
   getModuleDefinition() {
     // todo: create preferences.txt like file and put backend base url there
-    fetch(`http://localhost:4000/modules/discord/get-module?serverId=${this.props.serverId}&moduleId=${this.props.moduleId}`, {
+    fetch(`http://localhost:4000/modules/discord/get-module?orgId=${this.props.orgId}&moduleId=${this.props.moduleId}`, {
       headers: getAuthHeader()
     })
       .then(res => res.status === 200 ? res.json() : null).then(jsonResponse => {
