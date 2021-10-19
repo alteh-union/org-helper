@@ -56,9 +56,9 @@ pm2 start src/index.js
 
 ## Development roadmap
 
-- Short term: performance optimization for large guilds, private settings and commands, basic gamification
-- Mid term: advanced gamification, implementaion of liquid/hybrid democracy
-- Long term: adding new platform/sources (e.g. Slack, Telegram), ML-chat bot, speech-to-text for auto-logging meeting minutes etc.
+- Short term: suggestions for input in the Android app, human-readable Discord mentions in the Android app, language synchronization in between the app and the Bot's server, different help strings for UI clients (Web and Android), private settings and commands
+- Mid term: Telegram bot and Web client
+- Long term: ML-chat bot, speech-to-text for auto-logging meeting minutes, gamification, implementaion of liquid/hybrid democracy
 
 Wanna speed up the development and take one of the features on your own? Contact us at: alteh.union@gmail.com. This is not to restict you, but just to make sure several developers do not interfere with each other.
 

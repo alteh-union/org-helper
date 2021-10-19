@@ -13,3 +13,5 @@
 .cxx
 local.properties
 fork.properties
+fork_debug.properties
+fork_prod.properties
