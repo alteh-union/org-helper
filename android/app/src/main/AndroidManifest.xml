@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OrgHelper"
-        android:requestLegacyExternalStorage="true" >
+        android:requestLegacyExternalStorage="true"
+        android:testOnly="false" >
         <activity
             android:name=".MainActivity"
             android:exported="true">
