@@ -11,6 +11,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.Ignore
 import com.google.gson.annotations.SerializedName
+import org.alteh.orghelper.data.ValueSuggestion
 import org.alteh.orghelper.data.database.Account.Companion.areItemsTheSame
 import java.io.Serializable
 
@@ -51,11 +52,16 @@ data class Argument (
     var name: String = "",
     @SerializedName("scannerType")
     var scannerType: String? = "",
+    @SerializedName("suggestionsCommand")
+    var suggestionsCommand: String? = "",
     @SerializedName("help")
     var help: String? = null,
     @Ignore
     @SerializedName("lastValue")
-    var lastValue: ArgumentValue? = null
+    var lastValue: ArgumentValue? = null,
+
+    @Ignore
+    var suggestions: List<ValueSuggestion> = listOf()
 ) : Serializable {
     companion object {
         /**
@@ -96,6 +102,9 @@ data class Argument (
             oldItem: Argument,
             newItem: Argument
         ): Boolean {
+            if (!areSuggestionsTheSame(oldItem, newItem)) {
+                return false
+            }
             if (oldItem.lastValue == null) {
                 return newItem.lastValue == null
             }
@@ -105,7 +114,39 @@ data class Argument (
             oldItem.lastValue?.let { oldValue ->
                 newItem.lastValue?.let { newValue ->
                     return oldItem.name == newItem.name && oldItem.scannerType == newItem.scannerType &&
+                            oldItem.suggestionsCommand == newItem.suggestionsCommand &&
                             oldItem.help == newItem.help && oldValue.value == newValue.value
+                }
+            }
+            return true
+        }
+
+        /**
+         * Checks if the suggestions for the arguments are the same.
+         */
+        fun areSuggestionsTheSame(
+            oldItem: Argument,
+            newItem: Argument
+        ): Boolean {
+            return areSuggestionsTheSame(oldItem.suggestions, newItem.suggestions)
+        }
+
+        /**
+         * Checks if the suggestions lists are the same.
+         */
+        fun areSuggestionsTheSame(
+            oldSuggestions: List<ValueSuggestion>,
+            newSuggestions: List<ValueSuggestion>
+        ): Boolean {
+            if (oldSuggestions.size != newSuggestions.size) {
+                return false
+            }
+            for (i in oldSuggestions.indices) {
+                val oldSuggestion = oldSuggestions[i]
+                val newSuggestion = newSuggestions[i]
+                if (oldSuggestion.id != newSuggestion.id ||
+                    oldSuggestion.description != newSuggestion.description) {
+                    return false
                 }
             }
             return true

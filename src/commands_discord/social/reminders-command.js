@@ -10,6 +10,7 @@ const OhUtils = require('../../utils/bot-utils');
 const DiscordUtils = require('../../utils/discord-utils');
 
 const DiscordCommand = require('../discord-command');
+const ArgSuggestion = require('../../command_meta/arg-suggestion');
 const TimeArg = require('../../command_meta/time-arg');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 const CommandPermissionFilter = require('../../command_meta/command-permission-filter');
@@ -146,13 +147,15 @@ class RemindersCommand extends DiscordCommand {
 
     let result = '';
     for (const task of tasks) {
-      result += this.langManager.getString(
+      const reminderText = this.langManager.getString(
         'command_reminders_reminder',
         task.id,
         TimeArg.toString(task.time.definitions, this.langManager),
         DiscordUtils.makeChannelMention(task.content.channel),
         task.content.message
       );
+      message.replyResult.suggestions.push(new ArgSuggestion(task.id, reminderText));
+      result += reminderText;
     }
 
     return result;

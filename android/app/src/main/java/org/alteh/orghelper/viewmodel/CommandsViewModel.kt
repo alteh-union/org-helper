@@ -72,6 +72,13 @@ class CommandsViewModel @Inject internal constructor(
     )
 
     /**
+     * A [LiveData] value to observe the input suggestions from the server.
+     */
+    val suggestionsResults: MutableLiveData<MutableMap<Pair<String, String>, List<ValueSuggestion>>?> = MutableLiveData(
+        null
+    )
+
+    /**
      * Asynchronously fetches the commands with arguments of the given account's org and module from the Bot's server.
      */
     fun requestCommands() {
@@ -89,6 +96,7 @@ class CommandsViewModel @Inject internal constructor(
             !Org.areItemsTheSame(activeModule.value?.org, module.org) ||
             !Module.areItemsTheSame(activeModule.value?.module, module.module)) {
             executionResults.value = null
+            suggestionsResults.value = null
             activeModule.value = module
             savedStateHandle.set(ACTIVE_MODULE_SAVED_STATE_KEY, module)
         }
@@ -118,6 +126,31 @@ class CommandsViewModel @Inject internal constructor(
             }
             resultMap[commandId] = commandResult
             executionResults.value = resultMap
+        }
+    }
+
+    /**
+     * Asynchronously requests to get suggestions from the Bot's server.
+     */
+    fun getSuggestions(token: String, argument: Argument, suggestionCommandId: String,
+                       argValues: Map<String, String>) {
+        launchProgress {
+            var executionResult = commandRepository.getSuggestions(token, argument.source, argument.orgId,
+                suggestionCommandId, argValues)
+            if (executionResult == null) {
+                executionResult = ExecutionResult(CommandResult("No response from the server"))
+            }
+            // TODO: Maybe add some UI reaction if getting suggestions did not work.
+            executionResult.commandResult?.let {
+                it.suggestions.let { suggestions ->
+                    var suggestionsMap = suggestionsResults.value
+                    if (suggestionsMap == null) {
+                        suggestionsMap = mutableMapOf()
+                    }
+                    suggestionsMap[Pair(argument.commandId, argument.id)] = suggestions
+                    suggestionsResults.value = suggestionsMap
+                }
+            }
         }
     }
 

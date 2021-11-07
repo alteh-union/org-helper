@@ -34,14 +34,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/argumentName" />
 
-    <EditText
-        android:id="@+id/argumentInput"
+    <FrameLayout
+        android:id="@+id/argumentInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/argument_input_padding_top"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:background="@drawable/argument_edittext"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/argumentHelp" />
 

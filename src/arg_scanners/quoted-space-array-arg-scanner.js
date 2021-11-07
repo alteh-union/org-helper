@@ -33,15 +33,16 @@ class QuotedSpaceArrayArgScanner extends SimpleArgScanner {
    * @param  {LangManager}     langManager Lang manager of the command
    * @param  {Object}          message     Message's object (source-dependent)
    * @param  {string}          text        Text to be scanned to parse the argument
+   * @param  {string}          scanType    The type of scan (by name, sequential etc.)
    * @return {Promise<Object>}             Promise of the parsed object of the argument and how many chars were scanned
    */
-  static async scan(context, langManager, message, text) {
+  static async scan(context, langManager, message, text, scanType) {
     if (text === undefined || text === null || text === '') {
       return { value: null, nextPos: 1 };
     }
 
     const argText = text.slice(0, Math.max(0, text.length)).trim();
-    const pieces = this.split(context, argText);
+    const pieces = this.split(argText);
     return { value: pieces.length > 0 ? pieces : null, nextPos: text.length };
   }
 
@@ -50,7 +51,7 @@ class QuotedSpaceArrayArgScanner extends SimpleArgScanner {
    * @param  {string} text    The text to be splitted
    * @return {Array}          The result array
    */
-  static split(context, text) {
+  static split(text) {
     const nonQuotedSpaces = OhUtils.getNonQuotedIndices(text, ' ');
     const pieces = [];
     if (nonQuotedSpaces.length === 0) {

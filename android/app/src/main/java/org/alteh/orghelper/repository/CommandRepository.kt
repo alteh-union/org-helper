@@ -127,6 +127,16 @@ class CommandRepository @Inject constructor(private val network: NetworkInterfac
     }
 
     /**
+     * Asynchronously gets suggestions from the Bot's server.
+     */
+    suspend fun getSuggestions(token: String, source: String, orgId: String, commandId: String,
+                               argValues: Map<String, String>): ExecutionResult? {
+        return network.getSuggestions(MainNetwork.getBearerHeader(token),
+            source, CommandExecutionBundle(commandId, orgId, argValues)
+        )
+    }
+
+    /**
      * Asynchronously updates the latest value of the given [argument] in the DB.
      */
     suspend fun updateArgumentValue(argument: Argument, newValue: String) {

@@ -27,6 +27,7 @@ class CommandArgDef {
     this.helpId = info.helpId === undefined ? '' : info.helpId;
     this.skipInSequentialRead = info.skipInSequentialRead === undefined ? false : info.skipInSequentialRead;
     this.scanner = info.scanner === undefined ? SimpleArgScanner : info.scanner;
+    this.suggestions = info.suggestions === undefined ? this.scanner.getSuggestionsCommand() : info.suggestions;
     this.validationOptions = info.validationOptions === undefined ? {} : info.validationOptions;
 
     // For validation options implying some other validations - set up that implied options too.

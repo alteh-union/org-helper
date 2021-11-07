@@ -7,14 +7,14 @@
  */
 
 const express = require('express');
-const modules = express.Router();
+const commands = express.Router();
 const multer  = require('multer');
 const upload = multer();
 const commandController = require('../controllers/execute-command');
 
-modules.post('/discord/execute-command', upload.none(), commandController.executeCommand);
+commands.post('/discord/execute-command', upload.none(), commandController.executeCommand);
 
 /**
  * Exports the express router for handling command-related requests from UI clients.
  */
-module.exports = modules;
+module.exports = commands;

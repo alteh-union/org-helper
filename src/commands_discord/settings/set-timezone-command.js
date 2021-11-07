@@ -12,6 +12,7 @@ const OhUtils = require('../../utils/bot-utils');
 const BotPublicError = require('../../utils/bot-public-error');
 
 const DiscordCommand = require('../discord-command');
+const GetTimezoneSuggestions = require('../suggestions/get-timezone-suggestions');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 
 const PermissionsManager = require('../../managers/permissions-manager');
@@ -28,6 +29,7 @@ const SetTimezoneCommandArgDefs = Object.freeze({
       'command_settimezone_arg_timezone_alias_z'
     ],
     helpId: 'command_settimezone_arg_timezone_help',
+    suggestions: GetTimezoneSuggestions,
     validationOptions: { nonNull: true }
   })
 });

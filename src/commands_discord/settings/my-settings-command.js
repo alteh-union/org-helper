@@ -8,9 +8,22 @@
 
 const BotPublicError = require('../../utils/bot-public-error');
 
+const CommandArgDef = require('../../command_meta/command-arg-def');
+const ArrayArgScanner = require('../../arg_scanners/array-arg-scanner');
+
 const SettingsCommand = require('./settings-command');
+const GetUserSettingSuggestions = require('../suggestions/get-user-setting-suggestions');
 
 const UserSettingsTable = require('../../mongo_classes/user-settings-table');
+
+const UserSettingsCommandArgDefs = Object.freeze({
+  settings: new CommandArgDef('settings', {
+    aliasIds: ['command_settings_arg_settings_alias_settings', 'command_settings_arg_settings_alias_s'],
+    helpId: 'command_settings_arg_settings_help',
+    scanner: ArrayArgScanner,
+    suggestions: GetUserSettingSuggestions
+  })
+});
 
 /**
  * Command to list settings set up for the user in the Discord server.
@@ -44,6 +57,14 @@ class MySettingsCommand extends SettingsCommand {
    */
   static get DISPLAY_NAME() {
     return 'command_mysettings_displayname';
+  }
+
+  /**
+   * Gets the array of all arguments definitions of the command.
+   * @return {Array<CommandArgDef>} the array of definitions
+   */
+  static getDefinedArgs() {
+    return UserSettingsCommandArgDefs;
   }
 
   /**
@@ -86,17 +107,19 @@ class MySettingsCommand extends SettingsCommand {
   async validateFromDiscord(message) {
     await super.validateFromDiscord(message);
 
-    if (this.setting !== null) {
+    if (this.settings !== null && this.settings.length > 0) {
       const availableSettings = Object.values(UserSettingsTable.USER_SETTINGS);
       const localizedSettings = availableSettings.map(a => this.langManager.getString(a.textId));
-      if (!localizedSettings.find(ls => ls === this.setting)) {
-        throw new BotPublicError(
-          this.langManager.getString(
-            'command_mysettings_error_wrong_setting',
-            this.setting,
-            localizedSettings.join(', ')
-          )
-        );
+      for (const setting of localizedSettings) {
+        if (!localizedSettings.find(ls => ls === setting)) {
+          throw new BotPublicError(
+            this.langManager.getString(
+              'command_mysettings_error_wrong_setting',
+              setting,
+              localizedSettings.join(', ')
+            )
+          );
+        }
       }
     }
   }

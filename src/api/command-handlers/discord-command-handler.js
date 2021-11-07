@@ -9,6 +9,8 @@
 const CommandHandler = require('./command-handler');
 const CommandModule = require('./command-module');
 
+const BotPublicError = require('../../utils/bot-public-error');
+
 const AddBadWordsCommand = require('../../commands_discord/settings/add-bad-words-command');
 const AddRoleCommand = require('../../commands_discord/moderation/add-role-command');
 const AddRoleManagerCommand = require('../../commands_discord/permissions/add-role-manager-command');
@@ -48,6 +50,20 @@ const SettingsCommand = require('../../commands_discord/settings/settings-comman
 const WarnCommand = require('../../commands_discord/moderation/warn-command');
 const WarningsCommand = require('../../commands_discord/moderation/warnings-command');
 
+const GetChannelSuggestions = require('../../commands_discord/suggestions/get-channel-suggestions');
+const GetUserSuggestions = require('../../commands_discord/suggestions/get-user-suggestions');
+const GetRoleSuggestions = require('../../commands_discord/suggestions/get-role-suggestions');
+const GetSubjectSuggestions = require('../../commands_discord/suggestions/get-subject-suggestions');
+const GetMentionSuggestions = require('../../commands_discord/suggestions/get-mention-suggestions');
+const GetSettingSuggestions = require('../../commands_discord/suggestions/get-setting-suggestions');
+const GetUserSettingSuggestions = require('../../commands_discord/suggestions/get-user-setting-suggestions');
+const GetPermissionSuggestions = require('../../commands_discord/suggestions/get-permission-suggestions');
+const GetLocaleSuggestions = require('../../commands_discord/suggestions/get-locale-suggestions');
+const GetTimezoneSuggestions = require('../../commands_discord/suggestions/get-timezone-suggestions');
+const GetReminderSuggestions = require('../../commands_discord/suggestions/get-reminder-suggestions');
+const GetWarningSuggestions = require('../../commands_discord/suggestions/get-warning-suggestions');
+const GetImageTemplateSuggestions = require('../../commands_discord/suggestions/get-image-template-suggestions');
+
 const Modules = Object.freeze([
   new CommandModule('permissions', {
     displayName: 'web_command_module_permissions',
@@ -86,6 +102,11 @@ const Modules = Object.freeze([
   }),
 ]);
 
+const SuggestionCommands = Object.freeze([GetChannelSuggestions, GetUserSuggestions, GetRoleSuggestions,
+  GetSubjectSuggestions, GetMentionSuggestions, GetSettingSuggestions, GetUserSettingSuggestions,
+  GetPermissionSuggestions, GetLocaleSuggestions, GetTimezoneSuggestions, GetReminderSuggestions, GetWarningSuggestions,
+  GetImageTemplateSuggestions]);
+
 /**
  * Handles UI commands for the Discord client.
  * @alias DiscordCommandHandler
@@ -99,6 +120,123 @@ class DiscordCommandHandler extends CommandHandler {
    */
   get definedModules() {
     return Modules;
+  }
+
+  /**
+   * Gets the array of Bot commands which can be used by UI clients to get suggestions on inpit,
+   * defined for specific source.
+   * @return {Array<constructor>} the defined commands
+   */
+  get definedSuggestions() {
+    return SuggestionCommands;
+  }
+
+  /**
+   * Parses a Discord command, including the arguments.
+   * The process is mostly copied from the corresponding process of the standard Bot interface.
+   * @see CommandsParser
+   * @param  {Context}                     context            the Bot's context
+   * @param  {BaseMessage}                 message            the command's message
+   * @param  {constructor<DiscordCommand>} commandClass       the class of the command to be executed
+   * @param  {Object}                      commandArgs        the arguments map
+   * @param  {LangManager}                 commandLangManager the language manager
+   * @return {Promise<DiscordCommand>}                        the Discord command instance or null if failed
+   */
+  async tryParseDiscordCommand(context, message, commandClass, commandArgs, commandLangManager) {
+    const command = commandClass.createForOrg(context, message.source.name, commandLangManager, message.orgId);
+
+    try {
+      await command.parseFromDiscordWithArgs(message, commandArgs);
+    } catch (error) {
+      context.log.w(
+        'tryParseDiscordCommandFromWeb: failed to parse command: "' +
+          commandClass.getCommandInterfaceName() +
+          '"; args: ' +
+          require('util').inspect(commandArgs) +
+          '"; Error message: ' +
+          error +
+          '; stack: ' +
+          error.stack +
+          (error.errorCode ? (';\nerrorCode: ' + error.errorCode) : '')
+      );
+      await message.reply(
+        commandLangManager.getString(
+          'validate_command_web_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+        )
+      );
+      return null;
+    }
+
+    return command;
+  }
+
+  /**
+   * Executes a Discord command after parsing the arguments and checking the user permissions according
+   * to the supplied arguments.
+   * The process is mostly copied from the corresponding process of the standard Bot interface.
+   * @see CommandsParser
+   * @param  {Context}                     context            the Bot's context
+   * @param  {BaseMessage}                 message            the command's message
+   * @param  {constructor<DiscordCommand>} commandClass       the class of the command to be executed
+   * @param  {Object}                      commandArgs        the arguments map
+   * @param  {LangManager}                 commandLangManager the language manager
+   * @return {Promise}                                        nothing
+   */
+  async executeDiscordCommand(context, message, commandClass, commandArgs, commandLangManager) {
+    const command = await this.tryParseDiscordCommand(context, message, commandClass, commandArgs, commandLangManager);
+    if (command === null) {
+      return;
+    }
+
+    try {
+      await context.permManager.checkDiscordCommandPermissions(message, command);
+    } catch (error) {
+      context.log.w(
+        'executeCommandFromWeb: Not permitted to execute: "' +
+          commandClass.getCommandInterfaceName() +
+          '"; args: ' +
+          require('util').inspect(commandArgs) +
+          '; Error message: ' +
+          error +
+          '; stack: ' +
+          error.stack
+      );
+      await message.reply(
+        commandLangManager.getString(
+          'permission_command_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+        )
+      );
+      return;
+    }
+
+    let result;
+    try {
+      result = await command.executeForDiscord(message);
+    } catch (error) {
+      context.log.w(
+        'executeCommandFromWeb: failed to execute command: "' +
+          commandClass.getCommandInterfaceName() +
+          '"; args: ' +
+          require('util').inspect(commandArgs) +
+          '"; Error message: ' +
+          error +
+          '; stack: ' +
+          error.stack
+      );
+      await message.reply(
+        commandLangManager.getString(
+          'execute_command_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+        )
+      );
+      return;
+    }
+
+    if (result !== undefined && result !== null && result !== '') {
+      await message.reply(result);
+    }
   }
 }
 

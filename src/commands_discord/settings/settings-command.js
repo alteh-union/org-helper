@@ -9,18 +9,21 @@
 const BotPublicError = require('../../utils/bot-public-error');
 
 const DiscordCommand = require('../discord-command');
+const GetSettingSuggestions = require('../suggestions/get-setting-suggestions');
+
 const CommandArgDef = require('../../command_meta/command-arg-def');
-const FullStringArgScanner = require('../../arg_scanners/full-string-arg-scanner');
+const ArrayArgScanner = require('../../arg_scanners/array-arg-scanner');
 
 const PermissionsManager = require('../../managers/permissions-manager');
 
 const ServerSettingsTable = require('../../mongo_classes/server-settings-table');
 
 const SettingsCommandArgDefs = Object.freeze({
-  setting: new CommandArgDef('setting', {
-    aliasIds: ['command_settings_arg_setting_alias_setting', 'command_settings_arg_setting_alias_s'],
-    helpId: 'command_settings_arg_setting_help',
-    scanner: FullStringArgScanner
+  settings: new CommandArgDef('settings', {
+    aliasIds: ['command_settings_arg_settings_alias_settings', 'command_settings_arg_settings_alias_s'],
+    helpId: 'command_settings_arg_settings_help',
+    scanner: ArrayArgScanner,
+    suggestions: GetSettingSuggestions
   })
 });
 
@@ -108,13 +111,16 @@ class SettingsCommand extends DiscordCommand {
   async validateFromDiscord(message) {
     await super.validateFromDiscord(message);
 
-    if (this.setting !== null) {
+    if (this.settings !== null && this.settings.length > 0) {
       const availableSettings = Object.values(ServerSettingsTable.SERVER_SETTINGS);
       const localizedSettings = availableSettings.map(a => this.langManager.getString(a.textId));
-      if (!localizedSettings.find(ls => ls === this.setting)) {
-        throw new BotPublicError(
-          this.langManager.getString('command_settings_error_wrong_setting', this.setting, localizedSettings.join(', '))
-        );
+      for (const setting of localizedSettings) {
+        if (!localizedSettings.find(ls => ls === setting)) {
+          throw new BotPublicError(
+            this.langManager.getString('command_settings_error_wrong_setting',
+              setting, localizedSettings.join(', '))
+          );
+        }
       }
     }
   }
@@ -142,7 +148,7 @@ class SettingsCommand extends DiscordCommand {
   }
 
   /**
-   * Makes a related settings description (single setting if the setting arg is specified).
+   * Makes a related settings description (certain settings if the settings arg is specified).
    * @param  {BaseMessage}    message           the Discord message with the command
    * @param  {Array<Object>}  availableSettings the array of available settings
    * @param  {string}         emptyTextId       the text id of string to be used if no settings are found
@@ -152,17 +158,21 @@ class SettingsCommand extends DiscordCommand {
    */
   async getSettingsDescription(message, availableSettings, emptyTextId, dbFunc, includeUser) {
     dbFunc = dbFunc.bind(this.context.dbManager);
-    if (this.setting !== null) {
-      const settingDefinition = Object.values(availableSettings)
-        .find(as => this.langManager.getString(as.textId) === this.setting);
-      const value = includeUser
-        ? await dbFunc(this.source, this.orgId, message.userId, settingDefinition.name)
-        : await dbFunc(this.source, this.orgId, settingDefinition.name);
-      if (value !== undefined) {
-        return this.langManager.getString(settingDefinition.textId) + ' : ' + value;
+    if (this.settings !== null && this.settings.length > 0) {
+      let result = '';
+      for (const setting of this.settings) {
+        const settingDefinition = Object.values(availableSettings)
+          .find(as => this.langManager.getString(as.textId) === setting);
+        const value = includeUser
+          ? await dbFunc(this.source, this.orgId, message.userId, settingDefinition.name)
+          : await dbFunc(this.source, this.orgId, settingDefinition.name);
+        if (value !== undefined) {
+          result += this.langManager.getString(settingDefinition.textId) + ' : ' + value + '\n';
+        } else {
+          result += this.langManager.getString(emptyTextId, setting) + '\n';
+        }
       }
-
-      return this.langManager.getString(emptyTextId);
+      return result;
     }
 
     const getResults = [];

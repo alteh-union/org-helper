@@ -8,18 +8,18 @@
 
 const UiTypes = Object.freeze({
   stringType: 'string',
-  fullStringType: 'fullString',
+  fullStringType: 'string',
   arrayType: 'array',
   booleanType: 'boolean',
   timeType: 'time',
   objectType: 'object',
-  channelsType: 'channels',
-  subjectsType: 'subjects',
-  mentionsType: 'mentions'
+  channelsType: 'array',
+  subjectsType: 'array',
+  mentionsType: 'array'
 });
 
 /**
- * Provides the list of possible UI (Wen, Android etc.) types for scanner.
+ * Provides the list of possible UI (Web, Android etc.) types for scanner.
  * Web representation of command arguments depends on the this.
  * @alias ScannerUiType
  */

@@ -53,4 +53,7 @@
     <dimen name="account_name_text_size">24sp</dimen>
     <dimen name="account_active_label_text_size">24sp</dimen>
     <dimen name="logged_out_label_size">20sp</dimen>
+    <dimen name="array_argument_input_padding">8dp</dimen>
+    <dimen name="suggestion_inner_margin">8dp</dimen>
+    <dimen name="suggestion_padding">3dp</dimen>
 </resources>

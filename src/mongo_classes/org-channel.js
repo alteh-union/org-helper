@@ -65,7 +65,7 @@ class OrgChannel extends BotRow {
    * @param  {string}   type the name of the text channel type
    * @return {Boolean}       true if equal to text type, false otherwise
    */
-  isTextType(type) {
+  static isTextType(type) {
     return type === TEXT_TYPE;
   }
 
@@ -74,7 +74,7 @@ class OrgChannel extends BotRow {
    * @param  {string}   type the name of the voice channel type
    * @return {Boolean}       true if equal to voice type, false otherwise
    */
-  isVoiceType(type) {
+  static isVoiceType(type) {
     return type === VOICE_TYPE;
   }
 

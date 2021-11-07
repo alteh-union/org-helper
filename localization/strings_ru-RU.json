@@ -391,10 +391,10 @@
   "command_settings_displayname": "Показать настройки",
   "command_settings_help": "Показывает настройки сервера с точки зрения бота. Если указано имя конкретной настройки, то показывает только её значение.",
 
-  "command_settings_arg_setting_alias_setting": "настройка",
-  "command_settings_arg_setting_alias_s": "н",
-  "command_settings_arg_setting_help": "Настройка, для которой нужно получить значение.",
-  "command_settings_empty_setting": "Такой настройки для сервера не задано.",
+  "command_settings_arg_settings_alias_settings": "настройки",
+  "command_settings_arg_settings_alias_s": "н",
+  "command_settings_arg_settings_help": "Настройка(и), для которой(ых) нужно получить значение (через запятую).",
+  "command_settings_empty_setting": "Такой настройки для сервера не задано: %s.",
   "command_settings_error_wrong_setting": "Неправильное имя настройки: %s. Доступные имена: %s",
 
 
@@ -402,7 +402,7 @@
   "command_mysettings_displayname": "Показать мои настройки",
   "command_mysettings_help": "Показывает ваши настройки. Если указано имя конкретной настройки, то показывает только её значение.",
 
-  "command_mysettings_empty_setting": "Такой настройки для вас не задано на сервере.",
+  "command_mysettings_empty_setting": "Такой настройки для вас не задано на сервере: %s.",
   "command_mysettings_error_wrong_setting": "Неправильное имя настройки: %s. Доступные имена: %s",
 
 

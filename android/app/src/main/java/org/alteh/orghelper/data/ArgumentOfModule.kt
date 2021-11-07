@@ -22,5 +22,6 @@ class ArgumentOfModule (
     var argId: String? = "",
     var argName: String? = "",
     var scannerType: String? = "",
+    var suggestionsCommand: String? = "",
     var argHelp: String? = null
 )

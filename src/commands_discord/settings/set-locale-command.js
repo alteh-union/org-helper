@@ -9,6 +9,7 @@
 const BotPublicError = require('../../utils/bot-public-error');
 
 const DiscordCommand = require('../discord-command');
+const GetLocaleSuggestions = require('../suggestions/get-locale-suggestions');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 
 const PermissionsManager = require('../../managers/permissions-manager');
@@ -19,6 +20,7 @@ const SetLocaleCommandArgDefs = Object.freeze({
   locale: new CommandArgDef('locale', {
     aliasIds: ['command_setlocale_arg_locale_alias_locale', 'command_setlocale_arg_locale_alias_l'],
     helpId: 'command_setlocale_arg_locale_help',
+    suggestions: GetLocaleSuggestions,
     validationOptions: { nonNull: true }
   })
 });

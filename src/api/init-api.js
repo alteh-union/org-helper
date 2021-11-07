@@ -12,6 +12,7 @@ const auth = require('./routes/auth');
 const orgs = require('./routes/orgs');
 const modules = require('./routes/modules');
 const executeCommand = require('./routes/execute-command');
+const suggestions = require('./routes/suggestions');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('./helpers/jwt');
@@ -48,6 +49,7 @@ function initApi(c) {
     app.use('/orgs', orgs);
     app.use('/modules', modules);
     app.use('/commands', executeCommand);
+    app.use('/suggestions', suggestions);
 
     app.use(errorHandler);
 

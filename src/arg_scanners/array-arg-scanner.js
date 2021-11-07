@@ -41,38 +41,43 @@ class ArrayArgScanner extends SimpleArgScanner {
    * @param  {LangManager}     langManager Lang manager of the command
    * @param  {Object}          message     Message's object (source-dependent)
    * @param  {string}          text        Text to be scanned to parse the argument
+   * @param  {string}          scanType    The type of scan (by name, sequential etc.)
    * @return {Promise<Object>}             Promise of the parsed object of the argument and how many chars were scanned
    */
-  static async scan(context, langManager, message, text) {
-    return this.scanAsArray(context, text);
+  static async scan(context, langManager, message, text, scanType) {
+    return this.scanAsArray(context, text, scanType);
   }
 
   /**
    * Parses the given text to make an argument as an array.
-   * @param  {Context}         context Bot's context
-   * @param  {string}          text    Text to be scanned to parse the argument
-   * @return {Promise<Object>}         Promise of the parsed object of the argument and how many chars were scanned
+   * @param  {Context}         context  Bot's context
+   * @param  {string}          text     Text to be scanned to parse the argument
+   * @param  {string}          scanType The type of scan (by name, sequential etc.)
+   * @return {Promise<Object>}          Promise of the parsed object of the argument and how many chars were scanned
    */
-  static scanAsArray(context, text) {
+  static scanAsArray(context, text, scanType) {
     if (text === undefined || text === null || text === '') {
       return { value: null, nextPos: 1 };
     }
 
-    const endIndex = this.getLastCharIndex(context, text);
+    const endIndex = this.getLastCharIndex(text, scanType);
     const argText = text.slice(0, Math.max(0, endIndex));
-    const pieces = this.split(context, argText);
+    const pieces = this.split(argText);
     return { value: pieces.length > 0 ? pieces : null, nextPos: endIndex };
   }
 
   /**
    * Returns a char position which can be considered as the last symbol to be parsed for the array.
-   * @param  {Context} context Bot's context
-   * @param  {string}  text    Text to be scanned
-   * @return {number}          The index of the char in the text
+   * @param  {string}  text     Text to be scanned
+   * @param  {string}  scanType The type of scan (by name, sequential etc.)
+   * @return {number}           The index of the char in the text
    */
-  static getLastCharIndex(context, text) {
+  static getLastCharIndex(text, scanType) {
     if (text === undefined || text === null || text === '') {
       return 0;
+    }
+    if (scanType === this.SCAN_TYPES.byName) {
+      return text.length;
     }
 
     const nonQuotedSpaces = OhUtils.getNonQuotedIndices(text, ' ');
@@ -93,7 +98,7 @@ class ArrayArgScanner extends SimpleArgScanner {
    * @param  {string} text    The text to be splitted
    * @return {Array}          The result array
    */
-  static split(context, text) {
+  static split(text) {
     const pieces = text.split(this.ARRAY_SEPARATOR);
     for (let i = 0; i < pieces.length; i++) {
       pieces[i] = pieces[i].trim();

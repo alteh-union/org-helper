@@ -50,9 +50,10 @@ class ObjectArgScanner extends SimpleArgScanner {
    * @param  {LangManager}     langManager Lang manager of the command
    * @param  {Object}          message     Message's object (source-dependent)
    * @param  {string}          text        Text to be scanned to parse the argument
+   * @param  {string}          scanType    The type of scan (by name, sequential etc.)
    * @return {Promise<Object>}             Promise of the parsed object of the argument and how many chars were scanned
    */
-  static async scan(context, langManager, message, text) {
+  static async scan(context, langManager, message, text, scanType) {
     if (text === undefined || text === null || text === '') {
       return { value: null, nextPos: 1 };
     }

@@ -18,6 +18,13 @@ const DiscordDiscriminatorSeparator = '#';
 
 const MaxTextLength = 2000;
 
+const MentionTypes = Object.freeze({
+  member: "member",
+  role: "role",
+  channel: "channel"
+});
+
+
 /**
  * Various utils related to Discord.
  * @alias DiscordUtils
@@ -72,6 +79,22 @@ class DiscordUtils {
   }
 
   /**
+   * The separator between a Discord user name and his/her discriminator
+   * @type {string}
+   */
+  static get DISCORD_DISCRIMINATOR_SEPARATOR() {
+    return DiscordDiscriminatorSeparator;
+  }
+
+  /**
+   * The possible types of Discord mentions.
+   * @type {Object}
+   */
+  static get MENTION_TYPES() {
+    return MentionTypes;
+  }
+
+  /**
    * Makes a string mentioning a user, to be used in Discord messages
    * @param  {string} userId the id of the Discord user
    * @return {string}        the mention string
@@ -96,6 +119,24 @@ class DiscordUtils {
    */
   static makeChannelMention(channelId) {
     return DiscordMentionStart + DiscordChannelPrefix + channelId + DiscordMentionEnd;
+  }
+
+  /**
+   * Makes a string mentioning a user or role in the user-friendly manner (e.g. by name, not by id)
+   * @param  {string} name the name of the Discord user or role
+   * @return {string}      the mention string
+   */
+  static makeSubjectMentionByName(name) {
+    return DiscordSubjectPrefix + name;
+  }
+
+  /**
+   * Makes a string mentioning a channel in the user-friendly manner (e.g. by name, not by id)
+   * @param  {string} name the name of the Discord channel
+   * @return {string}      the mention string
+   */
+  static makeChannelMentionByName(name) {
+    return DiscordChannelPrefix + name;
   }
 
   /**

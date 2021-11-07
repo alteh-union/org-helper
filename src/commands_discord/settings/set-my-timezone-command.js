@@ -13,6 +13,7 @@ const DiscordUtils = require('../../utils/discord-utils');
 const BotPublicError = require('../../utils/bot-public-error');
 
 const DiscordCommand = require('../discord-command');
+const GetTimezoneSuggestions = require('../suggestions/get-timezone-suggestions');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 
 const UserSettingsTable = require('../../mongo_classes/user-settings-table');
@@ -26,7 +27,8 @@ const SetMyTimezoneCommandArgDefs = Object.freeze({
       'command_setmytimezone_arg_timezone_alias_t',
       'command_setmytimezone_arg_timezone_alias_z'
     ],
-    helpId: 'command_setmytimezone_arg_timezone_help'
+    helpId: 'command_setmytimezone_arg_timezone_help',
+    suggestions: GetTimezoneSuggestions
   })
 });
 

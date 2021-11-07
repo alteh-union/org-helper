@@ -10,6 +10,7 @@ const DiscordUtils = require('../../utils/discord-utils');
 const BotPublicError = require('../../utils/bot-public-error');
 
 const DiscordCommand = require('../discord-command');
+const GetLocaleSuggestions = require('../suggestions/get-locale-suggestions');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 
 const UserSettingsTable = require('../../mongo_classes/user-settings-table');
@@ -17,7 +18,8 @@ const UserSettingsTable = require('../../mongo_classes/user-settings-table');
 const SetMyLocaleCommandArgDefs = Object.freeze({
   locale: new CommandArgDef('locale', {
     aliasIds: ['command_setmylocale_arg_locale_alias_locale', 'command_setmylocale_arg_locale_alias_l'],
-    helpId: 'command_setmylocale_arg_locale_help'
+    helpId: 'command_setmylocale_arg_locale_help',
+    suggestions: GetLocaleSuggestions
   })
 });
 

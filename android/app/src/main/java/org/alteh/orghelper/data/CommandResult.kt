@@ -20,5 +20,5 @@ class CommandResult (
     @SerializedName("attachments")
     var attachments: List<CommandAttachment> = listOf(),
     @SerializedName("suggestions")
-    var suggestions: List<CommandSuggestion> = listOf()
+    var suggestions: List<ValueSuggestion> = listOf()
 ) : Serializable

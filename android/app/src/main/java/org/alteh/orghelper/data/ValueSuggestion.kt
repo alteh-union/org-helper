@@ -16,7 +16,7 @@ import java.io.Serializable
  * This object is received via a web-response from the Bot's server.
  * Ensure that the [SerializedName] matches to what the server sends.
  */
-class CommandSuggestion (
+class ValueSuggestion (
     @SerializedName("id")
     var id: String = "",
     @SerializedName("description")

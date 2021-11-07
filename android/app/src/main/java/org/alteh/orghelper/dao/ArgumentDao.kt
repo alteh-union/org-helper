@@ -64,7 +64,7 @@ interface ArgumentDao {
      * out of this and attach the list of [Argument] to each corresponding command to get
      * the proper hierarchy of objects.
      */
-    @Query("SELECT com.*, arg.id AS argId, arg.name AS argName, arg.scannerType AS scannerType, arg.help AS argHelp FROM Command com LEFT OUTER JOIN Argument arg ON (com.source = arg.source AND com.accountId = arg.accountId AND com.orgId = arg.orgId AND com.moduleId = arg.moduleId AND com.id = arg.commandId)")
+    @Query("SELECT com.*, arg.id AS argId, arg.name AS argName, arg.scannerType AS scannerType, arg.suggestionsCommand AS suggestionsCommand, arg.help AS argHelp FROM Command com LEFT OUTER JOIN Argument arg ON (com.source = arg.source AND com.accountId = arg.accountId AND com.orgId = arg.orgId AND com.moduleId = arg.moduleId AND com.id = arg.commandId)")
     fun getArgumentsByModule(): LiveData<List<ArgumentOfModule>>
 
     /**

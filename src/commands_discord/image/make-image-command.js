@@ -7,12 +7,18 @@
  */
 
 const DiscordCommand = require('../discord-command');
+const GetImageTemplateSuggestions = require('../suggestions/get-image-template-suggestions');
+
 const BaseMessageAttachment = require('../../components/base-message-attachment');
+
 const ObjectArgScanner = require('../../arg_scanners/object-arg-scanner');
 const SimpleArgScanner = require('../../arg_scanners/simple-arg-scanner');
 const FullStringArgScanner = require('../../arg_scanners/full-string-arg-scanner');
+
 const CommandArgDef = require('../../command_meta/command-arg-def');
+
 const BotPublicError = require('../../utils/bot-public-error');
+
 const jimp = require('jimp');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
@@ -25,6 +31,7 @@ const MakeImageCommandArgDefs = Object.freeze({
     ],
     helpId: 'command_makeimage_arg_templateName_help',
     scanner: SimpleArgScanner,
+    suggestions: GetImageTemplateSuggestions,
     validationOptions: { nonNull: true }
   }),
   imgUrl: new CommandArgDef('imgUrl', {

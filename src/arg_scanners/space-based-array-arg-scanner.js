@@ -36,23 +36,27 @@ class SpaceBasedArrayArgScanner extends ArrayArgScanner {
 
   /**
    * Parses the given text to make an argument object for a command.
-   * @param  {Context}      context     Bot's context
-   * @param  {LangManager}  langManager Lang manager of the command
-   * @param  {Object}       message     Message's object (source-dependent)
-   * @param  {string}       text        Text to be scanned to parse the argument
-   * @return {Promise}                  Promise of the parsed object of the argument and how many chars were scanned
+   * @param  {Context}         context     Bot's context
+   * @param  {LangManager}     langManager Lang manager of the command
+   * @param  {Object}          message     Message's object (source-dependent)
+   * @param  {string}          text        Text to be scanned to parse the argument
+   * @param  {string}          scanType    The type of scan (by name, sequential etc.)
+   * @return {Promise<Object>}             Promise of the parsed object of the argument and how many chars were scanned
    */
-  static async scan(context, langManager, message, text) {
-    return this.scanAsArray(context, text);
+  static async scan(context, langManager, message, text, scanType) {
+    return this.scanAsArray(context, text, scanType);
   }
 
   /**
    * Returns a char position which can be considered as the last symbol to be parsed for the array.
-   * @param  {Context} context Bot's context
-   * @param  {string}  text    Text to be scanned
-   * @return {number}          The index of the char in the text
+   * @param  {string}  text     Text to be scanned
+   * @param  {string}  scanType The type of scan (by name, sequential etc.)
+   * @return {number}           The index of the char in the text
    */
-  static getLastCharIndex(context, text) {
+  static getLastCharIndex(text, scanType) {
+    if (text === undefined || text === null) {
+      return 0;
+    }
     return text.length;
   }
 }

@@ -15,6 +15,8 @@ const ArrayArgScanner = require('../../arg_scanners/array-arg-scanner');
 
 const RemindersCommand = require('./reminders-command');
 
+const GetReminderSuggestions = require('../suggestions/get-reminder-suggestions');
+
 const PermissionsManager = require('../../managers/permissions-manager');
 
 const OrgTask = require('../../mongo_classes/org-task');
@@ -24,6 +26,7 @@ const DeleteReminderCommandArgDefs = Object.freeze({
     aliasIds: ['command_deletereminder_arg_ids_alias_ids', 'command_deletereminder_arg_ids_alias_i'],
     helpId: 'command_deletereminder_arg_ids_help',
     scanner: ArrayArgScanner,
+    suggestions: GetReminderSuggestions,
     validationOptions: { isIdsArray: true }
   })
 });

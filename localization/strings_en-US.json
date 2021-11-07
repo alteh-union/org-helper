@@ -392,10 +392,10 @@
   "command_settings_displayname": "List server settings",
   "command_settings_help": "Lists the settings set up for the server. If a setting name is provided, then shows only that setting's value",
 
-  "command_settings_arg_setting_alias_setting": "setting",
-  "command_settings_arg_setting_alias_s": "s",
-  "command_settings_arg_setting_help": "The setting, which value you need to get.",
-  "command_settings_empty_setting": "Such setting is not set for the server.",
+  "command_settings_arg_settings_alias_settings": "settings",
+  "command_settings_arg_settings_alias_s": "s",
+  "command_settings_arg_settings_help": "The setting(s), which value(s) you need to get (comma separated).",
+  "command_settings_empty_setting": "Such setting is not set for the server: %s.",
   "command_settings_error_wrong_setting": "Wrong setting name provided: %s. Available settings are: %s",
 
 
@@ -403,7 +403,7 @@
   "command_mysettings_displayname": "List your settings on the server",
   "command_mysettings_help": "Lists your personal settings in the server. If a setting name is provided, then shows only that setting's value",
 
-  "command_mysettings_empty_setting": "Such setting is not set for you in the server.",
+  "command_mysettings_empty_setting": "Such setting is not set for you in the server: %s.",
   "command_mysettings_error_wrong_setting": "Wrong setting name provided: %s. Available settings are: %s",
 
 

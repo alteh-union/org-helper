@@ -8,6 +8,8 @@
 
 const DiscordCommand = require('../discord-command');
 
+const ArgSuggestion = require('../../command_meta/arg-suggestion');
+
 /**
  * Command to list available image templates.
  * @alias ListImageTemplatesCommand
@@ -68,9 +70,15 @@ class ListImageTemplatesCommand extends DiscordCommand {
       this.context.dbManager.imageTemplateTable,
       this.orgId,
       {});
+
+    const ids = res.map(r => r.id);
+    for (const id of ids) {
+      message.replyResult.suggestions.push(new ArgSuggestion(id, ""));
+    }
+
     return this.langManager.getString(
       'command_listimagetemplates_success',
-      res.map(r => r.id).join(', ')
+      ids.join(', ')
     );
   }
 

@@ -7,6 +7,8 @@
  */
 
 const DiscordCommand = require('../discord-command');
+const GetImageTemplateSuggestions = require('../suggestions/get-image-template-suggestions');
+
 const ArrayArgScanner = require('../../arg_scanners/array-arg-scanner');
 
 const ListImageTemplatesCommand = require('./list-image-templates-command');
@@ -21,6 +23,7 @@ const DeleteImageTemplateCommandArgDefs = Object.freeze({
     aliasIds: ['command_deleteimagetemplate_arg_ids_alias_ids', 'command_deleteimagetemplate_arg_ids_alias_i'],
     helpId: 'command_deleteimagetemplate_arg_ids_help',
     scanner: ArrayArgScanner,
+    suggestions: GetImageTemplateSuggestions,
     validationOptions: { isArray: true }
   })
 });

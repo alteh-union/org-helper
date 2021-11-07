@@ -13,6 +13,8 @@ const OhUtils = require('../utils/bot-utils');
 const Command = require('../command_meta/command');
 const ArgValidationTree = require('../command_meta/arg-validation-tree');
 
+const SimpleArgScanner = require('../arg_scanners/simple-arg-scanner');
+
 /**
  * Base Discord command.
  * @abstract
@@ -141,29 +143,32 @@ class DiscordCommand extends Command {
     for (const argKey of argsKeys) {
       const argText = commandArgs ? commandArgs[argKey] : this.findArgValue(message.content, definedArgs[argKey]);
       results.push(
-        definedArgs[argKey].scanner.scan(this.context, this.langManager, message, argText).then(async scanResult => {
-          let argValue = scanResult.value;
-          thiz.context.log.d(
-            'argValue: ' + util.inspect(argValue, { showHidden: false, depth: 2 }) + '; for key: ' + argKey
-          );
-          if (argValue === null || argValue === undefined) {
-            scanResult = await definedArgs[argKey].scanner.scan(
-              thiz.context,
-              thiz.langManager,
-              message,
-              await thiz.getDefaultDiscordArgValue(message, definedArgs[argKey])
-            );
-            argValue = scanResult.value;
+        definedArgs[argKey].scanner.scan(this.context, this.langManager, message, argText,
+          SimpleArgScanner.SCAN_TYPES.byName)
+          .then(async scanResult => {
+            let argValue = scanResult.value;
             thiz.context.log.d(
-              'argValue after checking default: ' +
+              'argValue: ' + util.inspect(argValue, { showHidden: false, depth: 2 }) + '; for key: ' + argKey
+            );
+            if (argValue === null || argValue === undefined) {
+              scanResult = await definedArgs[argKey].scanner.scan(
+                thiz.context,
+                thiz.langManager,
+                message,
+                await thiz.getDefaultDiscordArgValue(message, definedArgs[argKey]),
+                SimpleArgScanner.SCAN_TYPES.byName
+              );
+              argValue = scanResult.value;
+              thiz.context.log.d(
+                'argValue after checking default: ' +
                 util.inspect(argValue, { showHidden: false, depth: 2 }) +
                 '; for key: ' +
                 argKey
-            );
-          }
+              );
+            }
 
-          thiz[argKey] = argValue;
-        })
+            thiz[argKey] = argValue;
+          })
       );
     }
 
@@ -205,7 +210,8 @@ class DiscordCommand extends Command {
           this.context,
           this.langManager,
           message,
-          defaultValue
+          defaultValue,
+          SimpleArgScanner.SCAN_TYPES.byName
         );
         /* eslint-enable no-await-in-loop */
         argValue = scanResult.value;
@@ -224,7 +230,8 @@ class DiscordCommand extends Command {
             this.context,
             this.langManager,
             message,
-            defaultValue
+            defaultValue,
+            SimpleArgScanner.SCAN_TYPES.byName
           );
           /* eslint-enable no-await-in-loop */
           argValue = scanResult.value;
@@ -241,7 +248,8 @@ class DiscordCommand extends Command {
             this.context,
             this.langManager,
             message,
-            remainingArgText
+            remainingArgText,
+            SimpleArgScanner.SCAN_TYPES.sequential
           );
           /* eslint-enable no-await-in-loop */
           argValue = scanResult.value;
@@ -277,10 +285,10 @@ class DiscordCommand extends Command {
   async parseFromDiscord(message) {
     const index = OhUtils.findFirstNonQuotedIndex(message.content, this.constructor.ARG_PREFIX);
     if (index === -1) {
-      this.context.log.d('Sequential arg scan');
+      this.context.log.v('Sequential arg scan');
       await this.parseFromDiscordSequentially(message);
     } else {
-      this.context.log.d('Arg scan by name');
+      this.context.log.v('Arg scan by name');
       await this.parseFromDiscordByNames(message);
     }
 
@@ -295,7 +303,7 @@ class DiscordCommand extends Command {
    * @return {Promise}                  nothing
    */
   async parseFromDiscordWithArgs(message, commandArgs) {
-    this.context.log.d('Arg set from web');
+    this.context.log.v('Arg set from web');
     await this.parseFromDiscordByNames(message, commandArgs);
 
     await this.validateFromDiscord(message);

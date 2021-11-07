@@ -4,7 +4,7 @@
   ~ Licensed under the MIT License (see the root LICENSE file for details)
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.OrgHelper" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.OrgHelper" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryDark">@color/purple_700</item>
         <item name="colorAccent">@color/teal_200</item>

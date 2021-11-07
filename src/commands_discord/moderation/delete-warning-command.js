@@ -11,6 +11,7 @@ const CommandArgDef = require('../../command_meta/command-arg-def');
 const ArrayArgScanner = require('../../arg_scanners/array-arg-scanner');
 
 const WarningsCommand = require('./warnings-command');
+const GetWarningSuggestions = require('../suggestions/get-warning-suggestions');
 
 const PermissionsManager = require('../../managers/permissions-manager');
 
@@ -19,6 +20,7 @@ const DeleteWarningCommandArgDefs = Object.freeze({
     aliasIds: ['command_deletewarning_arg_ids_alias_ids', 'command_deletewarning_arg_ids_alias_i'],
     helpId: 'command_deletewarning_arg_ids_help',
     scanner: ArrayArgScanner,
+    suggestions: GetWarningSuggestions,
     validationOptions: { isIdsArray: true }
   })
 });

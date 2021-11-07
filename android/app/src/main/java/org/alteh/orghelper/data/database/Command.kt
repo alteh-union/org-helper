@@ -144,7 +144,7 @@ data class Command (
         /**
          * Checks if the results of command executions are the same. This includes the check down to the
          * text form of the response from the Bot's server.
-         * TODO: Design a more deep verification: by attachments, by received suggestions etc.
+         * TODO: Design a more deep verification: by attachments etc.
          */
         private fun areResultsTheSame(
             oldItem: Command,

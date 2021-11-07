@@ -8,6 +8,7 @@
 const OhUtils = require('../utils/bot-utils');
 
 const DiscordCommand = require('../commands_discord/discord-command');
+const GetSubjectSuggestions = require('../commands_discord/suggestions/get-subject-suggestions');
 const DiscordUtils = require('../utils/discord-utils');
 const DiscordMentionsArgScanner = require('./discord-mentions-arg-scanner');
 const DiscordSubjectsArg = require('../command_meta/discord-subjects-arg');
@@ -28,15 +29,24 @@ class DiscordSubjectsArgScanner extends DiscordMentionsArgScanner {
   }
 
   /**
-   * Parses the given text to make an argument object for a command.
-   * @param  {Context}      context     Bot's context
-   * @param  {LangManager}  langManager Lang manager of the command
-   * @param  {Object}       message     Message's object (source-dependent)
-   * @param  {string}       text        Text to be scanned to parse the argument
-   * @return {Promise}                  Promise of the parsed object of the argument and how many chars were scanned
+   * Returns the command class which can be used to get suggestions on input for this kind of argument.
+   * @return {constructor} the command class
    */
-  static async scan(context, langManager, message, text) {
-    const lastIndex = this.getLastCharIndex(context, text);
+  static getSuggestionsCommand() {
+    return GetSubjectSuggestions;
+  }
+
+  /**
+   * Parses the given text to make an argument object for a command.
+   * @param  {Context}         context     Bot's context
+   * @param  {LangManager}     langManager Lang manager of the command
+   * @param  {Object}          message     Message's object (source-dependent)
+   * @param  {string}          text        Text to be scanned to parse the argument
+   * @param  {string}          scanType    The type of scan (by name, sequential etc.)
+   * @return {Promise<Object>}             Promise of the parsed object of the argument and how many chars were scanned
+   */
+  static async scan(context, langManager, message, text, scanType) {
+    const lastIndex = this.getLastCharIndex(text, scanType);
     if (lastIndex === 0) {
       return { value: null, nextPos: 1 };
     }
@@ -47,7 +57,7 @@ class DiscordSubjectsArgScanner extends DiscordMentionsArgScanner {
       if (argText === langManager.getString(DiscordCommand.ANY_VALUE_TEXT)) {
         argValue = new DiscordSubjectsArg([OhUtils.ANY_VALUE], [OhUtils.ANY_VALUE]);
       } else {
-        argValue = this.parseDiscordSubjectArg(argText);
+        argValue = await this.parseDiscordSubjectArg(context, message, argText);
       }
     }
 
@@ -57,16 +67,24 @@ class DiscordSubjectsArgScanner extends DiscordMentionsArgScanner {
   /**
    * Parses the argument text into an array of ids for Discord subjects (members or roles).
    * Does not parse "any" value - it should be parsed separately.
+   * @param  {Context}            context Bot's context
+   * @param  {Object}             message Message's object (source-dependent)
    * @param  {string}             argText the text to be parsed
    * @return {DiscordSubjectsArg}         the array of subjects
    */
-  static parseDiscordSubjectArg(argText) {
+  static async parseDiscordSubjectArg(context, message, argText) {
     return new DiscordSubjectsArg(
-      this.parseDiscordMentions(
+      (await this.parseDiscordMentions(
+        context,
+        message,
         argText,
-        DiscordUtils.DISCORD_SUBJECT_PREFIX + DiscordUtils.DISCORD_SUBJECT_ID_PREFIX
-      ).concat(this.parseDiscordMentions(argText, DiscordUtils.DISCORD_SUBJECT_PREFIX)),
-      this.parseDiscordMentions(argText, DiscordUtils.DISCORD_SUBJECT_PREFIX + DiscordUtils.DISCORD_SUBJECT_ROLE_PREFIX)
+        DiscordUtils.DISCORD_SUBJECT_PREFIX + DiscordUtils.DISCORD_SUBJECT_ID_PREFIX,
+        DiscordUtils.MENTION_TYPES.member
+      )).concat(await this.parseDiscordMentions(context, message, argText,
+        DiscordUtils.DISCORD_SUBJECT_PREFIX, DiscordUtils.MENTION_TYPES.member)),
+      await this.parseDiscordMentions(context, message, argText,
+        DiscordUtils.DISCORD_SUBJECT_PREFIX + DiscordUtils.DISCORD_SUBJECT_ROLE_PREFIX,
+        DiscordUtils.MENTION_TYPES.role)
     );
   }
 }

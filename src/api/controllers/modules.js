@@ -11,41 +11,6 @@ const ObjectId = require('mongodb').ObjectId;
 
 const DiscordCommandHandler = require('../command-handlers/discord-command-handler');
 
-const LangManager = require('../../managers/lang-manager');
-
-const BotTable = require('../../mongo_classes/bot-table');
-const ServerSettingsTable = require('../../mongo_classes/server-settings-table');
-const UserSettingsTable = require('../../mongo_classes/user-settings-table');
-
-/**
- * Gets the most suitable language manager based on the organization and user preferences.
- * The process is mostly copied from the corresponding process of the standard Bot interface.
- * @see CommandsParser
- * @param  {Context}              context the Bot's context
- * @param  {string}               orgId   the identifier of the organization
- * @param  {string}               userId  the identifier of the user
- * @return {Promise<LangManager>}         the most suitable language manager
- */
-const getCommandLangManager = async (context, orgId, userId) => {
-  const currentLocale = await context.dbManager.getSetting(
-    BotTable.DISCORD_SOURCE,
-    orgId,
-    ServerSettingsTable.SERVER_SETTINGS.localeName.name
-  );
-
-  const currentUserLocale = await context.dbManager.getUserSetting(
-    BotTable.DISCORD_SOURCE,
-    orgId,
-    userId,
-    UserSettingsTable.USER_SETTINGS.localeName.name
-  );
-
-  return new LangManager(
-    context.localizationPath,
-    currentUserLocale === undefined ? currentLocale : currentUserLocale
-  );
-};
-
 /**
  * Gets the list of command modules (groups) available for the user in the given organization.
  * @param  {Request}  req  the express object representing the web-request to this endpoint
@@ -79,9 +44,10 @@ const getUserModules = async (req, res, next) => {
       }
 
       const discordUserId = user.discordInfo.id;
-      const langManager = await getCommandLangManager(context, orgId, discordUserId);
+      const commandHandler = new DiscordCommandHandler();
+      const langManager = await commandHandler.getCommandLangManager(context, orgId, discordUserId);
 
-      const completeModules = new DiscordCommandHandler().definedModules;
+      const completeModules = commandHandler.definedModules;
 
       const filteredModules = [];
       for (const commandModule of completeModules) {
@@ -137,7 +103,8 @@ const getModuleDefinition = async (req, res, next) => {
         return res.status(400).send('Missing module id');
       }
 
-      const completeModules = new DiscordCommandHandler().definedModules;
+      const commandHandler = new DiscordCommandHandler();
+      const completeModules = commandHandler.definedModules;
 
       const selectedModule = completeModules.find(m => m.name === moduleId);
 
@@ -146,7 +113,7 @@ const getModuleDefinition = async (req, res, next) => {
       }
 
       const discordUserId = user.discordInfo.id;
-      const langManager = await getCommandLangManager(context, orgId, discordUserId);
+      const langManager = await commandHandler.getCommandLangManager(context, orgId, discordUserId);
 
       const moduleDefinition = {};
       moduleDefinition.id = selectedModule.name;
@@ -166,6 +133,7 @@ const getModuleDefinition = async (req, res, next) => {
             const arg = definedArgs[argName];
             const argDefinition = {};
             argDefinition.scannerType = arg.scanner.getUiType();
+            argDefinition.suggestionsCommand = arg.suggestions ? arg.suggestions.getCommandInterfaceName() : null;
             argDefinition.name = arg.name;
             argDefinition.displayName = langManager.getString(arg.aliasIds[0]);
             argDefinition.help = langManager.getString(arg.helpId);

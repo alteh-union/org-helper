@@ -44,6 +44,7 @@ import org.alteh.orghelper.OrgHelperApplication.Companion.LOG_TAG
 import org.alteh.orghelper.data.database.Argument
 import org.alteh.orghelper.data.database.ArgumentValue
 import org.alteh.orghelper.data.database.Command
+import org.alteh.orghelper.scanner.Scanner
 
 /**
  * The main fragment for the user to issue [Command]s to the Bot's server.
@@ -57,7 +58,7 @@ class CommandsFragment : Fragment() {
 
     var activeModule: ModuleOfOrg? = null
 
-    private val commandsModel: CommandsViewModel by activityViewModels()
+    val commandsModel: CommandsViewModel by activityViewModels()
 
     private var recyclerView: RecyclerView? = null
 
@@ -133,7 +134,7 @@ class CommandsFragment : Fragment() {
                                 val arg = Argument(commandArg.source, commandArg.accountId,
                                     commandArg.orgId, commandArg.moduleId, commandArg.id,
                                     commandArg.argId!!, commandArg.argName!!, commandArg.scannerType,
-                                    commandArg.argHelp)
+                                    commandArg.suggestionsCommand, commandArg.argHelp)
                                 latestValues?.find {
                                         value -> commandArg.argId == value.argumentId
                                 }?.let { matchingValue ->
@@ -180,6 +181,25 @@ class CommandsFragment : Fragment() {
 
         commandsModel.executionResults.observe(viewLifecycleOwner, resultsObserver)
 
+        val suggestionsObserver = Observer<Map<Pair<String, String>, List<ValueSuggestion>>?> { newSuggestions ->
+            if (newSuggestions != null) {
+                for ((k, v) in newSuggestions) {
+                    adapter.currentList.find { com -> com.id == k.first }?.let {
+                        it.arguments?.let { args ->
+                            args.find { arg -> arg.id == k.second }?.let { arg ->
+                                if (!Argument.areSuggestionsTheSame(arg.suggestions, v)) {
+                                    arg.suggestions = v
+                                    adapter.notifyItemChanged(adapter.currentList.indexOf(it))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        commandsModel.suggestionsResults.observe(viewLifecycleOwner, suggestionsObserver)
+
         commandsModel.requestCommands()
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
@@ -224,11 +244,16 @@ class CommandsFragment : Fragment() {
             executeButton.setOnClickListener {
                 bindingAdapter?.let {
                     val argValues = mutableListOf<String>()
-                    for (i in 0 until argsLayout.children.count()) {
-                        val argView = argsLayout.children.elementAt(i)
-                        val editText = argView.findViewById<EditText>(R.id.argumentInput)
-                        argValues.add(editText.text.toString())
+
+                    arguments?.let {
+                        for (i in 0 until argsLayout.children.count()) {
+                            val argView = argsLayout.children.elementAt(i)
+                            val inputLayout = argView.findViewById<FrameLayout>(R.id.argumentInputLayout)
+                            val value = Scanner.getScannerByType(arguments[i].scannerType).getTextValue(inputLayout)
+                            argValues.add(value)
+                        }
                     }
+
                     (it as CommandListAdapter).onExecute(absoluteAdapterPosition, argValues)
                 }
             }
@@ -326,7 +351,8 @@ class CommandsFragment : Fragment() {
             bindingAdapter?.let {
                 argsLayout.removeAllViews()
                 for (arg in arguments) {
-                    val argView: View = LayoutInflater.from((it as CommandListAdapter).fragment.activity)
+                    val fragment = (it as CommandListAdapter).fragment
+                    val argView: View = LayoutInflater.from(fragment.activity)
                         .inflate(R.layout.list_item_argument, argsLayout, false)
                     argView.layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
                     argsLayout.addView(argView)
@@ -336,24 +362,23 @@ class CommandsFragment : Fragment() {
                     val argHelpView = argView.findViewById<TextView>(R.id.argumentHelp)
                     argHelpView.text = arg.help
 
-                    val editText = argView.findViewById<EditText>(R.id.argumentInput)
-
-                    arg.lastValue?.let { value ->
-                        editText.setText(value.value)
-                    }
-
                     if (arg.lastValue == null) {
                         arg.lastValue = ArgumentValue(arg.source, arg.accountId, arg.orgId, arg.moduleId,
                             arg.commandId, arg.id)
                     }
 
-                    editText.addTextChangedListener { editable ->
-                        bindingAdapter?.let { adapter ->
-                            (adapter as CommandListAdapter).fragment.commandsModel.updateArgumentValue(
-                                arg, editable.toString())
-                            arg.lastValue?.value = editable.toString()
+                    arg.suggestionsCommand?.let { suggestionsCommand ->
+                        fragment.activeModule?.let { module ->
+                            if (arg.suggestions.isEmpty()) {
+                                fragment.commandsModel.getSuggestions(
+                                    module.account.token!!, arg, suggestionsCommand, mapOf())
+                            }
                         }
                     }
+
+                    val argInputLayout = argView.findViewById<FrameLayout>(R.id.argumentInputLayout)
+
+                    Scanner.getScannerByType(arg.scannerType).addArgumentInput(fragment, argInputLayout, arg)
                 }
             }
         }

@@ -12,6 +12,7 @@ const BotPublicError = require('../../utils/bot-public-error');
 
 const DiscordCommand = require('../discord-command');
 const CommandArgDef = require('../../command_meta/command-arg-def');
+const ArgSuggestion = require('../../command_meta/arg-suggestion');
 
 const PermissionsManager = require('../../managers/permissions-manager');
 
@@ -194,17 +195,12 @@ class PermissionsCommand extends DiscordCommand {
         }
       }
 
-      result =
-        result +
-        this.langManager.getString(
-          resultTextId,
-          permission.id,
-          permType,
-          subjectTypeString,
-          subjectString,
-          filterDescription
-        ) +
-        '\n';
+      const permDescription = this.langManager.getString(resultTextId, permission.id, permType, subjectTypeString,
+        subjectString, filterDescription);
+
+      result = result + permDescription + '\n';
+
+      message.replyResult.suggestions.push(new ArgSuggestion(permission.id, permDescription));
     }
 
     return result;

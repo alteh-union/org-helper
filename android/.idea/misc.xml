@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/GitHub/org-helper/android/app/src/main/res/layout/argument_input_array.xml" value="0.5523632993512512" />
+        <entry key="..\:/GitHub/org-helper/android/app/src/main/res/layout/argument_input_array_chip.xml" value="0.36666666666666664" />
+        <entry key="..\:/GitHub/org-helper/android/app/src/main/res/layout/argument_input_string.xml" value="0.19427083333333334" />
+        <entry key="..\:/GitHub/org-helper/android/app/src/main/res/layout/array_argument_input.xml" value="0.36666666666666664" />
+        <entry key="..\:/GitHub/org-helper/android/app/src/main/res/layout/list_item_account.xml" value="0.19791666666666666" />
+        <entry key="..\:/GitHub/org-helper/android/app/src/main/res/layout/list_item_argument.xml" value="0.36666666666666664" />
+        <entry key="..\:/GitHub/org-helper/android/app/src/main/res/layout/list_item_command.xml" value="0.36666666666666664" />
+        <entry key="..\:/GitHub/org-helper/android/app/src/main/res/layout/string_argument_input.xml" value="0.36666666666666664" />
+        <entry key="..\:/GitHub/org-helper/android/app/src/main/res/layout/suggestion.xml" value="0.36666666666666664" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

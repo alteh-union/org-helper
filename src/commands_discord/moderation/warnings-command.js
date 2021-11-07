@@ -10,6 +10,7 @@ const OhUtils = require('../../utils/bot-utils');
 const DiscordUtils = require('../../utils/discord-utils');
 
 const DiscordCommand = require('../discord-command');
+const ArgSuggestion = require('../../command_meta/arg-suggestion');
 const CommandArgDef = require('../../command_meta/command-arg-def');
 const DiscordSubjectsArgScanner = require('../../arg_scanners/discord-subjects-arg-scanner');
 
@@ -132,7 +133,7 @@ class WarningsCommand extends DiscordCommand {
 
     let result = '';
     for (const warning of warnings) {
-      result += this.langManager.getString(
+      const warningText = this.langManager.getString(
         'command_warnings_warning',
         warning.id,
         DiscordUtils.makeUserMention(warning.userId),
@@ -140,6 +141,8 @@ class WarningsCommand extends DiscordCommand {
         new Date(warning.timestamp).toISOString(),
         warning.reason
       );
+      message.replyResult.suggestions.push(new ArgSuggestion(warning.id, warningText));
+      result += warningText;
     }
 
     return result;

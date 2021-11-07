@@ -85,6 +85,17 @@ interface NetworkInterface {
         @Path("source") source: String,
         @Body command: CommandExecutionBundle)
             : ExecutionResult?
+
+    /**
+     * Requests the Bot server to execute a special command to get suggestions about input for a command's
+     * argument. The usage is similar to [executeCommand].
+     */
+    @POST("/suggestions/{source}/get-suggestions")
+    suspend fun getSuggestions(
+        @Header("Authorization") bearerToken: String,
+        @Path("source") source: String,
+        @Body command: CommandExecutionBundle)
+            : ExecutionResult?
 }
 
 class MainNetwork {
