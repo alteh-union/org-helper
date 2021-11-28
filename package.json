@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "jimp": "^0.14.0",
-    "jsdoc": "^3.6.4",
+    "jsdoc": "^3.6.7",
     "jsonwebtoken": "^8.5.1",
     "moment-timezone": "^0.5.28",
     "mongodb": "^3.5.5",
@@ -50,7 +50,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-unicorn": "^20.1.0",
-    "husky": "^4.2.5",
+    "husky": "^7.0.4",
     "lint-staged": "^10.2.11",
     "prettier": "2.0.5",
     "pretty-quick": "^2.0.1"
