@@ -132,9 +132,6 @@ class DiscordMentionsArgScanner extends ArrayArgScanner {
           const rolesCollection = await guild.roles.fetch();
           const roles = Array.from(rolesCollection.cache.values());
 
-          context.log.d(
-            require('util').inspect(roles, { showHidden: false, depth: 3 }));
-
           const foundRole = roles.find(role => role.name === mentions[i]);
           if (foundRole) {
             if (!/^\d+$/.test(foundRole.id)) {
