@@ -56,9 +56,9 @@ pm2 start src/index.js
 
 ## Development roadmap
 
-- Short term: suggestions for input in the Android app, human-readable Discord mentions in the Android app, language synchronization in between the app and the Bot's server, different help strings for UI clients (Web and Android), private settings and commands
-- Mid term: Telegram bot and Web client
-- Long term: ML-chat bot, speech-to-text for auto-logging meeting minutes, gamification, implementaion of liquid/hybrid democracy
+- Short term: Telegram bot
+- Mid term: Web client, language synchronization between the Android app and the Bot's server, different help strings for UI clients (Web and Android), private settings and commands
+- Long term: ML-chat bot, speech-to-text for auto-logging meeting minutes, gamification, implementation of liquid/hybrid democracy
 
 Wanna speed up the development and take one of the features on your own? Contact us at: alteh.union@gmail.com. This is not to restict you, but just to make sure several developers do not interfere with each other.
 
