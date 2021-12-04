@@ -7,9 +7,7 @@
 package org.alteh.orghelper
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import org.alteh.orghelper.dao.*
 import org.alteh.orghelper.data.database.*
 
@@ -31,6 +29,7 @@ import org.alteh.orghelper.data.database.*
     Argument::class,
     ArgumentValue::class],
     version = 1, exportSchema = false)
+@TypeConverters(OrgHelperDatabase.Converters::class)
 abstract class OrgHelperDatabase : RoomDatabase() {
     abstract val settingDao: SettingDao
     abstract val accountDao: AccountDao
@@ -39,6 +38,23 @@ abstract class OrgHelperDatabase : RoomDatabase() {
     abstract val commandDao: CommandDao
     abstract val argumentDao: ArgumentDao
     abstract val argumentValueDao: ArgumentValueDao
+
+    /**
+     * Helps to convert types which cannot be normally saved into SQLite DB
+     * into types which can (and vice versa). The Room compiler automatically
+     * determines when to use which function of this class.
+     */
+    class Converters {
+        @TypeConverter
+        fun listFromCommaString(value: String?): List<String>? {
+            return value?.split(",")
+        }
+
+        @TypeConverter
+        fun commaStringFromList(list: List<String>?): String? {
+            return list?.let { it.joinToString(",") }
+        }
+    }
 
     companion object {
         @Volatile

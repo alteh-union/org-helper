@@ -107,6 +107,10 @@ const SuggestionCommands = Object.freeze([GetChannelSuggestions, GetUserSuggesti
   GetPermissionSuggestions, GetLocaleSuggestions, GetTimezoneSuggestions, GetReminderSuggestions, GetWarningSuggestions,
   GetImageTemplateSuggestions]);
 
+const OrgWideSuggestionCommands = Object.freeze([GetChannelSuggestions, GetUserSuggestions, GetRoleSuggestions,
+  GetSubjectSuggestions, GetMentionSuggestions, GetSettingSuggestions, GetUserSettingSuggestions,
+  GetPermissionSuggestions, GetLocaleSuggestions, GetTimezoneSuggestions]);
+
 /**
  * Handles UI commands for the Discord client.
  * @alias DiscordCommandHandler
@@ -129,6 +133,16 @@ class DiscordCommandHandler extends CommandHandler {
    */
   get definedSuggestions() {
     return SuggestionCommands;
+  }
+
+  /**
+   * Gets the array of Bot commands which can be used by UI clients to get org-wide suggestions.
+   * That is, the suggestons which can be reused by various arguments across the org without
+   * necessity of asking the server every time.
+   * @return {Array<constructor>} the defined commands
+   */
+  get definedOrgWideSuggestions() {
+    return OrgWideSuggestionCommands;
   }
 
   /**

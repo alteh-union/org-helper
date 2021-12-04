@@ -18,6 +18,10 @@ import org.alteh.orghelper.OrgHelperApplication.Companion.LOG_TAG
 import org.alteh.orghelper.data.database.Account
 import org.alteh.orghelper.data.database.Module
 import org.alteh.orghelper.dao.ModuleDao
+import org.alteh.orghelper.data.CommandExecutionBundle
+import org.alteh.orghelper.data.CommandResult
+import org.alteh.orghelper.data.ExecutionResult
+import org.alteh.orghelper.data.database.Org
 import java.lang.NullPointerException
 import javax.inject.Inject
 
@@ -64,6 +68,35 @@ class ModuleRepository @Inject constructor(private val network: NetworkInterface
         }
 
         moduleDao.reloadForOrg(activeAccount.source, activeAccount.id, orgId, resultModules)
+    }
+
+    /**
+     * Asynchronously fetches the org-wide suggestions from the Bot's server.
+     */
+    suspend fun requestOrgWideSuggestions(
+        activeAccount: Account, org: Org
+    ) {
+        org.suggestionCommands?.let { commands ->
+            for (suggestionCommand in commands) {
+                val executionResult = getSuggestions(activeAccount.token!!, activeAccount.source,
+                    org.id, suggestionCommand) ?: continue
+
+                executionResult.commandResult?.let {
+                    it.suggestions.let { suggestions ->
+                        org.suggestions[suggestionCommand] = suggestions
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Asynchronously gets suggestions for a specific command from the Bot's server.
+     */
+    suspend fun getSuggestions(token: String, source: String, orgId: String, commandId: String): ExecutionResult? {
+        return network.getSuggestions(MainNetwork.getBearerHeader(token),
+            source, CommandExecutionBundle(commandId, orgId, mapOf())
+        )
     }
 
     /**

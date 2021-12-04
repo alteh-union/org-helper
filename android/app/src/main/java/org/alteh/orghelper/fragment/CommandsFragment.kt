@@ -189,7 +189,9 @@ class CommandsFragment : Fragment() {
                             args.find { arg -> arg.id == k.second }?.let { arg ->
                                 if (!Argument.areSuggestionsTheSame(arg.suggestions, v)) {
                                     arg.suggestions = v
-                                    adapter.notifyItemChanged(adapter.currentList.indexOf(it))
+                                    activity?.runOnUiThread {
+                                        adapter.notifyItemChanged(adapter.currentList.indexOf(it))
+                                    }
                                 }
                             }
                         }
@@ -371,7 +373,7 @@ class CommandsFragment : Fragment() {
                         fragment.activeModule?.let { module ->
                             if (arg.suggestions.isEmpty()) {
                                 fragment.commandsModel.getSuggestions(
-                                    module.account.token!!, arg, suggestionsCommand, mapOf())
+                                    module.account.token!!, module.org, arg, suggestionsCommand, mapOf())
                             }
                         }
                     }

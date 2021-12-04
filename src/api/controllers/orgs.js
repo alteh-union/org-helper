@@ -9,6 +9,8 @@
 const jwt = require('jsonwebtoken');
 const ObjectId = require('mongodb').ObjectId;
 
+const DiscordCommandHandler = require('../command-handlers/discord-command-handler');
+
 /**
  * Gets the list of organizations available for the user.
  * The Bot should be present in the organization in order to include it here.
@@ -39,15 +41,23 @@ const getUserOrgs = async (req, res, next) => {
 
       const orgsArray = context.discordClient.guilds.cache.array();
       const userOrgs = [];
+      const commandHandler = new DiscordCommandHandler();
       for (const org of orgsArray) {
         const collection = await org.members.fetch();
         const filteredMembers = collection.filter(entity => entity.id === user.discordInfo.id);
-        let iconLink = null;
-        if (org.icon) {
-          iconLink = "https://cdn.discordapp.com/icons/" + org.id + "/" + org.icon + ".png";
-        }
         if (filteredMembers.size > 0) {
-          userOrgs.push({ id: org.id, icon: iconLink, name: org.name, nameAcronym: org.nameAcronym });
+          let iconLink = null;
+          if (org.icon) {
+            iconLink = "https://cdn.discordapp.com/icons/" + org.id + "/" + org.icon + ".png";
+          }
+
+          const suggestionCommands = [];
+          for (const orgWideSuggestion of commandHandler.definedOrgWideSuggestions) {
+            suggestionCommands.push(orgWideSuggestion.getCommandInterfaceName());
+          }
+
+          userOrgs.push({ id: org.id, icon: iconLink, name: org.name, nameAcronym: org.nameAcronym,
+            suggestionCommands: suggestionCommands });
         }
       }
 

@@ -132,24 +132,31 @@ class CommandsViewModel @Inject internal constructor(
     /**
      * Asynchronously requests to get suggestions from the Bot's server.
      */
-    fun getSuggestions(token: String, argument: Argument, suggestionCommandId: String,
+    fun getSuggestions(token: String, org: Org, argument: Argument, suggestionCommandId: String,
                        argValues: Map<String, String>) {
         launchProgress {
-            var executionResult = commandRepository.getSuggestions(token, argument.source, argument.orgId,
-                suggestionCommandId, argValues)
-            if (executionResult == null) {
-                executionResult = ExecutionResult(CommandResult("No response from the server"))
-            }
-            // TODO: Maybe add some UI reaction if getting suggestions did not work.
-            executionResult.commandResult?.let {
-                it.suggestions.let { suggestions ->
-                    var suggestionsMap = suggestionsResults.value
-                    if (suggestionsMap == null) {
-                        suggestionsMap = mutableMapOf()
-                    }
-                    suggestionsMap[Pair(argument.commandId, argument.id)] = suggestions
-                    suggestionsResults.value = suggestionsMap
+            var suggestionsResult: List<ValueSuggestion>? = null
+            if (org.suggestions[suggestionCommandId] != null) {
+                suggestionsResult = org.suggestions[suggestionCommandId]
+            } else {
+                var executionResult = commandRepository.getSuggestions(token, argument.source, argument.orgId,
+                    suggestionCommandId, argValues)
+                if (executionResult == null) {
+                    executionResult = ExecutionResult(CommandResult("No response from the server"))
                 }
+                // TODO: Maybe add some UI reaction if getting suggestions did not work.
+                executionResult.commandResult?.let {
+                    suggestionsResult = it.suggestions
+                }
+            }
+
+            suggestionsResult?.let {
+                var suggestionsMap = suggestionsResults.value
+                if (suggestionsMap == null) {
+                    suggestionsMap = mutableMapOf()
+                }
+                suggestionsMap[Pair(argument.commandId, argument.id)] = it
+                suggestionsResults.postValue(suggestionsMap)
             }
         }
     }

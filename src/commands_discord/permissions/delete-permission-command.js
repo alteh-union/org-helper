@@ -11,6 +11,7 @@ const CommandArgDef = require('../../command_meta/command-arg-def');
 const ArrayArgScanner = require('../../arg_scanners/array-arg-scanner');
 
 const PermissionsCommand = require('./permissions-command');
+const GetPermissionSuggestions = require('../suggestions/get-permission-suggestions');
 
 const PermissionsManager = require('../../managers/permissions-manager');
 
@@ -19,7 +20,8 @@ const DeletePermissionCommandArgDefs = Object.freeze({
     aliasIds: ['command_deletepermission_arg_ids_alias_ids', 'command_deletepermission_arg_ids_alias_i'],
     helpId: 'command_deletepermission_arg_ids_help',
     scanner: ArrayArgScanner,
-    validationOptions: { isIdsArray: true }
+    validationOptions: { isIdsArray: true },
+    suggestions: GetPermissionSuggestions
   })
 });
 

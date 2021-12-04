@@ -83,9 +83,14 @@ class SuggestionAdapter(val activity: Activity, val layoutId: Int, val suggestio
     private class SuggestionsFilter(val adapter: SuggestionAdapter) : Filter() {
 
         /**
-         * Makes filter results based on the given string [constraint]
+         * Makes filter results based on the given string [requestedConstraint]
          */
-        override fun performFiltering(constraint: CharSequence): FilterResults {
+        override fun performFiltering(requestedConstraint: CharSequence?): FilterResults {
+            var constraint = requestedConstraint
+            if (constraint == null) {
+                constraint = ""
+            }
+
             val filterString = constraint.toString().lowercase(Locale.getDefault())
             val results = FilterResults()
 

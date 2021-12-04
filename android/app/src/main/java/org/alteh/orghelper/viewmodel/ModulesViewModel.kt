@@ -56,6 +56,15 @@ class ModulesViewModel @Inject internal constructor(
     }
 
     /**
+     * Asynchronously fetches the org-wide suggestions from the Bot's server.
+     */
+    fun requestOrgWideSuggestions() {
+        launchProgress {
+            moduleRepository.requestOrgWideSuggestions(activeOrg.value?.account!!, activeOrg.value?.org!!)
+        }
+    }
+
+    /**
      * Sets the [activeOrg] switcher.
      */
     fun setActiveOrg(org: OrgOfAccount) {

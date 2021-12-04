@@ -111,7 +111,7 @@ data class Command (
          * Checks if the arguments associated with the commands are the same. This includes checking
          * by the primary keys as well as by the contents of the arguments.
          * If the arrays of the arguments have different length, or if one list is null while the other is not,
-         * the consider the arguments different.
+         * then consider the arguments different.
          */
         private fun areArgumentsTheSame(
             oldItem: Command,

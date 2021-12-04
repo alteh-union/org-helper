@@ -82,6 +82,8 @@ class ModulesFragment : Fragment() {
 
         modulesModel.requestModules()
 
+        modulesModel.requestOrgWideSuggestions()
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {

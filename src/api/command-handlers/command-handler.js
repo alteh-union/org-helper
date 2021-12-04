@@ -35,6 +35,16 @@ class CommandHandler {
   }
 
   /**
+   * Gets the array of Bot commands which can be used by UI clients to get org-wide suggestions.
+   * That is, the suggestons which can be reused by various arguments accross the org without
+   * necessity of asking the server every time.
+   * @return {Array<constructor>} the defined commands
+   */
+  get definedOrgWideSuggestions() {
+    throw new Error(`${this.constructor.name} is an abstract class`);
+  }
+
+  /**
    * Gets the command class by its interface name. Searches only in the defined command modules.
    * If the command is not found in the modules, then returns null.
    * @param  {string}      name the name of command's interface
