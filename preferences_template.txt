@@ -7,6 +7,7 @@ log_file_verbosity_level = 4
 log_file_path = log.txt
 discord_token = <YOUR DISCORD BOT TOKEN>
 discord_secret = <YOUR DISCORD BOT SECRET>
+telegram_token = <YOUR TELEGRAM BOT TOKEN>
 server_port = 4000
 app_id = <YOUR DISCORD APP ID>
 frontend_url= <YOUR FRONTEND URL>

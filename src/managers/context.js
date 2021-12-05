@@ -15,7 +15,7 @@ const Scheduler = require('./scheduler');
 const Log = require('../utils/log');
 const ImageGenerator = require('./image-generator');
 
-const CurrentVersion = '1.0.1';
+const CurrentVersion = '1.2';
 
 /**
  * Contains global managers of the bot.
@@ -28,8 +28,9 @@ class Context {
    * @param {PrefsManager} prefsManager     preferences manager
    * @param {string}       localizationPath the path to localization resources
    * @param {Client}       discordClient    the Discord client
+   * @param {Telegraf}     telegramClient   the Telegram client (presented by a Telegraf instance)
    */
-  constructor(prefsManager, localizationPath, discordClient) {
+  constructor(prefsManager, localizationPath, discordClient, telegramClient) {
     this.prefsManager = prefsManager;
     this.log = new Log(
       prefsManager.log_console_verbosity_level,
@@ -47,6 +48,8 @@ class Context {
 
     this.discordClient = discordClient;
     this.discordClientReady = false;
+
+    this.telegramClient = telegramClient;
 
     this.langManager.printMissingTranslations(this.log);
   }

@@ -8,8 +8,8 @@
 
 const OhUtils = require('../utils/bot-utils');
 
-const DiscordCommand = require('../commands_discord/discord-command');
-const GetChannelSuggestions = require('../commands_discord/suggestions/get-channel-suggestions');
+const Command = require('../commands/command');
+const GetChannelSuggestions = require('../commands/suggestions/get-channel-suggestions');
 const DiscordUtils = require('../utils/discord-utils');
 const DiscordMentionsArgScanner = require('./discord-mentions-arg-scanner');
 const DiscordChannelsArg = require('../command_meta/discord-channels-arg');
@@ -55,7 +55,7 @@ class DiscordChannelsArgScanner extends DiscordMentionsArgScanner {
     const argText = text.slice(0, Math.max(0, lastIndex));
     let argValue = null;
     if (argText !== null && argText !== '') {
-      if (argText === langManager.getString(DiscordCommand.ANY_VALUE_TEXT)) {
+      if (argText === langManager.getString(Command.ANY_VALUE_TEXT)) {
         argValue = new DiscordChannelsArg([OhUtils.ANY_VALUE]);
       } else {
         argValue = await this.parseDiscordChannelArg(context, message, argText);

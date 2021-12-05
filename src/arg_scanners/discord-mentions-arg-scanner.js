@@ -8,7 +8,7 @@
 
 const DiscordUtils = require('../utils/discord-utils');
 
-const GetMentionSuggestions = require('../commands_discord/suggestions/get-mention-suggestions');
+const GetMentionSuggestions = require('../commands/suggestions/get-mention-suggestions');
 
 const ArrayArgScanner = require('./array-arg-scanner');
 const ScannerUiType = require('./scanner-ui-type');

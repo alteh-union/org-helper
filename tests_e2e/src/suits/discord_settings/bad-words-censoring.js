@@ -46,7 +46,7 @@ class BadWordsCensoring extends TestCase {
 
     channel.send('badword2');
     receivedMessage = await this.getReply(channel);
-    this.assertNull(receivedMessage);
+    this.assertNotNull(receivedMessage);
 
     channel.send('!setcensoring da');
     receivedMessage = await this.getReply(channel);

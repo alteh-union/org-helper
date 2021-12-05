@@ -12,6 +12,7 @@ const util = require('util');
 const OhUtils = require('../utils/bot-utils');
 
 const DISCORD_SOURCE = 'Discord';
+const TELEGRAM_SOURCE = 'Telegram';
 
 /**
  * Represents a DB table.
@@ -30,7 +31,7 @@ class BotTable {
   }
 
   /**
-   * Gets the string representing Discord as the source of data.
+   * Gets the string representing Discord as the source of commands/data.
    * @type {String}
    */
   static get DISCORD_SOURCE() {
@@ -38,12 +39,24 @@ class BotTable {
   }
 
   /**
+   * Gets the string representing Telegram as the source of commands/data.
+   * @type {String}
+   */
+  static get TELEGRAM_SOURCE() {
+    return TELEGRAM_SOURCE;
+  }
+
+  /**
    * Inits the instance, creates the collection in the DB, necessary indices, assigns hooks etc.
    * @return {Promise} nothing
    */
   async init() {
-    await this.dbManager.dbo.createCollection(this.getTableName());
-    await this.createIndex();
+    const collectionsArray = await this.dbManager.dbo.listCollections().toArray();
+    const collectionNames = collectionsArray.map(c => c.name);
+    if (!collectionNames.find(s => s === this.getTableName())) {
+      await this.dbManager.dbo.createCollection(this.getTableName());
+      await this.createIndex();
+    }
   }
 
   /**

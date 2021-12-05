@@ -7,6 +7,8 @@
  */
 
 const LangManager = require('../../managers/lang-manager');
+const BotPublicError = require('../../utils/bot-public-error');
+
 const BotTable = require('../../mongo_classes/bot-table');
 const ServerSettingsTable = require('../../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../../mongo_classes/user-settings-table');
@@ -104,7 +106,116 @@ class CommandHandler {
       context.localizationPath,
       currentUserLocale === undefined ? currentLocale : currentUserLocale
     );
-  };
+  }
+
+
+  /**
+   * Parses a command, including the arguments.
+   * The process is mostly copied from the corresponding process of the standard Bot interface.
+   * @see CommandsParser
+   * @param  {Context}              context            the Bot's context
+   * @param  {BaseMessage}          message            the command's message
+   * @param  {constructor<Command>} commandClass       the class of the command to be executed
+   * @param  {Object}               commandArgs        the arguments map
+   * @param  {LangManager}          commandLangManager the language manager
+   * @return {Promise<Command>}                        the command instance or null if failed
+   */
+  async tryParseCommand(context, message, commandClass, commandArgs, commandLangManager) {
+    const command = commandClass.createForOrg(context, message.source.name, commandLangManager, message.orgId);
+
+    try {
+      await command.parseWithReadyArgs(message, commandArgs);
+    } catch (error) {
+      context.log.w(
+        'tryParseCommandFromWeb: failed to parse command: "' +
+            commandClass.getCommandInterfaceName() +
+            '"; args: ' +
+            require('util').inspect(commandArgs) +
+            '"; Error message: ' +
+            error +
+            '; stack: ' +
+            error.stack +
+            (error.errorCode ? (';\nerrorCode: ' + error.errorCode) : '')
+      );
+      await message.reply(
+        commandLangManager.getString(
+          'validate_command_web_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+        )
+      );
+      return null;
+    }
+
+    return command;
+  }
+
+  /**
+   * Executes a command after parsing the arguments and checking the user permissions according
+   * to the supplied arguments.
+   * The process is mostly copied from the corresponding process of the standard Bot interface.
+   * @see CommandsParser
+   * @param  {Context}              context            the Bot's context
+   * @param  {BaseMessage}          message            the command's message
+   * @param  {constructor<Command>} commandClass       the class of the command to be executed
+   * @param  {Object}               commandArgs        the arguments map
+   * @param  {LangManager}          commandLangManager the language manager
+   * @return {Promise}                                 nothing
+   */
+  async executeCommand(context, message, commandClass, commandArgs, commandLangManager) {
+    const command = await this.tryParseCommand(context, message, commandClass, commandArgs, commandLangManager);
+    if (command === null) {
+      return;
+    }
+
+    try {
+      await context.permManager.checkCommandPermissions(message, command);
+    } catch (error) {
+      context.log.w(
+        'executeCommandFromWeb: Not permitted to execute: "' +
+            commandClass.getCommandInterfaceName() +
+            '"; args: ' +
+            require('util').inspect(commandArgs) +
+            '; Error message: ' +
+            error +
+            '; stack: ' +
+            error.stack
+      );
+      await message.reply(
+        commandLangManager.getString(
+          'permission_command_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+        )
+      );
+      return;
+    }
+
+    let result;
+    try {
+      result = await command.execute(message);
+    } catch (error) {
+      context.log.w(
+        'executeCommandFromWeb: failed to execute command: "' +
+            commandClass.getCommandInterfaceName() +
+            '"; args: ' +
+            require('util').inspect(commandArgs) +
+            '"; Error message: ' +
+            error +
+            '; stack: ' +
+            error.stack
+      );
+      await message.reply(
+        commandLangManager.getString(
+          'execute_command_error',
+          error instanceof BotPublicError ? error.message : commandLangManager.getString('internal_server_error')
+        )
+      );
+      return;
+    }
+
+    if (result !== undefined && result !== null && result !== '') {
+      await message.reply(result);
+    }
+  }
 }
 
 /**

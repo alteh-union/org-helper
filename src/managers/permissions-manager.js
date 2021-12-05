@@ -8,6 +8,8 @@
 
 const OhUtils = require('../utils/bot-utils');
 
+const BotTable = require('../mongo_classes/bot-table');
+
 const MultiLangValue = require('../utils/multi-lang-value');
 const BotPublicError = require('../utils/bot-public-error');
 
@@ -346,6 +348,21 @@ class PermissionsManager {
         );
         throw new BotPublicError(command.langManager.getString('permission_missing_discord', permission));
       }
+    }
+  }
+
+  /**
+   * Checks if the author of the message has enough permissions to run the command.
+   * The procedure depends on the source of the message (Discord, Telegram etc.), hence this
+   * method just calls corresponding source-specific function.
+   * @throws {BotPublicError}
+   * @param  {BaseMessage}     message the command's message
+   * @param  {DiscordCommand}  command the command instance
+   * @return {Promise}                 nothing
+   */
+  async checkCommandPermissions(message, command) {
+    if (BotTable.DISCORD_SOURCE === message.source.name) {
+      await this.checkDiscordCommandPermissions(message, command);
     }
   }
 

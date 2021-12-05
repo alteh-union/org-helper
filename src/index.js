@@ -12,23 +12,27 @@ const InitApiServer = require('./api/init-api').initApi;
 const path = require('path');
 const MongoClient = require('mongodb').MongoClient;
 const Discord = require('discord.js');
+const { Telegraf } = require('telegraf');
 
 const OhUtils = require('./utils/bot-utils');
 const BaseMessage = require('./components/base-message');
 const PrefsManager = require('./managers/prefs-manager');
 const Context = require('./managers/context');
 const DiscordSource = require('./components/discord-source');
+const TelegramSource = require('./components/telegram-source');
 const prefsPath = path.join(__dirname, '..', 'preferences.txt');
 const localizationPath = path.join(__dirname, '..', 'localization');
-
-const client = new Discord.Client();
 
 const prefsManager = new PrefsManager(prefsPath);
 
 prefsManager.readPrefs();
 
-const c = new Context(prefsManager, localizationPath, client);
-const discordSource = new DiscordSource(client);
+const discordClient = new Discord.Client();
+const telegramClient = new Telegraf(prefsManager.telegram_token);
+
+const c = new Context(prefsManager, localizationPath, discordClient, telegramClient);
+const discordSource = new DiscordSource(discordClient);
+const telegramSource = new TelegramSource(telegramClient);
 
 c.log.i('Context created.');
 
@@ -65,13 +69,17 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
       c.log.f('Kill signal received. Code: ' + code);
     }
 
+    if (telegramClient) {
+      telegramClient.stop();
+    }
+
     db.close();
   });
 
-  client.on('ready', async () => {
+  discordClient.on('ready', async () => {
     try {
       c.log.i('Servers:');
-      const guildsArray = client.guilds.cache.array();
+      const guildsArray = discordClient.guilds.cache.array();
       const updateResults = [];
       for (const guild of guildsArray) {
         c.log.i(' - ' + guild.name);
@@ -79,19 +87,19 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
       }
 
       await Promise.all(updateResults);
-      await c.dbManager.updateGuilds(client.guilds.cache);
+      await c.dbManager.updateGuilds(discordClient.guilds.cache);
 
       c.discordClientReady = true;
 
       await c.scheduler.syncTasks();
     } catch (error) {
-      c.log.f('client on ready error: ' + error + '; stack: ' + error.stack);
+      c.log.f('discordClient on ready error: ' + error + '; stack: ' + error.stack);
     }
   });
 
-  client.on('message', async discordMessage => {
+  discordClient.on('message', async discordMessage => {
     if (!c.discordClientReady) {
-      c.log.w('on message: the client is not ready');
+      c.log.w('on message: the discordClient is not ready');
       return;
     }
 
@@ -100,7 +108,7 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
 
       if (message.originalMessage.guild !== undefined && message.originalMessage.guild !== null) {
         let processed = false;
-        if (message.userId !== client.user.id) {
+        if (message.userId !== discordClient.user.id) {
           processed = await c.commandsParser.processMessage(message);
           if (!processed) {
             c.messageModerator.premoderateDiscordMessage(message);
@@ -108,12 +116,23 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
         }
       } else {
         // The null guild means it's a private ("DM") message
-        await c.commandsParser.parsePrivateDiscordCommand(message);
+        await c.commandsParser.processPrivateMessage(message);
       }
     } catch (error) {
-      c.log.e('client on message error: ' + error + '; stack: ' + error.stack);
+      c.log.e('discordClient on message error: ' + error + '; stack: ' + error.stack);
     }
   });
 
-  client.login(c.prefsManager.discord_token);
+  discordClient.login(c.prefsManager.discord_token);
+
+  telegramClient.on('message', async ctx => {
+    try {
+      const message = BaseMessage.createFromTelegram(ctx, telegramSource);
+      await c.commandsParser.processMessage(message);
+    } catch (error) {
+      c.log.e('telegramClient on message error: ' + error + '; stack: ' + error.stack);
+    }
+  });
+
+  telegramClient.launch();
 });

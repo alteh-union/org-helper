@@ -65,6 +65,23 @@ class BaseMessage {
   }
 
   /**
+   * Create BaseMessage from a Telegram context (as a result of receiving a message)
+   * @param   {Object}      telegramContext the Telegram native context object
+   * @param   {Object}      telegramSource  the Telegram source object
+   * @returns {BaseMessage}                 the result source-independent message
+   */
+  static createFromTelegram(telegramContext, telegramSource) {
+    return new BaseMessage(
+      telegramContext.message.chat.id ? telegramContext.message.chat.id : null,
+      null,
+      telegramContext.message.from.id ? telegramContext.from.id : null,
+      telegramContext.message.text,
+      telegramContext,
+      telegramSource
+    );
+  }
+
+  /**
    * Replies to the message with a text using the respective source-dependent class.
    * The source-dependent function called from here should take care of technical nuances of the respective
    * platform (for example, that Discord does not allow to send messages with more than 2000 symbols at a time).

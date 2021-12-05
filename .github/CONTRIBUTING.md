@@ -13,7 +13,7 @@ const scanResult = await definedArgs[argKey].scanner.scan(this.context, this.lan
 ```
 or here:
 ```
-async executeForDiscord(discordMessage) {
+async execute(discordMessage) {
   // Inherited function with various possible implementations, some args may be unused.
   /* eslint no-unused-vars: ["error", { "args": "none" }] */
 ```

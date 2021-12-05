@@ -89,7 +89,7 @@ const executeCommand = async (req, res, next) => {
       const message = new BaseMessage(orgId, null, discordUserId, '', fakeOriginalMessage, source);
 
       context.scheduler.syncTasks();
-      await commandHandler.executeDiscordCommand(context, message, commandDefinition, commandArgs, commandLangManager);
+      await commandHandler.executeCommand(context, message, commandDefinition, commandArgs, commandLangManager);
 
       res.status(200).send({ commandResult: { text: message.replyResult.text,
         attachments: message.replyResult.attachments, suggestions: message.replyResult.suggestions } });

@@ -9,7 +9,7 @@
 const DiscordUtils = require('../utils/discord-utils');
 const BaseSource = require('./base-source');
 const BotTable = require('../mongo_classes/bot-table');
-const DiscordCommandManager = require('../components/discord-command-manager');
+const DiscordCommandManager = require('./discord-command-manager');
 
 /**
  * Represents the Discord source

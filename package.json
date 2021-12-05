@@ -14,7 +14,7 @@
     "discord.js": "^12.1.1",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
-    "jimp": "^0.14.0",
+    "jimp": "^0.16.1",
     "jsdoc": "^3.6.7",
     "jsonwebtoken": "^8.5.1",
     "moment-timezone": "^0.5.28",
@@ -25,6 +25,7 @@
     "nodemon": "^2.0.4",
     "request": "^2.88.2",
     "string-similarity": "^4.0.1",
+    "telegraf": "^4.4.2",
     "text-to-image": "^2.3.0",
     "uuid": "^8.3.2"
   },

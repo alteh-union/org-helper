@@ -67,11 +67,11 @@ Wanna speed up the development and take one of the features on your own? Contact
 1) Check out the existing commands and pick the one which is mostly similar to the one you want to create
 2) Create a new module and class based on the chosen in the respective commands folder
 3) Define arguments for the command. Check existing commands as examples, look at arg_scanners folder to see what arg scanners suit the args most, and for available arg validations - check ArgValidationTree class. Of course, you can add new types of scanners and validations if you feel you need it.
-4) Inherited functions in the DiscordCommand class which you PROBABLY will need to override are: getDefaultDiscordArgValue, validateFromDiscord, getRequiredDiscordPermissions, getRequiredBotPermissions.
-5) Inherited functions in the DiscordCommand class which you DEFINITELY will need to override are: createForOrg, getCommandInterfaceName, getDefinedArgs, getHelpText, executeForDiscord
-6) The main logic of the command will need to be written in executeForDiscord function (or in subfunctions called from that function)
+4) Inherited functions in the Command class which you PROBABLY will need to override are: getDefaultArgValue, validateArguments, getRequiredDiscordPermissions, getRequiredBotPermissions.
+5) Inherited functions in the Command class which you DEFINITELY will need to override are: createForOrg, getCommandInterfaceName, getDefinedArgs, getHelpText, execute
+6) The main logic of the command will need to be written in execute function (or in subfunctions called from that function)
 7) Add related UI strings into "localization" folder, at least for the default (en-US) locale. Try to keep the same format of string identifiers as for the existing commands
-8) Register the command in CommandParser class (DiscordCommands array for the guild Discord commands), so it considers the command while parsing the user messages
+8) Register the command in CommandParser class (Commands array for the org commands), so it considers the command while parsing the user messages
 9) Depending on your logic, some commands may require additional modification in other places (like MessageModerator, PermissionManager, DB classes etc.)
 10) If you adding a new Mongo entities (e.g. tables, rows), make sure it's possible not only to add them, but also to view them and remove them. In the majority of cases that will mean that you need to create more then 1 command at once (e.g. to add, to remove and to view some entities)
 11) Prepare the patch according to the CONTRIBUTION_GUIDE
@@ -86,6 +86,5 @@ Wanna speed up the development and take one of the features on your own? Contact
 6) In the mongo_classes add new functions to work with the new source (e.g. in BotTable: updateFromDiscord -> updateFromSlack etc.)
 7) Add at least some basic commands for the new platform (for example, "ping" command - see instructions on how to add new commands above)
 8) In index.js file, instantiate the client of the new platform and add callback handlers for it. For example, the client should send an incoming text message to the CommandsParser class to check if it's a command, and to process it if it is
-9) In CommandsParser class add fucntions related to parsing the commands from the new platform (similarly to what we have for Discord, e.g. parseDiscordCommand -> parseSlackCommand)
-10) Add new preferences to preferences_template.txt and your instance of preferences.txt. For example, it could be a token of your bot in the new platform
-11) Maybe some other steps
+9) Add new preferences to preferences_template.txt and your instance of preferences.txt. For example, it could be a token of your bot in the new platform
+10) Maybe some other steps

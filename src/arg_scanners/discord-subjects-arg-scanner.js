@@ -7,8 +7,8 @@
  */
 const OhUtils = require('../utils/bot-utils');
 
-const DiscordCommand = require('../commands_discord/discord-command');
-const GetSubjectSuggestions = require('../commands_discord/suggestions/get-subject-suggestions');
+const Command = require('../commands/command');
+const GetSubjectSuggestions = require('../commands/suggestions/get-subject-suggestions');
 const DiscordUtils = require('../utils/discord-utils');
 const DiscordMentionsArgScanner = require('./discord-mentions-arg-scanner');
 const DiscordSubjectsArg = require('../command_meta/discord-subjects-arg');
@@ -54,7 +54,7 @@ class DiscordSubjectsArgScanner extends DiscordMentionsArgScanner {
     const argText = text.slice(0, Math.max(0, lastIndex));
     let argValue = null;
     if (argText !== null && argText !== '') {
-      if (argText === langManager.getString(DiscordCommand.ANY_VALUE_TEXT)) {
+      if (argText === langManager.getString(Command.ANY_VALUE_TEXT)) {
         argValue = new DiscordSubjectsArg([OhUtils.ANY_VALUE], [OhUtils.ANY_VALUE]);
       } else {
         argValue = await this.parseDiscordSubjectArg(context, message, argText);
