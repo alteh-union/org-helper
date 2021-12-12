@@ -29,7 +29,7 @@ const DeleteImageTemplateCommandArgDefs = Object.freeze({
 });
 
 /**
- * Command to delete image templates according to their ids in the Discord server.
+ * Command to delete image templates according to their ids in the org.
  * @alias DeleteImageTemplateCommand
  * @extends Command
  */
@@ -106,8 +106,8 @@ class DeleteImageTemplateCommand extends Command {
   async execute(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
-    const templates = await this.context.dbManager.getDiscordRows(
-      this.context.dbManager.imageTemplateTable, this.orgId);
+    const templates = await this.context.dbManager.getRows(
+      this.context.dbManager.imageTemplateTable, { orgId: this.orgId });
     const templateIds = new Set(templates.map(a => a.id));
     const templateIdsToDelete = [];
 
@@ -127,7 +127,8 @@ class DeleteImageTemplateCommand extends Command {
     }
 
     const deleteQuery = { $or: orArray };
-    await this.context.dbManager.deleteDiscordRows(this.context.dbManager.imageTemplateTable, this.orgId, deleteQuery);
+    await this.context.dbManager.deleteRows(this.context.dbManager.imageTemplateTable,
+      message.source.name, this.orgId, deleteQuery);
 
     return this.langManager.getString('command_deleteimagetemplate_success');
   }

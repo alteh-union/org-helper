@@ -462,6 +462,34 @@ class Utils {
   }
 
   /**
+   * Tries to read an attachment as text. Returns null if failed.
+   * @param  {Object}        fileName          the file name of the attachment
+   * @param  {Array<string>} allowedExtensions the array of allowed extensions. Empty element allows file w/o extension
+   * @param  {Log}           log               the log object to save the error info
+   * @return {string}                          the result string or null if failed
+   */
+  static async getAttachmentText(fileName, link, allowedExtensions, log) {
+    if (allowedExtensions === undefined || allowedExtensions === null || allowedExtensions.length === 0) {
+      allowedExtensions = [];
+      allowedExtensions.push('');
+    }
+
+    const extension = fileName === null ? null :
+      fileName.slice(fileName.lastIndexOf('.') + 1);
+    if (!allowedExtensions.includes('') && !allowedExtensions.includes(extension.toLowerCase())) {
+      return null;
+    }
+
+    const result = await this.downloadPage(link);
+    if (result instanceof Error) {
+      log.e('getAttachmentText download error: ' + result.message + '; stack: ' + result.stack);
+      return null;
+    } else {
+      return result;
+    }
+  }
+
+  /**
    * Gets the count of files in a specific folder with specific prefix in the file names.
    * @param  {string}          folder the path to the folder
    * @param  {string}          prefix the prefix to be searched for

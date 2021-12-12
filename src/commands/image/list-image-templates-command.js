@@ -66,10 +66,9 @@ class ListImageTemplatesCommand extends Command {
   async execute(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
-    const res = await this.context.dbManager.getDiscordRows(
+    const res = await this.context.dbManager.getRows(
       this.context.dbManager.imageTemplateTable,
-      this.orgId,
-      {});
+      { orgId: this.orgId });
 
     const ids = res.map(r => r.id);
     for (const id of ids) {

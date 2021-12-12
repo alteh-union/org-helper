@@ -26,7 +26,7 @@ const UserSettingsCommandArgDefs = Object.freeze({
 });
 
 /**
- * Command to list settings set up for the user in the Discord server.
+ * Command to list settings set up for the user in the org.
  * @alias MySettingsCommand
  * @extends SettingsCommand
  */
@@ -85,6 +85,15 @@ class MySettingsCommand extends SettingsCommand {
    * @return {Array<string>} the array of Discord-specific permissions required
    */
   static getRequiredDiscordPermissions() {
+    return [];
+  }
+
+  /**
+   * Gets the array of defined Telegram permission filters for the command.
+   * Source-independent permissions (e.g. stored in the Bot's DB) should be defined in another place.
+   * @return {Array<string>} the array of Telegram-specific permissions required
+   */
+  static getRequiredTelegramPermissions() {
     return [];
   }
 

@@ -35,7 +35,7 @@ const SetTimezoneCommandArgDefs = Object.freeze({
 });
 
 /**
- * Command to set the server-wide timezone for the Discord server.
+ * Command to set the server-wide timezone for the org.
  * @see DiscordTimeArgScanner.appendTimezone
  * @alias SetTimezoneCommand
  * @extends Command
@@ -96,6 +96,15 @@ class SetTimezoneCommand extends Command {
    */
   static getRequiredDiscordPermissions() {
     return [PermissionsManager.DISCORD_PERMISSIONS.ADMINISTRATOR];
+  }
+
+  /**
+   * Gets the array of defined Telegram permission filters for the command.
+   * Source-independent permissions (e.g. stored in the Bot's DB) should be defined in another place.
+   * @return {Array<string>} the array of Telegram-specific permissions required
+   */
+  static getRequiredTelegramPermissions() {
+    return [PermissionsManager.TELEGRAM_PERMISSIONS.ADMINISTRATOR];
   }
 
   /**

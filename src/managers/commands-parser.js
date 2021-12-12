@@ -176,11 +176,10 @@ class CommandsParser {
    * @return {constructor}            the class of the help command
    */
   getHelpCommandBySource(sourceName) {
-    if (BotTable.DISCORD_SOURCE === sourceName) {
+    if (BotTable.DISCORD_SOURCE === sourceName || BotTable.TELEGRAM_SOURCE === sourceName) {
       return HelpCommand;
-    } else {
-      return null;
     }
+    return null;
   }
 
   /**

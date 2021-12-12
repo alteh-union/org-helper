@@ -30,7 +30,9 @@ prefsManager.readPrefs();
 const discordClient = new Discord.Client();
 const telegramClient = new Telegraf(prefsManager.telegram_token);
 
-const c = new Context(prefsManager, localizationPath, discordClient, telegramClient);
+const projectRoot = path.resolve(path.join(__dirname, '..'));
+
+const c = new Context(prefsManager, localizationPath, projectRoot, discordClient, telegramClient);
 const discordSource = new DiscordSource(discordClient);
 const telegramSource = new TelegramSource(telegramClient);
 
@@ -127,6 +129,9 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
 
   telegramClient.on('message', async ctx => {
     try {
+      if (ctx.message.text === undefined && ctx.message.caption) {
+        ctx.message.text = ctx.message.caption;
+      }
       const message = BaseMessage.createFromTelegram(ctx, telegramSource);
       await c.commandsParser.processMessage(message);
     } catch (error) {

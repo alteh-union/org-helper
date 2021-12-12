@@ -33,6 +33,36 @@ class BaseSource {
   }
 
   /**
+   * Replies to the message using a source-dependent class and attaches the given picture to it
+   * @param   {BaseMessage} message   the base message object
+   * @param   {string}      filePath  the path to the local photo file
+   * @returns {Promise}               nothing
+   */
+  async replyWithPhoto(message, filePath) {
+    throw new Error(`${this.constructor.name} is an abstract class`);
+  }
+
+  /**
+   * Makes a string representing a user mention in a format which can be used by a native client of the source.
+   * @param   {BaseMessage}     message   the base message object
+   * @param   {string}          userId    the identifier of the user to be mentioned
+   * @returns {Promise<string>}           nothing
+   */
+  async makeUserMention(message, userId) {
+    throw new Error(`${this.constructor.name} is an abstract class`);
+  }
+
+  /**
+   * Makes a string representing a user mention in a format which can be used by a native client of the source.
+   * @param   {BaseMessage}     message   the base message object
+   * @param   {string}          userId    the identifier of the user to be mentioned
+   * @returns {Promise<string>}           nothing
+   */
+  async readTextAttachment(message, userId) {
+    throw new Error(`${this.constructor.name} is an abstract class`);
+  }
+
+  /**
    * Gets the name of the source
    * @return {string} the name
    */

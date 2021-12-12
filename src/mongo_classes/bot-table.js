@@ -296,7 +296,6 @@ class BotTable {
       query.orgId = orgId;
     }
 
-    this.dbManager.context.log.v('deleteRows, query: ' + util.inspect(query, { showHidden: true, depth: 3 }));
     await this.dbManager.dbo.collection(this.getTableName()).remove(query);
   }
 

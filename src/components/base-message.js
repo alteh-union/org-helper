@@ -19,14 +19,16 @@ class BaseMessage {
    * @param {string}     content         the text content of the message
    * @param {Object}     originalMessage the original source-dependent message
    * @param {BaseSource} source          the source class of the message
+   * @param {number}     timestamp       the timestamp in milliseconds
    */
-  constructor(orgId, channelId, userId, content, originalMessage, source) {
+  constructor(orgId, channelId, userId, content, originalMessage, source, timestamp) {
     this.orgId = orgId;
     this.channelId = channelId;
     this.userId = userId;
     this.content = content;
     this.originalMessage = originalMessage;
     this.source = source;
+    this.timestamp = timestamp;
     this.replyResult = { text: '', attachments: [], suggestions: [] };
   }
 
@@ -43,7 +45,8 @@ class BaseMessage {
       slackMessage.user,
       slackMessage.text,
       slackMessage,
-      slackSource
+      slackSource,
+      null
     );
   }
 
@@ -60,7 +63,8 @@ class BaseMessage {
       discordMessage.author ? discordMessage.author.id : null,
       discordMessage.content,
       discordMessage,
-      discordSource
+      discordSource,
+      discordMessage.createdTimestamp
     );
   }
 
@@ -77,7 +81,8 @@ class BaseMessage {
       telegramContext.message.from.id ? telegramContext.from.id : null,
       telegramContext.message.text,
       telegramContext,
-      telegramSource
+      telegramSource,
+      telegramContext.message.date * 1000
     );
   }
 

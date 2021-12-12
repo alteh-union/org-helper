@@ -30,7 +30,7 @@ const SettingsCommandArgDefs = Object.freeze({
 const SkipSettings = Object.freeze([ServerSettingsTable.SERVER_SETTINGS.badwords.name]);
 
 /**
- * Command to list the settings of the Discord server.
+ * Command to list the Bot-related settings in the org.
  * @alias SettingsCommand
  * @extends Command
  */
@@ -93,6 +93,15 @@ class SettingsCommand extends Command {
   }
 
   /**
+   * Gets the array of defined Telegram permission filters for the command.
+   * Source-independent permissions (e.g. stored in the Bot's DB) should be defined in another place.
+   * @return {Array<string>} the array of Telegram-specific permissions required
+   */
+  static getRequiredTelegramPermissions() {
+    return [PermissionsManager.TELEGRAM_PERMISSIONS.ADMINISTRATOR];
+  }
+
+  /**
    * Get settings which need to skip in the common output.
    * @return {Array<string>} array of settings name
    */
@@ -149,7 +158,7 @@ class SettingsCommand extends Command {
 
   /**
    * Makes a related settings description (certain settings if the settings arg is specified).
-   * @param  {BaseMessage}    message           the Discord message with the command
+   * @param  {BaseMessage}    message           the message with the command
    * @param  {Array<Object>}  availableSettings the array of available settings
    * @param  {string}         emptyTextId       the text id of string to be used if no settings are found
    * @param  {Function}       dbFunc            the DB function to fetch the settings

@@ -6,7 +6,6 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
-const DiscordUtils = require('../../utils/discord-utils');
 const BotPublicError = require('../../utils/bot-public-error');
 
 const Command = require('../command');
@@ -24,7 +23,7 @@ const SetMyLocaleCommandArgDefs = Object.freeze({
 });
 
 /**
- * Command to set the language for the caller on the Discord server.
+ * Command to set the language for the caller in the org.
  * @see LangManager
  * @alias SetMyLocaleCommand
  * @extends Command
@@ -133,7 +132,7 @@ class SetMyLocaleCommand extends Command {
       this.context.log.i("SetMyLocaleCommand done: removed the user's locale preference");
       return this.langManager.getString(
         'command_setmylocale_success_no_locale',
-        DiscordUtils.makeUserMention(message.userId)
+        await message.source.makeUserMention(message, message.userId)
       );
     }
 
@@ -148,7 +147,7 @@ class SetMyLocaleCommand extends Command {
     this.context.log.i("SetMyLocaleCommand done: new user's locale is " + this.locale);
     return this.langManager.getString(
       'command_setmylocale_success',
-      DiscordUtils.makeUserMention(message.userId),
+      await message.source.makeUserMention(message, message.userId),
       this.locale
     );
   }

@@ -212,7 +212,7 @@ class DbManager {
   }
 
   /**
-   * Deletes rows of a given Discord organization using a given filter query
+   * Deletes rows of a given Discord organization using a filter query
    * @param  {BotTable}  table the table
    * @param  {string}    orgId the organization identifier
    * @param  {Object}    query the query filter object
@@ -220,6 +220,18 @@ class DbManager {
    */
   async deleteDiscordRows(table, orgId, query) {
     await table.deleteDiscordRows(orgId, query);
+  }
+
+  /**
+   * Deletes rows of a given organization using a filter query
+   * @param  {BotTable}  table  the table
+   * @param  {string}    source the source name (like Discord etc.)
+   * @param  {string}    orgId  the organization identifier
+   * @param  {Object}    query  the query filter object
+   * @return {Promise}          nothing
+   */
+  async deleteRows(table, source, orgId, query) {
+    await table.deleteRows(source, orgId, query);
   }
 
   /**

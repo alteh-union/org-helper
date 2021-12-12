@@ -8,11 +8,34 @@
 
 const MaxTextLength = 4096;
 
+const TelegramUserPrefix = '@';
+
+const ChatTypes = Object.freeze({
+  private: "private"
+});
+
 /**
  * Various utils related to Telegram.
  * @alias TelegramUtils
  */
 class TelegramUtils {
+  /**
+   * The possible types of Telegram chats.
+   * @type {Object}
+   */
+  static get CHAT_TYPES() {
+    return ChatTypes;
+  }
+
+  /**
+   * Makes a string mentioning a user, to be used in Telegram messages
+   * @param  {string} userName the Telegram client to fetch the user name by its id
+   * @return {string}          the mention string
+   */
+  static makeUserMention(userName) {
+    return TelegramUserPrefix + userName;
+  }
+
   /**
    * Sends a message as a response to another Telegram message, considering the hard limit of symbols to be posted.
    * If the length is more than the limits, splits the message into several, if possible - at the line end

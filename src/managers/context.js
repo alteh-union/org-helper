@@ -27,10 +27,11 @@ class Context {
    * which should be created before the Context).
    * @param {PrefsManager} prefsManager     preferences manager
    * @param {string}       localizationPath the path to localization resources
+   * @param {string}       projectRoot      the path to the root directory of the Bot's project
    * @param {Client}       discordClient    the Discord client
    * @param {Telegraf}     telegramClient   the Telegram client (presented by a Telegraf instance)
    */
-  constructor(prefsManager, localizationPath, discordClient, telegramClient) {
+  constructor(prefsManager, localizationPath, projectRoot, discordClient, telegramClient) {
     this.prefsManager = prefsManager;
     this.log = new Log(
       prefsManager.log_console_verbosity_level,
@@ -45,6 +46,8 @@ class Context {
     this.messageModerator = new MessageModerator(this);
     this.scheduler = new Scheduler(this);
     this.imageGenerator = new ImageGenerator(this);
+
+    this.projectRoot = projectRoot;
 
     this.discordClient = discordClient;
     this.discordClientReady = false;

@@ -9,7 +9,6 @@
 const momentTz = require('moment-timezone');
 const stringSimilarity = require('string-similarity');
 
-const DiscordUtils = require('../../utils/discord-utils');
 const BotPublicError = require('../../utils/bot-public-error');
 
 const Command = require('../command');
@@ -33,7 +32,7 @@ const SetMyTimezoneCommandArgDefs = Object.freeze({
 });
 
 /**
- * Command to set the timezone for the caller on the Discord server.
+ * Command to set the timezone for the caller in the org.
  * @see DiscordTimeArgScanner.appendTimezone
  * @alias SetMyTimezoneCommand
  * @extends Command
@@ -140,7 +139,7 @@ class SetMyTimezoneCommand extends Command {
       this.context.log.i("SetMyTimezoneCommand done: removed the user's timezone preference");
       return this.langManager.getString(
         'command_setmytimezone_success_no_timezone',
-        DiscordUtils.makeUserMention(message.userId)
+        await message.source.makeUserMention(message, message.userId)
       );
     }
 

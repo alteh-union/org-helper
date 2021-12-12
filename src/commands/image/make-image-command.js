@@ -22,6 +22,7 @@ const BotPublicError = require('../../utils/bot-public-error');
 const jimp = require('jimp');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
+const path = require('path');
 
 const MakeImageCommandArgDefs = Object.freeze({
   templateName: new CommandArgDef('templateName', {
@@ -130,8 +131,8 @@ class MakeImageCommand extends Command {
   async validateArguments(message) {
     await super.validateArguments(message);
 
-    const res = await this.context.dbManager.getDiscordRows(this.context.dbManager.imageTemplateTable,
-      this.orgId, { id: this.templateName });
+    const res = await this.context.dbManager.getRows(this.context.dbManager.imageTemplateTable,
+      { source: message.source.name, orgId: this.orgId, id: this.templateName });
 
     if (!res[0]) {
       throw new BotPublicError(
@@ -165,12 +166,17 @@ class MakeImageCommand extends Command {
       const imageResult = await this.context.imageGenerator.generateImage(this.imgUrl, params, this.parsedJsonConfig,
         this.source, this.orgId);
 
-      if (message.originalMessage.channel != null) {
-        const filePath = `images/${uuidv4()}.jpg`;
-        imageResult.write(filePath);
-        await message.originalMessage.channel.send(null, {
-          files: [filePath]
-        });
+      if (message.originalMessage.fake !== true) {
+        const filePath = path.join(this.context.projectRoot, 'images', `${uuidv4()}.jpg`);
+        await imageResult.write(filePath);
+
+        // TODO: looks like imageResult.write(filePath) does not get finished before we start replying with the file,
+        // so sometimes execution results in a "no file found" error.
+        // Hence we add a "magic" delay here to make sure the file is ready by the time when we start replying.
+        // Need to think of how to fix this without magic.
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        await message.source.replyWithPhoto(message, filePath);
 
         await fs.unlink(filePath, (err) => {
           if (err) {

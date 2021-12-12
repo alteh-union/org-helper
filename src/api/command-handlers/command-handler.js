@@ -9,7 +9,6 @@
 const LangManager = require('../../managers/lang-manager');
 const BotPublicError = require('../../utils/bot-public-error');
 
-const BotTable = require('../../mongo_classes/bot-table');
 const ServerSettingsTable = require('../../mongo_classes/server-settings-table');
 const UserSettingsTable = require('../../mongo_classes/user-settings-table');
 
@@ -83,20 +82,21 @@ class CommandHandler {
    * Gets the most suitable language manager based on the organization and user preferences.
    * The process is mostly copied from the corresponding process of the standard Bot interface.
    * @see CommandsParser
-   * @param  {Context}              context the Bot's context
-   * @param  {string}               orgId   the identifier of the organization
-   * @param  {string}               userId  the identifier of the user
-   * @return {Promise<LangManager>}         the most suitable language manager
+   * @param  {Context}              context     the Bot's context
+   * @param  {string}               sourceName  the name of the source platform (like Discord etc.)
+   * @param  {string}               orgId       the identifier of the organization
+   * @param  {string}               userId      the identifier of the user
+   * @return {Promise<LangManager>}             the most suitable language manager
    */
-  async getCommandLangManager(context, orgId, userId) {
+  async getCommandLangManager(context, sourceName, orgId, userId) {
     const currentLocale = await context.dbManager.getSetting(
-      BotTable.DISCORD_SOURCE,
+      sourceName,
       orgId,
       ServerSettingsTable.SERVER_SETTINGS.localeName.name
     );
 
     const currentUserLocale = await context.dbManager.getUserSetting(
-      BotTable.DISCORD_SOURCE,
+      sourceName,
       orgId,
       userId,
       UserSettingsTable.USER_SETTINGS.localeName.name

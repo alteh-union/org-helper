@@ -7,6 +7,7 @@
  */
 
 const OhUtils = require('../utils/bot-utils');
+const TelegramUtils = require('../utils/telegram-utils');
 
 const BotTable = require('../mongo_classes/bot-table');
 
@@ -66,6 +67,10 @@ const DiscordPermissions = Object.freeze({
   MANAGE_EMOJIS: 'MANAGE_EMOJIS'
 });
 
+const TelegramPermissions = Object.freeze({
+  ADMINISTRATOR: 'ADMINISTRATOR'
+});
+
 /**
  * Manages and check caller's permissions for commands.
  * @alias PermissionsManager
@@ -103,6 +108,14 @@ class PermissionsManager {
    */
   static get DISCORD_PERMISSIONS() {
     return DiscordPermissions;
+  }
+
+  /**
+   * The object containing defined Telegram permissions.
+   * @type {Object}
+   */
+  static get TELEGRAM_PERMISSIONS() {
+    return TelegramPermissions;
   }
 
   /**
@@ -363,6 +376,8 @@ class PermissionsManager {
   async checkCommandPermissions(message, command) {
     if (BotTable.DISCORD_SOURCE === message.source.name) {
       await this.checkDiscordCommandPermissions(message, command);
+    } else if (BotTable.TELEGRAM_SOURCE === message.source.name) {
+      await this.checkTelegramCommandPermissions(message, command);
     }
   }
 
@@ -393,15 +408,101 @@ class PermissionsManager {
   }
 
   /**
-   * Checks if the author of the Discord message is admin on the server.
-   * @param  {BaseMessage}  message the message
-   * @return {Boolean}              true if admin, false otherwise
+   * Checks if the author of the Telegram message has enough permissions to run the command,
+   * both from Telegram perpesctive and Bot perspective.
+   * Bot's permission requirements can be overriden if the author is admin on the server and
+   * the bypass is enabled in Bot's preferences (typically should be "true" for all non-dev Bot's instances).
+   * Throws public error if the permissions are not found.
+   * @throws {BotPublicError}
+   * @param  {BaseMessage}     message the command's message
+   * @param  {DiscordCommand}  command the command instance
+   * @return {Promise}                 nothing
+   */
+  async checkTelegramCommandPermissions(message, command) {
+    const chat = await message.source.client.telegram.getChat(message.orgId);
+    if (chat.type === TelegramUtils.CHAT_TYPES.private) {
+      return;
+    }
+    const orgAdmins = await message.source.client.telegram.getChatAdministrators(message.orgId);
+    const isAdmin = orgAdmins.some( adm => adm.user.id === message.userId );
+    if (
+      this.context.prefsManager.bypass_bot_permissions_for_discord_admins !== 'true' ||
+      !isAdmin
+    ) {
+      await this.checkBotPermissions(message.userId, [], command, message.source.name);
+    }
+  }
+
+  /**
+   * Checks if the author of the message is admin in the org (source-depemdent).
+   * @param  {BaseMessage}           message the message
+   * @return {Promise<Boolean>}              true if admin, false otherwise
    */
   async isAuthorAdmin(message) {
+    if (BotTable.DISCORD_SOURCE === message.source.name) {
+      await this.isAuthorAdminInDiscord(message);
+    } else if (BotTable.TELEGRAM_SOURCE === message.source.name) {
+      await this.isAuthorAdminInTelegram(message);
+    }
+  }
+
+  /**
+   * Checks if the author of the Discord message in the org.
+   * @param  {BaseMessage}           message the message
+   * @return {Promise<Boolean>}              true if admin, false otherwise
+   */
+  async isAuthorAdminInDiscord(message) {
     const membersManager = await message.source.client.guilds.cache.get(message.orgId).members;
     const member = await membersManager.fetch(message.userId);
 
     return member.hasPermission(DiscordPermissions.ADMINISTRATOR);
+  }
+
+  /**
+   * Checks if the author of the Telegram message in the org.
+   * @param  {BaseMessage}           message the message
+   * @return {Promise<Boolean>}              true if admin, false otherwise
+   */
+  async isAuthorAdminInTelegram(message) {
+    const chat = await message.source.client.telegram.getChat(message.orgId);
+    if (chat.type === TelegramUtils.CHAT_TYPES.private) {
+      return true;
+    }
+    const orgAdmins = await message.source.client.telegram.getChatAdministrators(message.orgId);
+    return orgAdmins.some( adm => adm.user.id === message.userId );
+  }
+
+  /**
+   * Checks if the command of the given source requires administrator permission.
+   * @param  {string}       sourceName the name of the source
+   * @param  {constructor}  command    the class of the command
+   * @return {Boolean}                 true if requires the admin permission, false otherwise
+   */
+  commandRequiresAdministratorPermission(sourceName, command) {
+    if (BotTable.DISCORD_SOURCE === sourceName) {
+      return this.commandRequiresDiscordAdministratorPermission(command);
+    } else if (BotTable.TELEGRAM_SOURCE === sourceName) {
+      return this.commandRequiresTelegramAdministratorPermission(command);
+    }
+    return false;
+  }
+
+  /**
+   * Checks if the Discord command requires administrator permission.
+   * @param  {constructor}  command    the class of the command
+   * @return {Boolean}                 true if requires the admin permission, false otherwise
+   */
+  commandRequiresDiscordAdministratorPermission(command) {
+    return command.getRequiredDiscordPermissions().includes(DiscordPermissions.ADMINISTRATOR);
+  }
+
+  /**
+   * Checks if the Telegram command requires administrator permission.
+   * @param  {constructor}  command    the class of the command
+   * @return {Boolean}                 true if requires the admin permission, false otherwise
+   */
+  commandRequiresTelegramAdministratorPermission(command) {
+    return command.getRequiredTelegramPermissions().includes(TelegramPermissions.ADMINISTRATOR);
   }
 }
 

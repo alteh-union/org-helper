@@ -68,6 +68,8 @@ const executeCommand = async (req, res, next) => {
         return res.status(400).send('Wrong command name');
       }
 
+      const sourceName = req.path.split("/")[2];
+
       let commandArgs = null;
 
       try {
@@ -77,14 +79,15 @@ const executeCommand = async (req, res, next) => {
       }
 
       const discordUserId = user.discordInfo.id;
-      const commandLangManager = await commandHandler.getCommandLangManager(context, orgId, discordUserId);
+      const commandLangManager = await commandHandler.getCommandLangManager(context, sourceName, orgId, discordUserId);
 
       const member = await selectedOrg.members.fetch(discordUserId);
 
       const source = new DiscordSource(context.discordClient);
       const fakeOriginalMessage = {
         guild: selectedOrg,
-        member: member
+        member: member,
+        fake: true
       };
       const message = new BaseMessage(orgId, null, discordUserId, '', fakeOriginalMessage, source);
 

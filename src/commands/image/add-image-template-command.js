@@ -8,7 +8,6 @@
 
 const BotPublicError = require('../../utils/bot-public-error');
 const BotUtils = require('../../utils/bot-utils');
-const DiscordUtils = require('../../utils/discord-utils');
 
 const Command = require('../command');
 const SimpleArgScanner = require('../../arg_scanners/simple-arg-scanner');
@@ -115,21 +114,7 @@ class AddImageTemplateCommand extends Command {
   async getDefaultArgValue(message, arg) {
     switch (arg) {
       case AddImageTemplateCommandArgDefs.jsonConfig:
-      {
-        const discordMessage = message.originalMessage;
-        if (discordMessage.attachments) {
-          let jsonText = null;
-          for (const attachment of discordMessage.attachments.values()) {
-            jsonText = await DiscordUtils.getAttachmentText(attachment, ['txt', 'json'], this.context.log);
-            if (jsonText !== null) {
-              break;
-            }
-          }
-          return jsonText;
-        } else {
-          return null;
-        }
-      }
+        return await message.source.readTextAttachment(message, ['txt', 'json'], this.context.log);
       default:
         return null;
     }
@@ -192,10 +177,9 @@ class AddImageTemplateCommand extends Command {
   async execute(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
-    const existingTemplates = await this.context.dbManager.getDiscordRows(
+    const existingTemplates = await this.context.dbManager.getRows(
       this.context.dbManager.imageTemplateTable,
-      this.orgId,
-      {});
+      { orgId: this.orgId });
 
     if (existingTemplates.length >= this.context.prefsManager.max_image_templates_per_discord_org) {
       return this.langManager.getString(

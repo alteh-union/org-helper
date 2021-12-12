@@ -45,7 +45,10 @@ const getUserModules = async (req, res, next) => {
 
       const discordUserId = user.discordInfo.id;
       const commandHandler = new DiscordCommandHandler();
-      const langManager = await commandHandler.getCommandLangManager(context, orgId, discordUserId);
+
+      const sourceName = req.path.split("/")[2];
+
+      const langManager = await commandHandler.getCommandLangManager(context, sourceName, orgId, discordUserId);
 
       const completeModules = commandHandler.definedModules;
 
@@ -104,6 +107,9 @@ const getModuleDefinition = async (req, res, next) => {
       }
 
       const commandHandler = new DiscordCommandHandler();
+
+      const sourceName = req.path.split("/")[2];
+
       const completeModules = commandHandler.definedModules;
 
       const selectedModule = completeModules.find(m => m.name === moduleId);
@@ -113,7 +119,7 @@ const getModuleDefinition = async (req, res, next) => {
       }
 
       const discordUserId = user.discordInfo.id;
-      const langManager = await commandHandler.getCommandLangManager(context, orgId, discordUserId);
+      const langManager = await commandHandler.getCommandLangManager(context, sourceName, orgId, discordUserId);
 
       const moduleDefinition = {};
       moduleDefinition.id = selectedModule.name;

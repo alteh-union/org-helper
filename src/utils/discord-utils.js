@@ -6,8 +6,6 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
-const OhUtils = require('../utils/bot-utils');
-
 const DiscordMentionStart = '<';
 const DiscordMentionEnd = '>';
 const DiscordChannelPrefix = '#';
@@ -176,34 +174,6 @@ class DiscordUtils {
     }
 
     await discordChannel.send(remainingText);
-  }
-
-  /**
-   * Tries to read an attachment as text. Returns null if failed.
-   * @param  {Object}        messageAttachment the attachment object
-   * @param  {Array<string>} allowedExtensions the array of allowed extensions. Empty element allows file w/o extension
-   * @param  {Log}           log               the log object to save the error info
-   * @return {string}                          the result string or null if failed
-   */
-  static async getAttachmentText(messageAttachment, allowedExtensions, log) {
-    if (allowedExtensions === undefined || allowedExtensions === null || allowedExtensions.length === 0) {
-      allowedExtensions = [];
-      allowedExtensions.push('');
-    }
-
-    const extension = messageAttachment.name === null ? null :
-      messageAttachment.name.slice(messageAttachment.name.lastIndexOf('.') + 1);
-    if (!allowedExtensions.includes('') && !allowedExtensions.includes(extension.toLowerCase())) {
-      return null;
-    }
-
-    const result = await OhUtils.downloadPage(messageAttachment.attachment);
-    if (result instanceof Error) {
-      log.e('getAttachmentText download error: ' + result.message + '; stack: ' + result.stack);
-      return null;
-    } else {
-      return result;
-    }
   }
 }
 

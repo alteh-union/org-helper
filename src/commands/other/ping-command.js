@@ -6,8 +6,6 @@
  * @license MIT (see the root LICENSE file for details)
  */
 
-const BotTable = require('../../mongo_classes/bot-table');
-
 const Command = require('../command');
 
 /**
@@ -66,13 +64,7 @@ class PingCommand extends Command {
   async execute(message) {
     // Inherited function with various possible implementations, some args may be unused.
     /* eslint no-unused-vars: ["error", { "args": "none" }] */
-    let timestamp = 'unknown';
-    if (BotTable.DISCORD_SOURCE === message.source.name) {
-      timestamp = message.originalMessage.createdTimestamp;
-    } else if (BotTable.TELEGRAM_SOURCE === message.source.name) {
-      timestamp = message.originalMessage.message.date;
-    }
-    this.context.log.v('ping message timestamp: ' + timestamp);
+    this.context.log.v('ping message timestamp: ' + message.timestamp);
     return this.langManager.getString('command_ping_success');
   }
 }

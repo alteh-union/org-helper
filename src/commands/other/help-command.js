@@ -8,8 +8,6 @@
 
 const OhUtils = require('../../utils/bot-utils');
 
-const PermissionsManager = require('../../managers/permissions-manager');
-
 const ServerSettingsTable = require('../../mongo_classes/server-settings-table');
 
 const Command = require('../command');
@@ -107,7 +105,7 @@ class HelpCommand extends Command {
         !isAuthorAdmin
       ) {
         commands = commands.filter((value, index, array) => {
-          return !value.getRequiredDiscordPermissions().includes(PermissionsManager.DISCORD_PERMISSIONS.ADMINISTRATOR);
+          return !this.context.permManager.commandRequiresAdministratorPermission(this.source, value);
         });
       }
 
