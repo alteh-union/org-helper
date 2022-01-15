@@ -41,7 +41,7 @@ class DiscordMentionsArgScanner extends ArrayArgScanner {
    * Parses the given text to make an argument object for a command.
    * @param  {Context}         context     Bot's context
    * @param  {LangManager}     langManager Lang manager of the command
-   * @param  {Object}          message     Message's object (source-dependent)
+   * @param  {BaseMessage}     message     Message's object (source-dependent)
    * @param  {string}          text        Text to be scanned to parse the argument
    * @param  {string}          scanType    The type of scan (by name, sequential etc.)
    * @return {Promise<Object>}             Promise of the parsed object of the argument and how many chars were scanned
@@ -55,7 +55,7 @@ class DiscordMentionsArgScanner extends ArrayArgScanner {
   /**
    * Parses Discord mentions (channels, roles, members) using the specified prefixes into pure ids.
    * @param  {Context}       context             Bot's context
-   * @param  {Object}        message             Message's object (source-dependent)
+   * @param  {BaseMessage}   message             Message's object (source-dependent)
    * @param  {string}        argText             the text to be parsed
    * @param  {string}        directPrefix        the prefix of the mention defined by its pure id
    * @param  {string}        mentionType         the type of mention (member, role, channel)

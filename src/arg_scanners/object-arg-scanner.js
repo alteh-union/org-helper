@@ -48,7 +48,7 @@ class ObjectArgScanner extends SimpleArgScanner {
    * Parses the given text to make an argument object for a command.
    * @param  {Context}         context     Bot's context
    * @param  {LangManager}     langManager Lang manager of the command
-   * @param  {Object}          message     Message's object (source-dependent)
+   * @param  {BaseMessage}     message     Message's object (source-dependent)
    * @param  {string}          text        Text to be scanned to parse the argument
    * @param  {string}          scanType    The type of scan (by name, sequential etc.)
    * @return {Promise<Object>}             Promise of the parsed object of the argument and how many chars were scanned

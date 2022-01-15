@@ -155,17 +155,17 @@ class PermissionsManager {
   }
 
   /**
-   * Check permissions of the user defined via the Bot.
+   * Checks permissions of the user defined via the Bot.
    * Takes all defined permission filters, for each of them checks if corresponding arg's value
    * match at least one record in the permissions table.
    * If false, then throws an error.
    * @see CommandPermissionFilter
    * @throws {BotPublicError}
-   * @param  {string}         commandUserId Id of the user who launces the command
-   * @param  {Array<string>}  roleIds       Array of role ids assigned to the user
-   * @param  {Command}        command       Command object
-   * @param  {string}         source        Name of the command's source (Discord etc.)
-   * @return {Promise}                      Empty. Will throw exception if permissions are violated
+   * @param  {string}         commandUserId the identifier of the user who launches the command
+   * @param  {Array<string>}  roleIds       the array of role ids assigned to the user
+   * @param  {Command}        command       the command object
+   * @param  {string}         source        the name of the command's source (Discord etc.)
+   * @return {Promise}                      empty. Will throw exception if permissions are violated
    */
   async checkBotPermissions(commandUserId, roleIds, command, source) {
     const permissionFilters = command.constructor.getRequiredBotPermissions();
@@ -180,13 +180,13 @@ class PermissionsManager {
   }
 
   /**
-   * Build mongodDb query to get permissions
-   * @param source
-   * @param command
-   * @param commandUserId
-   * @param roleIds
-   * @param permissionFilter
-   * @returns {{$and: []}}
+   * Builds mongodDb query to get permissions
+   * @param  {string}                  source           the name of the command's source (Discord etc.)
+   * @param  {Command}                 command          the command object
+   * @param  {string}                  commandUserId    the identifier of the user who launches the command
+   * @param  {Array<string>}           roleIds          the array of roles ids assigned to the user
+   * @param  {CommandPermissionFilter} permissionFilter the permission filter (what is permitted under what conditions)
+   * @return {Object}                                   the query object to be used by the DB manager
    */
   buildPermissionQuery(source, command, commandUserId, roleIds, permissionFilter) {
     const andArray = [];
@@ -263,10 +263,12 @@ class PermissionsManager {
   }
 
   /**
-   * Verify bot permissions
-   * @param permissionFilters
-   * @param permissions
-   * @param command
+   * Checks that existing permissions match each of the given Discord entity.
+   * Throws error if not all entities are matched.
+   * @throws {BotPublicError}
+   * @param  {Array<CommandPermissionFilter>} permissionFilters the array of filter definitions
+   * @param  {Array<OrgPermission>}           permissions       the array of granted permissions from the DB
+   * @param  {Command}                        command           the command defining the permission
    */
   verifyPermissions(permissionFilters, permissions, command) {
     for (const permissionFilter of permissionFilters) {
@@ -284,7 +286,7 @@ class PermissionsManager {
 
       for (const filterField of filtersFields) {
         if (command[filterField.argName] instanceof DiscordChannelsArg) {
-          this.checkDiscordEntityFilter(
+          this.checkEntityFilter(
             permissionFilter.permissionName,
             filterField.filterFieldName,
             permissions,
@@ -292,14 +294,14 @@ class PermissionsManager {
             command.langManager
           );
         } else if (command[filterField.argName] instanceof DiscordSubjectsArg) {
-          this.checkDiscordEntityFilter(
+          this.checkEntityFilter(
             permissionFilter.permissionName,
             filterField.filterFieldName,
             permissions,
             command[filterField.argName].subjectIds,
             command.langManager
           );
-          this.checkDiscordEntityFilter(
+          this.checkEntityFilter(
             permissionFilter.permissionName,
             filterField.filterFieldName,
             permissions,
@@ -322,7 +324,7 @@ class PermissionsManager {
    * @param  {Array<Object>}        entitiesFilter  the array of entities to check against the permissions
    * @param  {LangManager}          langManager     the language manager to set up the public error text
    */
-  checkDiscordEntityFilter(permissionName, filterFieldName, permissionRows, entitiesFilter, langManager) {
+  checkEntityFilter(permissionName, filterFieldName, permissionRows, entitiesFilter, langManager) {
     for (const entityFilter of entitiesFilter) {
       const found = permissionRows.some(row => {
         const filterValue = row.filter[filterFieldName];
@@ -419,12 +421,7 @@ class PermissionsManager {
    * @return {Promise}                 nothing
    */
   async checkTelegramCommandPermissions(message, command) {
-    const chat = await message.source.client.telegram.getChat(message.orgId);
-    if (chat.type === TelegramUtils.CHAT_TYPES.private) {
-      return;
-    }
-    const orgAdmins = await message.source.client.telegram.getChatAdministrators(message.orgId);
-    const isAdmin = orgAdmins.some( adm => adm.user.id === message.userId );
+    const isAdmin = this.isAuthorAdminInTelegram(message);
     if (
       this.context.prefsManager.bypass_bot_permissions_for_discord_admins !== 'true' ||
       !isAdmin

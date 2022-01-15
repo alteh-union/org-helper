@@ -32,7 +32,7 @@ class TimeArgScanner extends SimpleArgScanner {
    * Parses the given text to make an argument object for a command.
    * @param  {Context}         context     Bot's context
    * @param  {LangManager}     langManager Lang manager of the command
-   * @param  {Object}          message     Message's object (source-dependent)
+   * @param  {BaseMessage}     message     Message's object (source-dependent)
    * @param  {string}          text        Text to be scanned to parse the argument
    * @param  {string}          scanType    The type of scan (by name, sequential etc.)
    * @return {Promise<Object>}             Promise of the parsed object of the argument and how many chars were scanned
@@ -103,7 +103,7 @@ class TimeArgScanner extends SimpleArgScanner {
    * Appends a timezone definition to a TimeArg, based on organization's or individual preference for the timezone.
    * @see TimeArg
    * @param  {Context}      context     the Bot's context
-   * @param  {BaseMessage}  message     the Discord message with the argument
+   * @param  {BaseMessage}  message     the message with the argument (source-dependent)
    * @param  {TimeArg}      timeArg     the time argument to edit
    * @return {Promise}                  nothing
    */
