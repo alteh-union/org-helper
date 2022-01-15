@@ -21,6 +21,7 @@ const SetMyTimezoneCommand = require('../commands/settings/set-my-timezone-comma
 const SetPrefixCommand = require('../commands/settings/set-prefix-command');
 const SetTimezoneCommand = require('../commands/settings/set-timezone-command');
 const SettingsCommand = require('../commands/settings/settings-command');
+const SetWelcomeMessageCommand = require('../commands/social/set-welcome-message-command');
 
 /**
  * Represents commands available for Telegram
@@ -36,17 +37,18 @@ class TelegramCommandManager extends CommandManager {
     return Object.freeze([
       AddImageTemplateCommand,
       DeleteImageTemplateCommand,
+      HelpCommand,
       ListImageTemplatesCommand,
       MakeImageCommand,
-      PingCommand,
-      HelpCommand,
       MySettingsCommand,
+      PingCommand,
       SetLocaleCommand,
       SetMyLocaleCommand,
       SetMyTimezoneCommand,
       SetPrefixCommand,
       SetTimezoneCommand,
-      SettingsCommand
+      SettingsCommand,
+      SetWelcomeMessageCommand
     ]);
   }
 

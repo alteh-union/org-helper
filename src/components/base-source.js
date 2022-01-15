@@ -46,7 +46,7 @@ class BaseSource {
    * Makes a string representing a user mention in a format which can be used by a native client of the source.
    * @param   {BaseMessage}     message   the base message object
    * @param   {string}          userId    the identifier of the user to be mentioned
-   * @returns {Promise<string>}           nothing
+   * @returns {Promise<string>}           the mention string
    */
   async makeUserMention(message, userId) {
     throw new Error(`${this.constructor.name} is an abstract class`);

@@ -28,7 +28,7 @@ class MessageModerator {
 
   /**
    * Premoderates incoming message (e.g. replaces bad words etc.)
-   * @param  {BaseMessage}  message the Discordmessage
+   * @param  {BaseMessage}  message the Discord message
    * @return {Promise}              nothing
    */
   async premoderateDiscordMessage(message) {

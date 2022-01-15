@@ -14,6 +14,7 @@ const MessageModerator = require('./message-moderator');
 const Scheduler = require('./scheduler');
 const Log = require('../utils/log');
 const ImageGenerator = require('./image-generator');
+const Welcomer = require('./welcomer');
 
 const CurrentVersion = '1.2';
 
@@ -46,6 +47,7 @@ class Context {
     this.messageModerator = new MessageModerator(this);
     this.scheduler = new Scheduler(this);
     this.imageGenerator = new ImageGenerator(this);
+    this.welcomer = new Welcomer(this);
 
     this.projectRoot = projectRoot;
 

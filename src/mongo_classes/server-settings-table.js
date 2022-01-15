@@ -21,7 +21,8 @@ const DefinedSettings = Object.freeze({
   censoring: new MultiLangValue('censoring', 'setting_censoring'),
   moderLogsEnabled: new MultiLangValue('moderLogsEnabled', 'setting_moderLogsEnabled'),
   moderLogsChannel: new MultiLangValue('moderLogsChannel', 'setting_moderLogsChannel'),
-  banOnWarnings: new MultiLangValue('banOnWarnings', 'setting_banOnWarnings')
+  banOnWarnings: new MultiLangValue('banOnWarnings', 'setting_banOnWarnings'),
+  welcomeMessage: new MultiLangValue('welcomeMessage', 'setting_welcomeMessage')
 });
 
 /**

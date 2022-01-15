@@ -437,9 +437,9 @@ class PermissionsManager {
    */
   async isAuthorAdmin(message) {
     if (BotTable.DISCORD_SOURCE === message.source.name) {
-      await this.isAuthorAdminInDiscord(message);
+      return await this.isAuthorAdminInDiscord(message);
     } else if (BotTable.TELEGRAM_SOURCE === message.source.name) {
-      await this.isAuthorAdminInTelegram(message);
+      return await this.isAuthorAdminInTelegram(message);
     }
   }
 

@@ -31,6 +31,7 @@
   "setting_moderLogsEnabled": "moder logs enabled",
   "setting_moderLogsChannel": "moder logs channel",
   "setting_banOnWarnings": "ban on warnings",
+  "setting_welcomeMessage": "welcome message",
 
   "moderator_censored_message": "User %s wrote a message, but for the sake of decency we had to replace it with the following text:\n%s",
 
@@ -666,5 +667,16 @@
   "command_listimagetemplates_displayname": "List image templates",
   "command_listimagetemplates_help": "List all available image templates to make pictures from.",
 
-  "command_listimagetemplates_success": "List of available templates: %s"
+  "command_listimagetemplates_success": "List of available templates: %s",
+
+
+  "command_setwelcomemessage_name": "setwelcomemessage",
+  "command_setwelcomemessage_displayname": "Set welcome message for newcomers",
+  "command_setwelcomemessage_help": "Sets the welcome message to be posted as soon as a new member arrives at the org. Use the %username% placeholder inside the message to make it look personal.",
+
+  "command_setwelcomemessage_arg_welcomeMessage_alias_welcomeMessage": "welcomeMessage",
+  "command_setwelcomemessage_arg_welcomeMessage_alias_m": "m",
+  "command_setwelcomemessage_arg_welcomeMessage_help": "The message to be posted. Use the %username% placeholder inside the message to make it look personal.",
+  "command_setwelcomemessage_success": "The welcome message is set successfully.",
+  "command_setwelcomemessage_success_empty": "The welcome message is disabled."
 }

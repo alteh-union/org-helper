@@ -31,6 +31,7 @@
   "setting_moderLogsEnabled": "логи модерирования включены",
   "setting_moderLogsChannel": "канал для логов модерирования",
   "setting_banOnWarnings": "бан за предупреждения",
+  "setting_welcomeMessage": "приветственное сообщение",
 
   "moderator_censored_message": "Пользователь %s написал сообщение, но во имя благопристойности нам пришлость заменить его на следующее:\n%s",
 
@@ -665,5 +666,16 @@
   "command_listimagetemplates_displayname": "Показать шаблоны для картинок",
   "command_listimagetemplates_help": "Список всех доступных шаблонов для изображений",
 
-  "command_listimagetemplates_success": "Доступные шаблоны: %s"
+  "command_listimagetemplates_success": "Доступные шаблоны: %s",
+
+
+  "command_setwelcomemessage_name": "задатьприветственноесообщение",
+  "command_setwelcomemessage_displayname": "Задать приветственное сообщение для вновь прибывающих",
+  "command_setwelcomemessage_help": "Задаёт сообщение, которое будет отправляться Ботом, как только в организации появляется новый человек. Используйте спец. подстроку %username%, и Бот подставит туда имя присоединившегося.",
+
+  "command_setwelcomemessage_arg_welcomeMessage_alias_welcomeMessage": "приветственноеСообщение",
+  "command_setwelcomemessage_arg_welcomeMessage_alias_m": "с",
+  "command_setwelcomemessage_arg_welcomeMessage_help": "Сообщение, которое нужно постить. Используйте спец. подстроку %username%, и Бот подставит туда имя присоединившегося.",
+  "command_setwelcomemessage_success": "Приветственное сообщение задано успешно.",
+  "command_setwelcomemessage_success_empty": "Приветственное сообщение отключено."
 }

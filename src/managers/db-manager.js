@@ -289,7 +289,7 @@ class DbManager {
    * @return {Promise}             nothing
    */
   async removeSetting(source, orgId, settingName) {
-    await this.serverSettingsTable.setSetting(source, orgId, settingName);
+    await this.serverSettingsTable.removeSetting(source, orgId, settingName);
   }
 
   /**

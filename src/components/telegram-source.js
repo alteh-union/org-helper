@@ -55,7 +55,7 @@ class TelegramSource extends BaseSource {
    * Makes a string representing a user mention in a format which can be used by a native client of the source.
    * @param   {BaseMessage}     message   the base message object
    * @param   {string}          userId    the identifier of the user to be mentioned
-   * @returns {Promise<string>}           nothing
+   * @returns {Promise<string>}           the mention string
    */
   async makeUserMention(message, userId) {
     const userInfo = await this.client.telegram.getChatMember(message.orgId, userId);

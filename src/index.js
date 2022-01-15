@@ -133,7 +133,11 @@ MongoClient.connect(dbConnectionString, async (err, db) => {
         ctx.message.text = ctx.message.caption;
       }
       const message = BaseMessage.createFromTelegram(ctx, telegramSource);
-      await c.commandsParser.processMessage(message);
+      if (ctx.message.text) {
+        await c.commandsParser.processMessage(message);
+      } else if (ctx.message.new_chat_member && !ctx.message.new_chat_member.is_bot) {
+        await c.welcomer.welcomeUser(message, ctx.message.new_chat_member.id);
+      }
     } catch (error) {
       c.log.e('telegramClient on message error: ' + error + '; stack: ' + error.stack);
     }
